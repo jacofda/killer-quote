@@ -20,7 +20,7 @@ class CreateKillerQuotesTable extends Migration
             $table->integer('company_id')->unsigned();
             $table->foreign('company_id')->references('id')->on('companies');
             $table->text('sconto_text')->nullable()->default(null);
-            $table->float('sconto_value', 7, 4)->default(null);
+            $table->float('sconto_value', 7, 4)->nullable()->default(null);
             $table->timestamp('expirancy_date');
             $table->text('summary')->nullable()->default(null);
             $table->timestamps();

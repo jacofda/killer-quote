@@ -11,11 +11,13 @@
 <div class="row">
     <div class="col-12" id="metodi-pagamento-div">
         @foreach($strings as $index => $string)
-            <div class="row metodi_pagamento_item">
-                <div class="col-xs-12 col-md-8 mb-3">
-                    <input type="text" class="form-control" placeholder="Testo" value="{{ !empty($string['text']) ? $string['text'] : '' }}" name="metodi_pagamento_txt[]">
+            <div class="row same-height metodi_pagamento_item">
+                <div class="col-xs-12 col-md-8">
+                    <textarea name="metodi_pagamento_txt[]">
+                        {!! !empty($string['text']) ? $string['text'] : '' !!}
+                    </textarea>
                 </div>
-                <div class="col-xs-12 col-md-4 d-inline-block">
+                <div class="col-xs-12 col-md-4 col-vertical-center">
                     <div class="input-group">
                         <input class="form-control input-decimal" placeholder="Sconto" value="{{ !empty($string['number']) ? number_format($string['number'], 2) : '' }}" name="metodi_pagamento_num[]" type="text">
                         <div class="input-group-append">
@@ -33,14 +35,31 @@
 </div>
 
 @push('scripts')
+    <script src="{{asset('plugins/summernote/summernote-bs4.min.js')}}"></script>
     <script>
         (function(){
+            const smOptions = {
+                disableResizeEditor: true,
+                toolbar: [
+                    ['font', ['bold', 'italic', 'underline', 'clear']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['table', ['table']],
+                    ['insert', ['link']],
+                    ['view', ['fullscreen', 'codeview', 'help']]
+                ]
+            };
+            const savedItems = $('.metodi_pagamento_item');
+            var lastId = savedItems.last().data('id');
+            savedItems.each(function(i, e) {
+                bindSummernote($(e).find('textarea[name="metodi_pagamento_txt[]"]'));
+            });
             const newElement = `
-                <div class="row metodi_pagamento_item">
-                    <div class="col-xs-12 col-md-8 mb-3">
-                        <input type="text" class="form-control" placeholder="Testo" name="metodi_pagamento_txt[]">
+                <div class="row same-height metodi_pagamento_item">
+                    <div class="col-xs-12 col-md-8">
+                        <textarea class="metodi_pagamento_textarea" name="metodi_pagamento_txt[]"></textarea>
                     </div>
-                    <div class="col-xs-12 col-md-4">
+                    <div class="col-xs-12 col-md-4 col-vertical-center">
                         <div class="input-group">
                             <input class="form-control input-decimal" placeholder="Sconto" name="metodi_pagamento_num[]" type="text">
                             <div class="input-group-append">
@@ -54,9 +73,14 @@
             $('#metodi-pagamento-add').click(addHandler);
             $('.metodi_pagamento_item button[data-action="delete"]').click(deleteHandler);
 
+            function bindSummernote(element) {
+                $(element).summernote(smOptions);
+            }
+
             function addHandler(e) {
                 e.preventDefault();
                 $newElement = $(newElement);
+                bindSummernote($newElement.find('textarea.metodi_pagamento_textarea'));
                 $newElement.find('button[data-action="delete"]').click(deleteHandler);
                 $('#metodi-pagamento-div').append($newElement);
             }

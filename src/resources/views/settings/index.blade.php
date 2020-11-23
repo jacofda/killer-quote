@@ -7,6 +7,22 @@
     <link rel="stylesheet" href="{{asset('plugins/popup/min.css')}}">
     <link rel="stylesheet" href="{{asset('plugins/summernote/summernote-bs4.css')}}">
     <style>
+        #reviews-txt .review_txt_div:last-child {
+            margin-bottom: 0 !important;
+        }
+
+        .col-vertical-center {
+            display: flex;
+            align-items:center;
+        }
+
+        .row.same-height {
+            display: flex;
+            display: -webkit-flex;
+            flex-wrap: wrap;
+        }
+
+        /* Summernote Ajax File Upload */
         body.ajaxfileupload-overlay {
             position: relative;
             height: 100%;

@@ -33,8 +33,10 @@ class SettingsController extends Controller
             'metodi_pagamento_num' => 'array',
             'metodi_pagamento_num.*' => 'nullable|numeric',
             'garanzie' => 'nullable|string',
-            'recensione_txt' => 'array',
-            'recensione_txt.*' => 'nullable|string',
+            'review' => 'array',
+            'review.review_name.*' => 'nullable|string',
+            'review.review_surname.*' => 'nullable|string',
+            'review.review_txt.*' => 'string',
             'glossario' => 'nullable|string',
             'scadenza' => 'nullable|numeric'
         ]);
@@ -47,13 +49,14 @@ class SettingsController extends Controller
         // Sometimes the 'scadenza' field is not passed. In these cases set it to null
         $data['scadenza'] = isset($data['scadenza']) ? $data['scadenza'] : null;
 
-        $recensioni = KillerQuoteSetting::where('key', KillerQuoteSetting::KEY_RECENSIONI)->first()->value;
-        if(!is_array($recensioni))
-            $recensioni = [];
 
-        foreach($recensioni as $i => $val) {
-            if(!empty($data['recensione_txt'][$i]))
-                $recensioni[$i]['review_txt'] = $data['recensione_txt'][$i];
+        $reviews = [];
+        foreach($data['review']['review_txt'] as $i => $val) {
+            $reviews[] = [
+                'review_txt' => $val,
+                'review_name' => $data['review']['review_name'][$i],
+                'review_surname' => $data['review']['review_surname'][$i]
+            ];
         }
 
         $metodi_pagamento = [];
@@ -71,7 +74,7 @@ class SettingsController extends Controller
             'perche_sceglierci' => $data['perche_sceglierci'],
             'metodi_pagamento' => $metodi_pagamento,
             'garanzie' => $data['garanzie'],
-            'recensioni' => $recensioni,
+            'recensioni' => $reviews,
             'glossario' => $data['glossario'],
             'scadenza' => $data['scadenza']
         ];
@@ -99,36 +102,6 @@ class SettingsController extends Controller
             return $response;
         Media::deleteMediaFromId($response);
         abort(500, "Update failed");
-    }
-
-    public function uploadReviewImg() {
-        $reviewsModel = KillerQuoteSetting::where('key', KillerQuoteSetting::KEY_RECENSIONI)->first();
-        $reviews = $reviewsModel->value;
-        $mediaId = Media::saveImageOrFile(request());
-        $reviews[] = [
-            'review_txt' => '',
-            'review_img' => $mediaId
-        ];
-        $reviewsModel->value = serialize($reviews);
-        $update = $reviewsModel->save();
-        if($update)
-            return $mediaId;
-        Media::deleteMediaFromId($mediaId);
-        abort(500, "Update failed");
-    }
-
-    public function deleteReviewImg($id) {
-        $reviewsModel = KillerQuoteSetting::where('key', KillerQuoteSetting::KEY_RECENSIONI)->first();
-        $reviews = $reviewsModel->value;
-        $reviews = array_filter($reviews, function($val) use ($id) {
-            return $val['review_img'] !== intval($id);
-        });
-
-        $reviewsModel->value =  @serialize($reviews);
-        if(!$reviewsModel->save())
-            return abort(500, "Update failed");
-        Media::deleteMediaFromId($id);
-        return "The media has been deleted";
     }
 
     private function deleteCurrentLogo() {

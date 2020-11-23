@@ -72,7 +72,7 @@ class KillerQuotesController extends Controller
 
         $document->save($documentPdfPath);
 
-        $merger->addPathToPDF($logoPdfPath, [1], 'P');
+        $merger->addPathToPDF($logoPdfPath, 'all', 'P');
         $merger->addPathToPDF($documentPdfPath, 'all', 'P');
         $merger->merge();
         return $merger->inline();
@@ -80,9 +80,10 @@ class KillerQuotesController extends Controller
 
     public function create()
     {
+        $settings = KillerQuoteSetting::assoc();
         $companies = ['' => '']+Company::orderBy('rag_soc', 'ASC')->pluck('rag_soc', 'id')->toArray();
         $products = ['' => '']+Product::groupedOpt();
-        return view('killerquote::quotes.quote.create', compact('companies', 'products'));
+        return view('killerquote::quotes.quote.create', compact('companies', 'products', 'settings'));
     }
 
     public function store(Request $request)

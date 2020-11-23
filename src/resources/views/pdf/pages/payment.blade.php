@@ -72,7 +72,7 @@
                     <div class="col-xs-6 col-xs-offset-3">
                         <div class="bordered-box">
                             <div class="bordered-box-text">
-                                {{ $quote->sconto_text  }}
+                                {!! $quote->sconto_text  !!}
                                 @if($quote->sconto_value)
                                     <h4 style="margin: 3mm 0 0 0; font-weight: bold;">{{ $quote->sconto_value }}% sconto</h4>
                                 @endif
@@ -84,7 +84,7 @@
                         <div class="col-xs-4">
                             <div class="bordered-box">
                                 <div class="bordered-box-text">
-                                    {{ $sconto['text'] }}
+                                    {!!  $sconto['text'] !!}
                                     @if($sconto['number'])
                                         <h4 style="margin: 3mm 0 0 0; font-weight: bold;">{{ $sconto['number']+0 }}% sconto</h4>
                                     @endif

@@ -19,8 +19,11 @@
             margin-bottom: 3mm;
         }
 
-        .reviews .review-image img {
+        .reviews .review-name {
             height: 1.5cm;
+            line-height: 1.5cm;
+            font-size: 1.2em;
+            font-weight: bold;
             width: auto;
             margin-bottom: 3mm;
         }
@@ -36,7 +39,7 @@
     </style>
 @endpush
 @if(count($settings['recensioni']->value))
-<div class="row reviews avoid-page-break">
+<div class="row reviews mt-5 avoid-page-break">
     <div class="col-xs-12">
         <h3 class="section-title text-center">DICONO DI NOI</h3>
         <div class="row">
@@ -48,8 +51,8 @@
                                 <i class="glyphicon glyphicon-star" style="color: #ffc800;"></i>
                             @endfor
                         </div>
-                        <div class="review-image">
-                            <img src="{{ \Jacofda\Core\Models\Media::find($review['review_img'])->getDisplayAttribute() }}" />
+                        <div class="review-name">
+                            <span>{{ $review['review_name'] }} {{ $review['review_surname'] }}</span>
                         </div>
                         <div class="review-text">
                             {{ $review['review_txt'] }}

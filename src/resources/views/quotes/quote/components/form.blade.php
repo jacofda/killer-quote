@@ -21,21 +21,20 @@
                             if(isset($quote))
                                 $scadenza = (\Carbon\Carbon::now()->diff($quote->expirancy_date))->days;
                         @endphp
-                        <option {{ !$scadenza ? "selected" : "" }} disabled></option>
-                        <option {{ $scadenza === 45 ? "selected" : "" }} value="45">45</option>
-                        <option {{ $scadenza === 30 ? "selected" : "" }} value="30">30</option>
-                        <option {{ $scadenza === 15 ? "selected" : "" }} value="15">15</option>
-                        @if($scadenza > 0 && $scadenza !== 45 && $scadenza !== 30 && $scadenza !== 15)
-                            <option selected value="{{ $scadenza }}">{{$scadenza}}</option>
+                        @if(!$scadenza)
+                            <option {{ !$scadenza ? "selected" : "" }} disabled></option>
+                            <option value="{{ $settings['scadenza']->value }}">{{ $settings['scadenza']->value }}</option>
+                        @else
+                            <option value="{{ $scadenza }}">{{ $scadenza }}</option>
                         @endif
                     </select>
                 </div>
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Sconto (testo)</label>
+                <label class="col-sm-4 col-form-label">Metodo pagamento</label>
                 <div class="col-sm-8">
-                    {!! Form::text('sconto_text', isset($quote) && isset($quote->sconto_text) ? $quote->sconto_text : null, ['class' => 'form-control', 'id' => 'sconto-text']) !!}
+                    {!! Form::textarea('sconto_text', isset($quote) && isset($quote->sconto_text) ? $quote->sconto_text : null, ['class' => 'metodo_pagamento', 'rows' => '4', 'id' => 'sconto-text']) !!}
                 </div>
             </div>
 
@@ -71,8 +70,23 @@
 
 @push('scripts')
     <script src="{{asset('js/dropzone5-7-0.min.js')}}"></script>
+    <script src="{{asset('plugins/summernote/summernote-bs4.min.js')}}"></script>
     <script>
         (function() {
+            const smOptions = {
+                height: 100,
+                toolbar: [
+                    ['font', ['bold', 'italic', 'underline', 'clear']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['table', ['table']],
+                    ['insert', ['link']],
+                    ['view', ['fullscreen', 'codeview', 'help']]
+                ]
+            };
+
+            $('#card-quote .metodo_pagamento').summernote(smOptions);
+
             $('#scadenza').select2({
                 placeholder: "Seleziona un'opzione",
                 tags: true,

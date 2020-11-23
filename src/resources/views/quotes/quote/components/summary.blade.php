@@ -1,7 +1,7 @@
 <div class="col-md-6">
     <div class="card card-outline card-warning">
         <div class="card-header">
-            <h3 class="card-title">Sommario</h3>
+            <h3 class="card-title">Riepilogo Trattativa</h3>
         </div>
         <div class="card-body">
 
@@ -31,7 +31,7 @@
                     ['insert', ['link', 'ajaximageupload']],
                     ['view', ['fullscreen', 'codeview', 'help']]
                 ],
-                height: $('#card-quote').height()-184.18
+                height: 299.196
             };
             $('textarea#summary').summernote(smOptions);
             $('#scadenza').select2({
