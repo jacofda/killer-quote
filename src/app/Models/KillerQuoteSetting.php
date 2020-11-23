@@ -1,0 +1,49 @@
+<?php
+
+namespace KillerQuote\Src\App\Models;
+
+use Jacofda\Core\Models\Media;
+
+class KillerQuoteSetting extends Primitive
+{
+    // Keys
+    const KEY_LOGO = "logo";
+    const KEY_PAYOFF = "payoff";
+    const KEY_CHI_SIAMO = "chi_siamo";
+    const KEY_PERCHE_SCEGLIERCI = "perche_sceglierci";
+    const KEY_METODI_PAGAMENTO = "metodi_pagamento";
+    const KEY_GARANZIE = "garanzie";
+    const KEY_RECENSIONI = "recensioni";
+    const KEY_GLOSSARIO = "glossario";
+    const KEY_SCADENZA = "scadenza";
+
+    const CREATED_AT = null;
+    protected $table = "killer_quote_settings";
+
+
+    // Returns all the settings in an associative array
+    public static function assoc() {
+        $settings = self::all();
+        $mapped = [];
+        foreach($settings as $setting) {
+            $mapped[$setting->key] = $setting;
+        }
+        return $mapped;
+    }
+
+    // Returns the value field unserialized
+    public function getValueField() {
+        return @unserialize($this->value);
+    }
+
+    public static function getMediaById($id) {
+        return Media::where('id', $id)->first();
+    }
+
+    public function media() {
+        if($this->key === self::KEY_LOGO)
+            return Media::where('id', intval($this->value));
+        return null;
+    }
+
+}

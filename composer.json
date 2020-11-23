@@ -1,0 +1,29 @@
+{
+    "name": "jacofda/killer-quote",
+    "description": "Preventivo Killer",
+    "license": "MIT",
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "type": "library",
+    "authors": [
+        {
+            "name": "SyncroIT",
+            "email": "kochylo.paolo@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "KillerQuote\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "KillerQuote\\KillerQuoteServiceProvider"
+            ]
+        }
+    },
+    "require": {
+        "grofgraf/laravel-pdf-merger": "^1.0"
+    }
+}
