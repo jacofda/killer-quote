@@ -13,21 +13,26 @@
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Scadenza (gg)*</label>
+                <label class="col-sm-4 col-form-label">Data Scadenza *</label>
                 <div class="col-sm-8">
-                    <select class="form-control select2bs4" name="scadenza" id="scadenza" required>
+
+                    <div class="input-group" id="data" data-target-input="nearest">
                         @php
-                            $scadenza = null;
                             if(isset($quote))
-                                $scadenza = (\Carbon\Carbon::now()->diff($quote->expirancy_date))->days;
+                            {
+                                $data = $quote->expirancy_date->format('d/m/Y');
+                            }
+                            else
+                            {
+                                $data = \Carbon\Carbon::now()->addDays(KillerQuote\Src\App\Models\KillerQuoteSetting::DefaultExpDays())->format('d/m/Y');
+                            }
                         @endphp
-                        @if(!$scadenza)
-                            <option {{ !$scadenza ? "selected" : "" }} disabled></option>
-                            <option value="{{ $settings['scadenza']->value }}">{{ $settings['scadenza']->value }}</option>
-                        @else
-                            <option value="{{ $scadenza }}">{{ $scadenza }}</option>
-                        @endif
-                    </select>
+                        {!! Form::text('scadenza', $data, ['class' => 'form-control', 'data-target' => '#data', 'data-toggle' => 'datetimepicker', 'required']) !!}
+                       <div class="input-group-append" data-target="#data" data-toggle="datetimepicker">
+                           <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                       </div>
+                   </div>
+
                 </div>
             </div>
 
@@ -74,25 +79,15 @@
     <script>
         (function() {
             const smOptions = {
-                height: 100,
+                height: 80,
                 toolbar: [
-                    ['font', ['bold', 'italic', 'underline', 'clear']],
-                    ['color', ['color']],
-                    ['para', ['ul', 'ol', 'paragraph']],
-                    ['table', ['table']],
-                    ['insert', ['link']],
-                    ['view', ['fullscreen', 'codeview', 'help']]
+                    ['font', ['bold', 'italic']],
                 ]
             };
 
             $('#card-quote .metodo_pagamento').summernote(smOptions);
 
-            $('#scadenza').select2({
-                placeholder: "Seleziona un'opzione",
-                tags: true,
-                allowClear: true
-            });
-
+            $('#data').datetimepicker({ format: 'DD/MM/YYYY' });
 
             @isset($quote)
                 Dropzone.options.imagesDropzoneForm = {

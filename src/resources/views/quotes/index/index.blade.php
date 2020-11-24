@@ -61,11 +61,17 @@
                                                 @endcan
                                                 @can('killerquotes.write')
                                                     <a href="{{ route('killerquotes.edit', $quote->id) }}" title="Modifica" class="btn btn-warning btn-icon btn-sm"><i class="fa fa-edit"></i></a>
+                                                    <a href="#" title="Duplica" class="btn btn-secondary btn-icon btn-sm btn-duplicate" data-id="{{$quote->id}}"><i class="fa fa-clone"></i></a>
                                                 @endcan
                                                 @can('killerquotes.delete')
                                                     <button type="submit" id="{{$quote->id}}" title="Elimina" class="btn btn-danger btn-icon btn-sm delete"><i class="fa fa-trash"></i></button>
                                                 @endcan
                                             {!! Form::close() !!}
+
+                                            {!! Form::open(['url' => route('killerquotes.duplicate', $quote->id), 'id' => "duplica-".$quote->id, 'class' => 'd-none']) !!}
+                                                <button type="submit" class="d-none">SUBMIT</button>
+                                            {!! Form::close() !!}
+
                                         </td>
                                     </tr>
                                 @endforeach
@@ -83,26 +89,32 @@
             </div>
             @stop
 
-            @section('scripts')
-                <script>
-                    $('#customSwitch1').on('change', function(){
-                        if($(this).prop('checked') === true)
-                        {
-                            $('#advancedSearchBox').removeClass('d-none');
-                        }
-                        else
-                        {
-                            $('#advancedSearchBox').addClass('d-none');
-                        }
-                    });
+@section('scripts')
+    <script>
+        $('#customSwitch1').on('change', function(){
+            if($(this).prop('checked') === true)
+            {
+                $('#advancedSearchBox').removeClass('d-none');
+            }
+            else
+            {
+                $('#advancedSearchBox').addClass('d-none');
+            }
+        });
 
-                    $('#refresh').on('click', function(e){
-                        e.preventDefault();
-                        let currentUrl = window.location.href;
-                        let arr = currentUrl.split('?');
-                        window.location.href = arr[0];
-                    });
+        $('#refresh').on('click', function(e){
+            e.preventDefault();
+            let currentUrl = window.location.href;
+            let arr = currentUrl.split('?');
+            window.location.href = arr[0];
+        });
 
-                </script>
+        $('a.btn-duplicate').on('click', function(e){
+            e.preventDefault();
+            let f = $('form#duplica-'+$(this).attr('data-id'))[0];
+            f.submit();
+        });
+
+    </script>
 
 @stop

@@ -3,6 +3,8 @@
 namespace KillerQuote\Src\App\Models;
 
 use Carbon\Carbon;
+use App\User;
+use Jacofda\Core\Models\Calendar;
 use Jacofda\Core\Models\Company;
 use Jacofda\Core\Models\Media;
 use KillerQuote\Src\App\Models\KillerQuoteItem;
@@ -22,6 +24,12 @@ class KillerQuote extends Primitive
     public function items() {
         return $this->hasMany(KillerQuoteItem::class, "invoice_id");
     }
+
+    public static function Calendar()
+    {
+        return Calendar::firstOrCreate(['nome' => 'preventivi', 'user_id' => User::first()->id])->id;
+    }
+
 
     public static function filter($data)
     {

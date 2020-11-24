@@ -11,6 +11,11 @@
                 </div>
             </div>
 
+            <div class="form-group row">
+                <div class="col-sm-12">
+                    {!! Form::textarea('notes', isset($quote) ? $quote->notes : null, ['class' => 'form-control', 'rows' => '2', 'placeholder' => 'eventuali note ...']) !!}
+                </div>
+            </div>
 
         </div>
     </div>
@@ -31,14 +36,10 @@
                     ['insert', ['link', 'ajaximageupload']],
                     ['view', ['fullscreen', 'codeview', 'help']]
                 ],
-                height: 299.196
+                height: $('#card-quote').height()-265.18
             };
             $('textarea#summary').summernote(smOptions);
-            $('#scadenza').select2({
-                placeholder: "Seleziona un'opzione",
-                tags: true,
-                allowClear: true
-            });
+
         })(jQuery)
     </script>
 @endpush

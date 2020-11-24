@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
+use Jacofda\Core\Models\Event;
 use Jacofda\Core\Models\Company;
 use Jacofda\Core\Models\Product;
 use Jacofda\Core\Models\Setting;
@@ -59,12 +60,14 @@ class KillerQuotesController extends Controller
 
         $logo = PDF::loadView('killerquote::pdf.logo', compact('quote', 'settings', 'base_settings', 'fe_settings'))
             ->setPaper('a4')
+            ->setOption('enable-local-file-access', true)
             ->setOption('encoding', 'UTF-8');
 
         $logo->save($logoPdfPath);
 
         $document = PDF::loadView('killerquote::pdf.quote', compact('quote', 'settings', 'base_settings', 'fe_settings'))
             ->setPaper('a4')
+            ->setOption('enable-local-file-access', true)
             ->setOption('header-spacing', 10)
             ->setOption('header-html', $headerUrl)
             ->setOption('footer-html', $footerUrl)
@@ -72,7 +75,7 @@ class KillerQuotesController extends Controller
 
         $document->save($documentPdfPath);
 
-        $merger->addPathToPDF($logoPdfPath, 'all', 'P');
+        $merger->addPathToPDF($logoPdfPath, [1], 'P');
         $merger->addPathToPDF($documentPdfPath, 'all', 'P');
         $merger->merge();
         return $merger->inline();
@@ -80,10 +83,9 @@ class KillerQuotesController extends Controller
 
     public function create()
     {
-        $settings = KillerQuoteSetting::assoc();
         $companies = ['' => '']+Company::orderBy('rag_soc', 'ASC')->pluck('rag_soc', 'id')->toArray();
         $products = ['' => '']+Product::groupedOpt();
-        return view('killerquote::quotes.quote.create', compact('companies', 'products', 'settings'));
+        return view('killerquote::quotes.quote.create', compact('companies', 'products'));
     }
 
     public function store(Request $request)
@@ -91,10 +93,12 @@ class KillerQuotesController extends Controller
         $v = Validator::make($request->input(), [
             'itemsToForm' => 'json|required',
             'company_id' => 'exists:Jacofda\Core\Models\Product,id',
-            'scadenza' => 'numeric',
+            'scadenza' => 'required',
             'summary' => 'nullable|string',
             'sconto_text' => 'nullable|string',
-            'sconto_value' => 'nullable|numeric'
+            'sconto_value' => 'nullable|numeric',
+            'notes' => 'nullable',
+            'accepted' => 'nullable'
         ]);
 
         if($v->fails())
@@ -124,11 +128,16 @@ class KillerQuotesController extends Controller
         $quote->company_id = $data['company_id'];
         $quote->user_id = Auth::user()->id;
         $quote->summary = $data['summary'];
+        $quote->notes = $data['notes'] ? $data['notes'] : null;
+        $quote->accepted = $data['accepted'];
         $quote->sconto_text = $data['sconto_text'] ? $data['sconto_text'] : null;
         $quote->sconto_value = $data['sconto_value'] ? $data['sconto_value'] : null;
-        $quote->expirancy_date = Carbon::now()->addDays(intval($data['scadenza']));
+        $quote->expirancy_date = Carbon::createFromFormat('d/m/Y', $request->scadenza);
+        $quote->numero = $this->getLatestNumber();
         $quote->save();
         $quote->items()->saveMany($items);
+
+        $this->syncEvent($quote);
 
         return redirect(route('killerquotes.index'))->with('message', 'Preventivo Creato');
     }
@@ -149,10 +158,12 @@ class KillerQuotesController extends Controller
         $v = Validator::make($request->input(), [
             'itemsToForm' => 'json|required',
             'company_id' => 'exists:Jacofda\Core\Models\Product,id',
-            'scadenza' => 'numeric',
+            'scadenza' => 'required',
             'summary' => 'nullable|string',
             'sconto_text' => 'nullable|string',
-            'sconto_value' => 'nullable|numeric'
+            'sconto_value' => 'nullable|numeric',
+            'notes' => 'nullable',
+            'accepted' => 'nullable'
         ]);
 
         if($v->fails())
@@ -179,18 +190,21 @@ class KillerQuotesController extends Controller
         }
 
         $oldItems = $quote->items()->get();
-
         $quote->company_id = $data['company_id'];
         $quote->summary = $data['summary'];
+        $quote->notes = $data['notes'];
+        $quote->accepted = $data['accepted'];
         $quote->sconto_text = $data['sconto_text'] ? $data['sconto_text'] : null;
         $quote->sconto_value = $data['sconto_value'] ? $data['sconto_value'] : null;
-        $quote->expirancy_date = Carbon::now()->addDays(intval($data['scadenza']));
+        $quote->expirancy_date = Carbon::createFromFormat('d/m/Y', $request->scadenza);
         $quote->save();
         $quote->items()->saveMany($items);
 
         foreach($oldItems as $oldItem) {
             $oldItem->delete();
         }
+
+        $this->syncEvent($quote);
 
         return redirect(route('killerquotes.edit', $quote->id))->with('message', 'Preventivo Salvato');
     }
@@ -205,4 +219,72 @@ class KillerQuotesController extends Controller
         $quote->delete();
         return 'done';
     }
+
+    /**
+     * createOrUpdate Event "scadenza preventivo"
+     * @param  [eloquent] $quote
+     * @return [void]
+     */
+    public function syncEvent($quote)
+    {
+        $event = Event::firstOrCreate([
+            'calendar_id' => KillerQuote::Calendar(),
+            'user_id' => auth()->user()->id,
+            'eventable_id' => $quote->id,
+            'eventable_type' => get_class($quote)
+        ]);
+
+        $event->title = 'new prova';
+        $event->summary = 'new message';
+        $event->starts_at = $quote->expirancy_date->format('Y-m-d').' 10:00:00';
+        $event->ends_at = $quote->expirancy_date->format('Y-m-d').' 11:00:00';
+        $event->backgroundColor = '#3788d8';
+
+        $event->save();
+
+        $event->users()->sync(auth()->user()->id);
+        $event->companies()->sync($quote->company_id);
+    }
+
+    public function getLatestNumber($quote = null)
+    {
+        $year = is_null($quote) ? date('Y') : $quote->created_at->format('Y');
+        $l = KillerQuote::whereYear('created_at', $year)->latest()->first();
+        if($l)
+        {
+            if(!is_null($l->numero))
+            {
+                return $l->numero + 1;
+            }
+        }
+        return 1;
+    }
+
+//killerquotes/{quotes}/duplicate - POST
+    public function duplicate(Request $request, KillerQuote $quote)
+    {
+
+        $newQuote = new KillerQuote();
+            $newQuote->company_id = $quote->company_id;
+            $newQuote->user_id = auth()->user()->id;
+            $newQuote->summary = $quote->summary;
+            $newQuote->notes = $quote->notes;
+            $newQuote->accepted = $quote->accepted;
+            $newQuote->sconto_text = $quote->sconto_text;
+            $newQuote->sconto_value = $quote->sconto_value;
+            $newQuote->expirancy_date = $quote->expirancy_date;
+            $newQuote->numero = $this->getLatestNumber();
+        $newQuote->save();
+
+        foreach($quote->items as $item)
+        {
+            $newItem = $item->replicate();
+            $newItem->invoice_id = $newQuote->id;
+            $newItem->save();
+        }
+
+        $this->syncEvent($newQuote);
+        return redirect(route('killerquotes.edit', $newQuote->id));
+    }
+
 }

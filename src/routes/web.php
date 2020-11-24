@@ -28,5 +28,6 @@ Route::group(['middleware' => ['web', 'auth']], function() {
     Route::get('killerquotes/{id}/pdf', [KillerQuotesController::class, 'pdf']);
 
     // Resource
+    Route::post('killerquotes/{quote}/duplicate', [KillerQuotesController::class, 'duplicate'])->name('killerquotes.duplicate');
     Route::resource('killerquotes', KillerQuotesController::class);
 });

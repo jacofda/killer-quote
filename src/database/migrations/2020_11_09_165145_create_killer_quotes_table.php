@@ -23,6 +23,9 @@ class CreateKillerQuotesTable extends Migration
             $table->float('sconto_value', 7, 4)->nullable()->default(null);
             $table->timestamp('expirancy_date');
             $table->text('summary')->nullable()->default(null);
+            $table->boolean('accepted')->nullable()->default(false);
+            $table->text('notes')->nullable();
+            $table->mediumInteger('numero')->unsigned()->nullable();
             $table->timestamps();
         });
     }

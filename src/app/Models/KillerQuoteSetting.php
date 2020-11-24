@@ -46,4 +46,14 @@ class KillerQuoteSetting extends Primitive
         return null;
     }
 
+    public static function DefaultExpDays()
+    {
+        $ex = self::where('key', 'scadenza')->first();
+        if(!is_null($ex))
+        {
+            return $ex->value;
+        }
+        return 30;
+    }
+
 }
