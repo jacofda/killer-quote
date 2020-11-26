@@ -4,9 +4,9 @@ namespace KillerQuote\App\Models;
 
 use Carbon\Carbon;
 use App\User;
-use Jacofda\Core\Models\Calendar;
-use Jacofda\Core\Models\Company;
-use Jacofda\Core\Models\Media;
+use Areaseb\Core\Models\Calendar;
+use Areaseb\Core\Models\Company;
+use Areaseb\Core\Models\Media;
 use KillerQuote\App\Models\KillerQuoteItem;
 
 class KillerQuote extends Primitive

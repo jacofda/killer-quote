@@ -14,7 +14,7 @@ $ php artisan db:seed --class=KillerQuotePermissionsSeeder
 
 # Dependencies 
 
-- `Jacofda\Core\Models\Media`
-- `Jacofda\Core\Models\Product`
-- `Jacofda\Core\Models\Category`
+- `Areaseb\Core\Models\Media`
+- `Areaseb\Core\Models\Product`
+- `Areaseb\Core\Models\Category`
 - `\Spatie\Permission\Models\Permission`

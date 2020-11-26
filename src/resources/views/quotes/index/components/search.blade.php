@@ -13,7 +13,7 @@
         <div class="form-group">
             <div class="input-group">
                 {!! Form::select('company',
-                    [''=>'']+Jacofda\Core\Models\Company::orderBy('rag_soc', 'ASC')->pluck('rag_soc', 'id')->toArray(),
+                    [''=>'']+Areaseb\Core\Models\Company::orderBy('rag_soc', 'ASC')->pluck('rag_soc', 'id')->toArray(),
                     request('company'),['class' => 'select2Company']) !!}
             </div>
         </div>

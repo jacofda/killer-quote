@@ -5,7 +5,7 @@ namespace KillerQuote\App\Controllers;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Jacofda\Core\Models\Media;
+use Areaseb\Core\Models\Media;
 use KillerQuote\App\Models\KillerQuoteSetting;
 
 class SettingsController extends Controller

@@ -4,7 +4,7 @@ namespace KillerQuote\App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
-use Jacofda\Core\Models\Media;
+use Areaseb\Core\Models\Media;
 
 class Primitive extends Model
 {

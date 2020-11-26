@@ -2,8 +2,8 @@
 
 namespace KillerQuote\App\Models;
 
-use Jacofda\Core\Models\Category;
-use Jacofda\Core\Models\Product;
+use Areaseb\Core\Models\Category;
+use Areaseb\Core\Models\Product;
 
 class KillerQuoteItem extends Primitive
 {

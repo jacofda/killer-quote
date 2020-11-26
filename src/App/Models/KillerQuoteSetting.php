@@ -2,7 +2,7 @@
 
 namespace KillerQuote\App\Models;
 
-use Jacofda\Core\Models\Media;
+use Areaseb\Core\Models\Media;
 
 class KillerQuoteSetting extends Primitive
 {

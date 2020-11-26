@@ -9,10 +9,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
-use Jacofda\Core\Models\Event;
-use Jacofda\Core\Models\Company;
-use Jacofda\Core\Models\Product;
-use Jacofda\Core\Models\Setting;
+use Areaseb\Core\Models\Event;
+use Areaseb\Core\Models\Company;
+use Areaseb\Core\Models\Product;
+use Areaseb\Core\Models\Setting;
 use KillerQuote\App\Models\KillerQuote;
 use KillerQuote\App\Models\KillerQuoteItem;
 use KillerQuote\App\Models\KillerQuoteSetting;
@@ -92,7 +92,7 @@ class KillerQuotesController extends Controller
     {
         $v = Validator::make($request->input(), [
             'itemsToForm' => 'json|required',
-            'company_id' => 'exists:Jacofda\Core\Models\Product,id',
+            'company_id' => 'exists:Areaseb\Core\Models\Product,id',
             'scadenza' => 'required',
             'summary' => 'nullable|string',
             'sconto_text' => 'nullable|string',
@@ -157,7 +157,7 @@ class KillerQuotesController extends Controller
 
         $v = Validator::make($request->input(), [
             'itemsToForm' => 'json|required',
-            'company_id' => 'exists:Jacofda\Core\Models\Product,id',
+            'company_id' => 'exists:Areaseb\Core\Models\Product,id',
             'scadenza' => 'required',
             'summary' => 'nullable|string',
             'sconto_text' => 'nullable|string',
