@@ -1,6 +1,6 @@
-@extends('jacofda::layouts.app')
+@extends('areaseb::layouts.app')
 
-@include('jacofda::layouts.elements.title', ['title' => 'Preventivi Killer'])
+@include('areaseb::layouts.elements.title', ['title' => 'Preventivi Killer'])
 
 @section('content')
     <div class="row">

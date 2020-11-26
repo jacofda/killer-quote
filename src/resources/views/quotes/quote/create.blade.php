@@ -1,10 +1,10 @@
-@extends('jacofda::layouts.app')
+@extends('areaseb::layouts.app')
 
 @section('breadcrumbs')
     <li class="breadcrumb-item"><a href="{{route('killerquotes.index')}}">Preventivi Killer</a></li>
 @stop
 
-@include('jacofda::layouts.elements.title', ['title' => 'Crea Preventivo'])
+@include('areaseb::layouts.elements.title', ['title' => 'Crea Preventivo'])
 
 @section('css')
     <link rel="stylesheet" href="{{asset('plugins/summernote/summernote-bs4.css')}}">
@@ -71,7 +71,7 @@
 @section('content')
     {!! Form::open(['url' => route('killerquotes.store'), 'method' => 'POST', 'autocomplete' => 'off', 'id' => 'killerQuoteForm', 'class' => 'form-horizontal']) !!}
     <div class="row">
-        @include('jacofda::components.errors')
+        @include('areaseb::components.errors')
         @include('killerquote::quotes.quote.components.form')
         @include('killerquote::quotes.quote.components.summary')
         @include('killerquote::quotes.quote.components.product_form')

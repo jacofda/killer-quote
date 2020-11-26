@@ -1,6 +1,6 @@
-@extends('jacofda::layouts.app')
+@extends('areaseb::layouts.app')
 
-@include('jacofda::layouts.elements.title', ['title' => 'Settings - Preventivi Killer'])
+@include('areaseb::layouts.elements.title', ['title' => 'Settings - Preventivi Killer'])
 
 @section('css')
     <link rel="stylesheet" href="{{asset('css/dropzone5-7-0.min.css')}}">
@@ -85,12 +85,12 @@
     <li class="breadcrumb-item"><a href="{{route('killerquotes.index')}}">Preventivi Killer</a></li>
 @stop
 
-@include('jacofda::layouts.elements.title', ['title' => 'Settings'])
+@include('areaseb::layouts.elements.title', ['title' => 'Settings'])
 
 
 @section('content')
     <div class="row">
-        @include('jacofda::components.errors')
+        @include('areaseb::components.errors')
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">

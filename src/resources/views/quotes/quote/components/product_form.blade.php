@@ -28,7 +28,7 @@
                             <span class="input-group-text input-group-text-sm" id="basic-addon2">00.00</span>
                         </div>
                     </div>
-                    @include('jacofda::components.add-invalid', ['element' => 'qta'])
+                    @include('areaseb::components.add-invalid', ['element' => 'qta'])
                 </div>
             </div>
 
@@ -44,7 +44,7 @@
                                     <span class="input-group-text input-group-text-sm" id="basic-addon2">00.00€</span>
                                 </div>
                             </div>
-                            @include('jacofda::components.add-invalid', ['element' => 'prezzo'])
+                            @include('areaseb::components.add-invalid', ['element' => 'prezzo'])
                         </div>
                     </div>
                 </div>
@@ -59,7 +59,7 @@
                                     <span class="input-group-text input-group-text-sm" id="basic-addon2">00.00%</span>
                                 </div>
                             </div>
-                            @include('jacofda::components.add-invalid', ['element' => 'perc_iva'])
+                            @include('areaseb::components.add-invalid', ['element' => 'perc_iva'])
                         </div>
                     </div>
 
