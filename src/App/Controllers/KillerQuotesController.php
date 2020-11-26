@@ -1,6 +1,6 @@
 <?php
 
-namespace KillerQuote\Src\App\Controllers;
+namespace KillerQuote\App\Controllers;
 
 use Carbon\Carbon;
 use Illuminate\Http\Response;
@@ -13,9 +13,9 @@ use Jacofda\Core\Models\Event;
 use Jacofda\Core\Models\Company;
 use Jacofda\Core\Models\Product;
 use Jacofda\Core\Models\Setting;
-use KillerQuote\Src\App\Models\KillerQuote;
-use KillerQuote\Src\App\Models\KillerQuoteItem;
-use KillerQuote\Src\App\Models\KillerQuoteSetting;
+use KillerQuote\App\Models\KillerQuote;
+use KillerQuote\App\Models\KillerQuoteItem;
+use KillerQuote\App\Models\KillerQuoteSetting;
 use GrofGraf\LaravelPDFMerger\Facades\PDFMergerFacade as PDFMerger;
 use \PDF;
 

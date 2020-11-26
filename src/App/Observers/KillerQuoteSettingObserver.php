@@ -1,8 +1,8 @@
 <?php
 
-namespace KillerQuote\Src\App\Observers;
+namespace KillerQuote\App\Observers;
 
-use KillerQuote\Src\App\Models\KillerQuoteSetting;
+use KillerQuote\App\Models\KillerQuoteSetting;
 
 class KillerQuoteSettingObserver
 {

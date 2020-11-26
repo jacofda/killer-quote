@@ -1,10 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use KillerQuote\Src\App\Controllers\KillerQuotesController;
-use KillerQuote\Src\App\Controllers\SettingsController;
-use KillerQuote\Src\App\Controllers\SummernoteController;
-use KillerQuote\Src\App\Controllers\PdfController;
+use KillerQuote\App\Controllers\KillerQuotesController;
+use KillerQuote\App\Controllers\SettingsController;
+use KillerQuote\App\Controllers\SummernoteController;
+use KillerQuote\App\Controllers\PdfController;
 
 // Killer Quotes Routes
 Route::group(['middleware' => ['web', 'auth']], function() {

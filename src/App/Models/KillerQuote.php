@@ -1,13 +1,13 @@
 <?php
 
-namespace KillerQuote\Src\App\Models;
+namespace KillerQuote\App\Models;
 
 use Carbon\Carbon;
 use App\User;
 use Jacofda\Core\Models\Calendar;
 use Jacofda\Core\Models\Company;
 use Jacofda\Core\Models\Media;
-use KillerQuote\Src\App\Models\KillerQuoteItem;
+use KillerQuote\App\Models\KillerQuoteItem;
 
 class KillerQuote extends Primitive
 {

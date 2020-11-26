@@ -44,7 +44,7 @@
                 },
                 init: function() {
                     // Already existing file
-                    @if($media = \KillerQuote\Src\App\Models\KillerQuoteSetting::getMediaById($model->value))
+                    @if($media = \KillerQuote\App\Models\KillerQuoteSetting::getMediaById($model->value))
                         let mockFile = {
                             name: "{{$media->filename}}",
                             size: {{$media->size*1024}}

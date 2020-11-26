@@ -1,12 +1,12 @@
 <?php
 
-namespace KillerQuote\Src\App\Controllers;
+namespace KillerQuote\App\Controllers;
 
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Jacofda\Core\Models\Media;
-use KillerQuote\Src\App\Models\KillerQuoteSetting;
+use KillerQuote\App\Models\KillerQuoteSetting;
 
 class SettingsController extends Controller
 {

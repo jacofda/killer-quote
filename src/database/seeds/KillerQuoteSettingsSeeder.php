@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use KillerQuote\Src\App\Models\KillerQuoteSetting;
+use KillerQuote\App\Models\KillerQuoteSetting;
 class KillerQuoteSettingsSeeder extends Seeder
 {
     const SETTING_KEYS = [

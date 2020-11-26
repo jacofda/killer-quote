@@ -1,6 +1,6 @@
 <?php
 
-namespace KillerQuote\Src\App\Controllers;
+namespace KillerQuote\App\Controllers;
 
 
 use Illuminate\Http\Request;

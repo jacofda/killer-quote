@@ -1,6 +1,6 @@
 <?php
 
-namespace KillerQuote\Src\App\Models;
+namespace KillerQuote\App\Models;
 
 use Jacofda\Core\Models\Category;
 use Jacofda\Core\Models\Product;

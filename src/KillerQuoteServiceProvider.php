@@ -5,8 +5,8 @@ namespace KillerQuote;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
-use KillerQuote\Src\App\Models\KillerQuoteSetting;
-use KillerQuote\Src\App\Observers\KillerQuoteSettingObserver;
+use KillerQuote\App\Models\KillerQuoteSetting;
+use KillerQuote\App\Observers\KillerQuoteSettingObserver;
 use GrofGraf\LaravelPDFMerger\Providers\PDFMergerServiceProvider;
 
 class KillerQuoteServiceProvider extends ServiceProvider

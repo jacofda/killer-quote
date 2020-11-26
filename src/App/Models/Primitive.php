@@ -1,6 +1,6 @@
 <?php
 
-namespace KillerQuote\Src\App\Models;
+namespace KillerQuote\App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;

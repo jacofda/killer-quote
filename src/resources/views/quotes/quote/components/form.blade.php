@@ -24,7 +24,7 @@
                             }
                             else
                             {
-                                $data = \Carbon\Carbon::now()->addDays(KillerQuote\Src\App\Models\KillerQuoteSetting::DefaultExpDays())->format('d/m/Y');
+                                $data = \Carbon\Carbon::now()->addDays(KillerQuote\App\Models\KillerQuoteSetting::DefaultExpDays())->format('d/m/Y');
                             }
                         @endphp
                         {!! Form::text('scadenza', $data, ['class' => 'form-control', 'data-target' => '#data', 'data-toggle' => 'datetimepicker', 'required']) !!}
