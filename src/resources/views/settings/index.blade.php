@@ -187,6 +187,17 @@
                             </div>
                         </div>
 
+
+                        <div class="form-group row">
+                            <label for="glossario" class="col-sm-3 col-form-label">Bonus</label>
+                            <div class="col-sm-9">
+                                <textarea name="bonus" id="bonus">
+
+                                </textarea>
+                            </div>
+                        </div>
+
+
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-12 text-center">
@@ -221,6 +232,7 @@
             $('textarea#garanzie').summernote(smOptions);
             $('textarea#glossario').summernote(smOptions);
             $('textarea#chi-siamo').summernote(smOptions);
+            $('textarea#bonus').summernote(smOptions);
             $('#scadenza').select2({
                 placeholder: "Seleziona un'opzione",
                 tags: true,
