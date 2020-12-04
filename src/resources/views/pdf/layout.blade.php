@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{public_path('css/pdf/b3.css')}}">
-    <link rel="stylesheet" href="{{public_path('css/pdf/pdf.css')}}">
+    {{-- <link rel="stylesheet" href="{{public_path('css/pdf/b3.css')}}">
+    <link rel="stylesheet" href="{{public_path('css/pdf/pdf.css')}}"> --}}
     <link rel="stylesheet" href="{{asset('css/pdf/b3.css')}}">
     <link rel="stylesheet" href="{{asset('css/pdf/pdf.css')}}">
     <style>

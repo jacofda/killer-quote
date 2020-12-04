@@ -90,6 +90,9 @@
 
 @push('scripts')
     <script>
+
+        const BASEURL = "http://localhost/giuliano/public/";
+
         (function() {
             var items = [];
             var itemsFromDB = ($('textarea#itemsToForm').val() != '') ? JSON.parse($('textarea#itemsToForm').val()) : [];
@@ -209,13 +212,13 @@
 
                 if($('button#addItem').hasClass('edit'))
                 {
-                    $.get( baseURL+"api/products/"+$(this).find(':selected').val(), function( data ) {
+                    $.get( BASEURL+"api/products/"+$(this).find(':selected').val(), function( data ) {
                         $('input.codice').val(data.codice);
                     });
                 }
                 else
                 {
-                    $.get( baseURL+"api/products/"+$(this).find(':selected').val(), function( data ) {
+                    $.get( BASEURL+"api/products/"+$(this).find(':selected').val(), function( data ) {
                         $('input#prezzo').val(data.prezzo);
                         $('input#perc_iva').val("22");
                         $('input.codice').val(data.codice);
@@ -226,7 +229,7 @@
 
                 if(company)
                 {
-                    $.get( baseURL+"api/companies/"+company+'/discount-exemption', function( data ) {
+                    $.get( BASEURL+"api/companies/"+company+'/discount-exemption', function( data ) {
                         let c_exemption = data.exemption_id;
                         let c_s1 = data.s1;
                         let c_s2 = data.s2;
@@ -357,4 +360,3 @@
         })(jQuery);
     </script>
 @endpush
-

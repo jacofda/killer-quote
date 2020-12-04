@@ -132,6 +132,17 @@
                             </div>
                         </div>
 
+                        <!-- Bonus -->
+                        <div class="form-group row my-5">
+                            <label class="col-sm-3 col-form-label">Bonus</label>
+                            <div class="col-sm-9">
+                                <textarea name="bonus" id="bonus">
+                                    {!! $settings['bonus']->value !!}
+                                </textarea>
+                            </div>
+                        </div>
+
+
                         <!-- Metodi di pagamento -->
                         <div class="form-group row my-5">
                             <label class="col-sm-3 col-form-label">Metodi di pagamento</label>
@@ -187,17 +198,6 @@
                             </div>
                         </div>
 
-
-                        <div class="form-group row">
-                            <label for="glossario" class="col-sm-3 col-form-label">Bonus</label>
-                            <div class="col-sm-9">
-                                <textarea name="bonus" id="bonus">
-
-                                </textarea>
-                            </div>
-                        </div>
-
-
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-12 text-center">
@@ -205,6 +205,7 @@
                                 </div>
                             </div>
                         </div>
+
                     </form>
                 </div>
             </div>
@@ -231,8 +232,8 @@
             };
             $('textarea#garanzie').summernote(smOptions);
             $('textarea#glossario').summernote(smOptions);
-            $('textarea#chi-siamo').summernote(smOptions);
             $('textarea#bonus').summernote(smOptions);
+            $('textarea#chi-siamo').summernote(smOptions);
             $('#scadenza').select2({
                 placeholder: "Seleziona un'opzione",
                 tags: true,

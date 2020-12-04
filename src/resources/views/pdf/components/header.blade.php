@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-        <link rel="stylesheet" href="{{public_path('css/pdf/b3.css')}}">
+        {{-- <link rel="stylesheet" href="{{public_path('css/pdf/b3.css')}}"> --}}
         <link rel="stylesheet" href="{{asset('css/pdf/b3.css')}}">
         <style>
             .text-color {
