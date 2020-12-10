@@ -7,11 +7,25 @@ use App\User;
 use Areaseb\Core\Models\Calendar;
 use Areaseb\Core\Models\Company;
 use Areaseb\Core\Models\Media;
+use Deals\App\Models\Deal;
+use Deals\App\Models\DealEvent;
 use KillerQuote\App\Models\KillerQuoteItem;
 
 class KillerQuote extends Primitive
 {
     protected $table = "killer_quotes";
+
+    public function orderConfirmation() {
+        if(class_exists('Deals\App\Models\OrderConfirmation'))
+            return $this->hasOne('Deals\App\Models\OrderConfirmation', 'killer_quote_id', 'id');
+        return null;
+    }
+
+    public function dealEvent() {
+        if(class_exists('Deals\App\Models\DealEvent'))
+            return $this->morphOne(DealEvent::class, 'dealable');
+        return null;
+    }
 
     public function getDates() {
         return ['created_at', 'updated_at', 'expirancy_date'];
@@ -23,6 +37,14 @@ class KillerQuote extends Primitive
 
     public function items() {
         return $this->hasMany(KillerQuoteItem::class, "invoice_id");
+    }
+
+    public static function getLastNumber() {
+        $now = Carbon::now();
+        $last = self::whereYear('created_at', $now->format('Y'))->orderBy('numero', 'DESC')->first();
+        if(!$last)
+            return 0;
+        return $last->numero;
     }
 
     public static function Calendar()

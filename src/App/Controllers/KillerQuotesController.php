@@ -3,6 +3,9 @@
 namespace KillerQuote\App\Controllers;
 
 use Carbon\Carbon;
+use Deals\App\Models\Deal;
+use Deals\App\Models\DealEvent;
+use Deals\App\Models\DealGenericQuote;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -83,9 +86,13 @@ class KillerQuotesController extends Controller
 
     public function create()
     {
+        $deals = [];
+        if(class_exists("Deals\App\Models\Deal"))
+            $deals = ['' => '']+Deal::where('status', Deal::STATUSES['open'])->orderBy('id', 'DESC')->pluck('id', 'id')->toArray();
+
         $companies = ['' => '']+Company::orderBy('rag_soc', 'ASC')->pluck('rag_soc', 'id')->toArray();
         $products = ['' => '']+Product::groupedOpt();
-        return view('killerquote::quotes.quote.create', compact('companies', 'products'));
+        return view('killerquote::quotes.quote.create', compact('companies', 'products', 'deals'));
     }
 
     public function store(Request $request)
@@ -98,8 +105,10 @@ class KillerQuotesController extends Controller
             'sconto_text' => 'nullable|string',
             'sconto_value' => 'nullable|numeric',
             'notes' => 'nullable',
+            'deal_id' => 'nullable|exists:Deals\App\Models\Deal',
             'accepted' => 'nullable'
         ]);
+
 
         if($v->fails())
             return redirect(route('killerquotes.create'))->with('errors', $v->errors());
@@ -129,7 +138,8 @@ class KillerQuotesController extends Controller
         $quote->user_id = Auth::user()->id;
         $quote->summary = $data['summary'];
         $quote->notes = $data['notes'] ? $data['notes'] : null;
-        $quote->accepted = $data['accepted'];
+        if(isset($data['accepted']))
+            $quote->accepted = $data['accepted'];
         $quote->sconto_text = $data['sconto_text'] ? $data['sconto_text'] : null;
         $quote->sconto_value = $data['sconto_value'] ? $data['sconto_value'] : null;
         $quote->expirancy_date = Carbon::createFromFormat('d/m/Y', $request->scadenza);
@@ -139,16 +149,28 @@ class KillerQuotesController extends Controller
 
         $this->syncEvent($quote);
 
+        if(!empty($data['deal_id']))
+            $this->attachToDeal($quote, $data['deal_id']);
+
         return redirect(route('killerquotes.index'))->with('message', 'Preventivo Creato');
     }
 
     public function edit($id)
     {
+        $deals = [];
+        if(class_exists("Deals\App\Models\Deal"))
+            $deals = ['' => '']+Deal::where('status', Deal::STATUSES['open'])->orderBy('id', 'DESC')->pluck('id', 'id')->toArray();
+
         $quote = KillerQuote::findOrFail($id);
         $companies = ['' => '']+Company::orderBy('rag_soc', 'ASC')->pluck('rag_soc', 'id')->toArray();
         $products = ['' => '']+Product::groupedOpt();
         $items = $quote->items()->with('product')->get();
-        return view('killerquote::quotes.quote.edit', compact('quote','items', 'companies', 'products'));
+        return view('killerquote::quotes.quote.edit', compact('quote','items', 'companies', 'products', 'deals'));
+    }
+
+    public function attachToDeal($quote, $dealId) {
+        DealEvent::where('dealable_id', $quote->id)->where('dealable_type', $quote->full_class)->delete();
+        DealEvent::createEvent($dealId, DealEvent::EVENTS['killer_quote'], $quote->id, $quote->full_class, $quote->created_at);
     }
 
     public function update(Request $request, $id)
@@ -163,11 +185,12 @@ class KillerQuotesController extends Controller
             'sconto_text' => 'nullable|string',
             'sconto_value' => 'nullable|numeric',
             'notes' => 'nullable',
+            'deal_id' => 'nullable',
             'accepted' => 'nullable'
         ]);
 
         if($v->fails())
-            return redirect(route('killerquotes.create'))->with('errors', $v->errors());
+            return redirect()->back()->with('errors', $v->errors());
 
         $data = $v->validated();
         $items = [];
@@ -205,6 +228,9 @@ class KillerQuotesController extends Controller
         }
 
         $this->syncEvent($quote);
+
+        if(!empty($data['deal_id']))
+            $this->attachToDeal($quote, $data['deal_id']);
 
         return redirect(route('killerquotes.edit', $quote->id))->with('message', 'Preventivo Salvato');
     }
@@ -246,20 +272,6 @@ class KillerQuotesController extends Controller
         $event->companies()->sync($quote->company_id);
     }
 
-    public function getLatestNumber($quote = null)
-    {
-        $year = is_null($quote) ? date('Y') : $quote->created_at->format('Y');
-        $l = KillerQuote::whereYear('created_at', $year)->latest()->first();
-        if($l)
-        {
-            if(!is_null($l->numero))
-            {
-                return $l->numero + 1;
-            }
-        }
-        return 1;
-    }
-
 //killerquotes/{quotes}/duplicate - POST
     public function duplicate(Request $request, KillerQuote $quote)
     {
@@ -285,6 +297,14 @@ class KillerQuotesController extends Controller
 
         $this->syncEvent($newQuote);
         return redirect(route('killerquotes.edit', $newQuote->id));
+    }
+
+    public function getLatestNumber() {
+        $numero = KillerQuote::getLastNumber();
+        if(class_exists(DealGenericQuote::class)) {
+            $numero = max($numero, DealGenericQuote::getLastNumber());
+        }
+        return $numero+1;
     }
 
 }

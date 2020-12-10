@@ -40,6 +40,10 @@ class KillerQuoteSettingsSeeder extends Seeder
         [
             'key' => 'scadenza',
             'default' => ""
+        ],
+        [
+            'key' => 'bonus',
+            'default' => ""
         ]
     ];
 

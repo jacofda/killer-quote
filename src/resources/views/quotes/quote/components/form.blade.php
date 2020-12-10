@@ -55,6 +55,22 @@
                 </div>
             </div>
 
+            @if(!empty($deals) && class_exists("Deals\App\Models\Deal"))
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Trattativa</label>
+                    <div class="col-sm-8">
+                        <div class="input-group">
+                            @php
+                                $deal = request('deal');
+                                if(!$deal)
+                                    $deal = isset($quote) && !empty($quote->dealEvent) ? $quote->dealEvent->deal_id : null;
+                            @endphp
+                            {!! Form::select('deal_id',$deals, $deal, ['class' => 'form-control select2bs4', 'data-placeholder' => 'Seleziona Trattativa', 'data-fouc']) !!}
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             @isset($quote)
                 <div class="form-group row">
                     <label class="col-sm-12 col-form-label">Immagini</label>
