@@ -1,31 +1,39 @@
-<div class="col-md-6">
-    <div class="card card-outline card-warning" id="card-quote">
-        <div class="card-header">
-            <h3 class="card-title">Preventivo</h3>
-        </div>
-        <div class="card-body">
+@php
+    $deal = request('deal') ? \Deals\App\Models\Deal::findOrFail(request('deal')) : null;
+@endphp
+   <div class="col-md-6">
+       <div class="card card-outline card-warning" id="card-quote">
+           <div class="card-header">
+               <h3 class="card-title">Preventivo</h3>
+           </div>
+           <div class="card-body">
 
-            <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Azienda*</label>
-                <div class="col-sm-8">
-                    {!! Form::select('company_id',$companies, isset($quote) ? $quote->company_id : null, ['class' => 'form-control select2bs4', 'data-placeholder' => 'Seleziona Azienda', 'required', 'data-fouc']) !!}
-                </div>
-            </div>
+               <div class="form-group row">
+                   <label class="col-sm-4 col-form-label">Azienda*</label>
+                   <div class="col-sm-8">
+                       @php
+                            $company = null;
+                            if($deal) $company = $deal->company_id;
+                            else $company = isset($quote) ? $quote->company_id : null;
+                       @endphp
+                       {!! Form::select('company_id',$companies, $company, ['class' => 'form-control select2bs4', 'data-placeholder' => 'Seleziona Azienda', 'required', 'data-fouc']) !!}
+                   </div>
+               </div>
 
-            <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Data Scadenza *</label>
-                <div class="col-sm-8">
+               <div class="form-group row">
+                   <label class="col-sm-4 col-form-label">Data Scadenza *</label>
+                   <div class="col-sm-8">
 
-                    <div class="input-group" id="data" data-target-input="nearest">
-                        @php
-                            if(isset($quote))
-                            {
-                                $data = $quote->expirancy_date->format('d/m/Y');
-                            }
-                            else
-                            {
-                                $data = \Carbon\Carbon::now()->addDays(KillerQuote\App\Models\KillerQuoteSetting::DefaultExpDays())->format('d/m/Y');
-                            }
+                       <div class="input-group" id="data" data-target-input="nearest">
+                           @php
+                               if(isset($quote))
+                               {
+                                   $data = $quote->expirancy_date->format('d/m/Y');
+                               }
+                               else
+                               {
+                                   $data = \Carbon\Carbon::now()->addDays(KillerQuote\App\Models\KillerQuoteSetting::DefaultExpDays())->format('d/m/Y');
+                               }
                         @endphp
                         {!! Form::text('scadenza', $data, ['class' => 'form-control', 'data-target' => '#data', 'data-toggle' => 'datetimepicker', 'required']) !!}
                        <div class="input-group-append" data-target="#data" data-toggle="datetimepicker">
@@ -61,11 +69,11 @@
                     <div class="col-sm-8">
                         <div class="input-group">
                             @php
-                                $deal = request('deal');
-                                if(!$deal)
-                                    $deal = isset($quote) && !empty($quote->dealEvent) ? $quote->dealEvent->deal_id : null;
+                                $deal_id = $deal ? $deal->id : null;
+                                if(!$deal_id)
+                                    $deal_id = isset($quote) && !empty($quote->dealEvent) ? $quote->dealEvent->deal_id : null;
                             @endphp
-                            {!! Form::select('deal_id',$deals, $deal, ['class' => 'form-control select2bs4', 'data-placeholder' => 'Seleziona Trattativa', 'data-fouc']) !!}
+                            {!! Form::select('deal_id',$deals, $deal_id, ['class' => 'form-control select2bs4', 'data-placeholder' => 'Seleziona Trattativa', 'data-fouc']) !!}
                         </div>
                     </div>
                 </div>
@@ -88,7 +96,7 @@
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">Accettato</label>
                     <div class="col-sm-8">
-                        {!! Form::select('accepted', [0=>'No', 1=>'Sì'], $quote->accepted,['class' => 'form-control']) !!}
+                        {!! Form::select('accepted', [null=>'',0=>'No', 1=>'Sì'], $quote->accepted,['class' => 'form-control']) !!}
                     </div>
                 </div>
 

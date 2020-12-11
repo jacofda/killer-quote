@@ -105,7 +105,7 @@ class KillerQuotesController extends Controller
             'sconto_text' => 'nullable|string',
             'sconto_value' => 'nullable|numeric',
             'notes' => 'nullable',
-            'deal_id' => 'nullable|exists:Deals\App\Models\Deal',
+            'deal_id' => 'nullable|exists:Deals\App\Models\Deal,id',
             'accepted' => 'nullable'
         ]);
 
@@ -138,15 +138,13 @@ class KillerQuotesController extends Controller
         $quote->user_id = Auth::user()->id;
         $quote->summary = $data['summary'];
         $quote->notes = $data['notes'] ? $data['notes'] : null;
-        if(isset($data['accepted']))
-            $quote->accepted = $data['accepted'];
+        $quote->accepted = isset($data['accepted']) ? $data['accepted'] : null;
         $quote->sconto_text = $data['sconto_text'] ? $data['sconto_text'] : null;
         $quote->sconto_value = $data['sconto_value'] ? $data['sconto_value'] : null;
         $quote->expirancy_date = Carbon::createFromFormat('d/m/Y', $request->scadenza);
         $quote->numero = $this->getLatestNumber();
         $quote->save();
         $quote->items()->saveMany($items);
-
         $this->syncEvent($quote);
 
         if(!empty($data['deal_id']))
@@ -169,7 +167,10 @@ class KillerQuotesController extends Controller
     }
 
     public function attachToDeal($quote, $dealId) {
+        $deal = Deal::findOrFail($dealId);
         DealEvent::where('dealable_id', $quote->id)->where('dealable_type', $quote->full_class)->delete();
+        $deal->rejectAllQuotes();
+
         DealEvent::createEvent($dealId, DealEvent::EVENTS['killer_quote'], $quote->id, $quote->full_class, $quote->created_at);
     }
 
@@ -229,8 +230,9 @@ class KillerQuotesController extends Controller
 
         $this->syncEvent($quote);
 
-        if(!empty($data['deal_id']))
+        if(!empty($data['deal_id'])) {
             $this->attachToDeal($quote, $data['deal_id']);
+        }
 
         return redirect(route('killerquotes.edit', $quote->id))->with('message', 'Preventivo Salvato');
     }

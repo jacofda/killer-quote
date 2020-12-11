@@ -14,6 +14,7 @@ use KillerQuote\App\Models\KillerQuoteItem;
 class KillerQuote extends Primitive
 {
     protected $table = "killer_quotes";
+    protected $guarded = [];
 
     public function orderConfirmation() {
         if(class_exists('Deals\App\Models\OrderConfirmation'))

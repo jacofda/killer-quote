@@ -37,6 +37,7 @@
                                 <th data-field="data" data-order="asc" style="width: 150px;">Data <i class="fas fa-sort"></i></th>
                                 <th data-field="data_scadenza" data-order="asc" style="width: 150px;">Scadenza <i class="fas fa-sort"></i></th>
                                 <th data-field="expired"  style="width: 90px;">Attivo <i class="fas fa-sort"></i></th>
+                                <th data-field="expired"  style="width: 90px;">Accettato <i class="fas fa-sort"></i></th>
                                 <th style="width: 160px;"></th>
                             </tr>
                             </thead>
@@ -52,6 +53,17 @@
                                                 <span class="badge badge-warning">Scaduto</span>
                                             @else
                                                 <span class="badge badge-success">Attivo</span>
+                                            @endif
+                                        </td>
+                                        <td class="text-center">
+                                            @if($quote->accepted === null)
+                                                <span class="badge badge-default">In attesa</span>
+                                            @else
+                                                @if($quote->accepted)
+                                                    <span class="badge badge-success">Accettato</span>
+                                                @else
+                                                    <span class="badge badge-danger">Rifiutato</span>
+                                                @endif
                                             @endif
                                         </td>
                                         <td class="text-center">
