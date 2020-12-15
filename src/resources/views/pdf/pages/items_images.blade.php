@@ -1,6 +1,6 @@
 @foreach($quote->items as $item)
     @php
-        $images = $item->product->media()->where('mime','image')->take(3)->get();
+        $images = $item->product->media()->where('mime','image')->orderBy('media_order', 'ASC')->take(3)->get();
     @endphp
 
     @if(count($images))
