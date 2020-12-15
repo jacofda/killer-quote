@@ -99,7 +99,7 @@ class KillerQuotesController extends Controller
     {
         $v = Validator::make($request->input(), [
             'itemsToForm' => 'json|required',
-            'company_id' => 'exists:Areaseb\Core\Models\Product,id',
+            'company_id' => 'exists:Areaseb\Core\Models\Company,id',
             'scadenza' => 'required',
             'summary' => 'nullable|string',
             'sconto_text' => 'nullable|string',
@@ -180,7 +180,7 @@ class KillerQuotesController extends Controller
 
         $v = Validator::make($request->input(), [
             'itemsToForm' => 'json|required',
-            'company_id' => 'exists:Areaseb\Core\Models\Product,id',
+            'company_id' => 'exists:Areaseb\Core\Models\Company,id',
             'scadenza' => 'required',
             'summary' => 'nullable|string',
             'sconto_text' => 'nullable|string',

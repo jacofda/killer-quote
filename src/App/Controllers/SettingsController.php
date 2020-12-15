@@ -38,7 +38,8 @@ class SettingsController extends Controller
             'review.review_surname.*' => 'nullable|string',
             'review.review_txt.*' => 'string',
             'glossario' => 'nullable|string',
-            'scadenza' => 'nullable|numeric'
+            'scadenza' => 'nullable|numeric',
+            'bonus' => 'nullable|string'
         ]);
 
         if($v->fails())
@@ -76,7 +77,8 @@ class SettingsController extends Controller
             'garanzie' => $data['garanzie'],
             'recensioni' => $reviews,
             'glossario' => $data['glossario'],
-            'scadenza' => $data['scadenza']
+            'scadenza' => $data['scadenza'],
+            'bonus' => $data['bonus']
         ];
 
         $this->store($storeData);
