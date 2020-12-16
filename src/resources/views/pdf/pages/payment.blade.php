@@ -46,19 +46,42 @@
                 </thead>
                 <tbody>
                     @php($sum = 0)
-                    @foreach($quote->items as $item)
-                        @php($sum += $item->importo+$item->iva)
-                        <tr>
-                            <td>{{ $item->product->nome }}</td>
-                            <td>{{ $item->qta }}</td>
-                            <td>€ {{ number_format($item->importo, 2) }} + IVA {{ $item->perc_iva }}%</td>
-                        </tr>
-                    @endforeach
 
-                    <tr class="total">
-                        <td colspan="2" class="total-label text-right">Totale</td>
-                        <td>€ {{ number_format($sum, 2) }}</td>
-                    </tr>
+                    @if($quote->company->privato)
+
+                        @foreach($quote->items as $item)
+                            @php($sum += ($item->importo_scontato_con_iva*$item->qta))
+                            <tr>
+                                <td>{{ $item->product->nome }}</td>
+                                <td>{{ $item->qta }}</td>
+                                <td>€ {{ number_format($item->importo_scontato_con_iva, 2, ',', '.') }}</td>
+                            </tr>
+                        @endforeach
+
+                        <tr class="total">
+                            <td colspan="2" class="total-label text-right">Totale</td>
+                            <td>€ {{ number_format($sum, 2, ',', '.') }}</td>
+                        </tr>
+
+                    @else
+
+                        @foreach($quote->items as $item)
+                            @php($sum += ($item->importo_scontato*$item->qta))
+                            <tr>
+                                <td>{{ $item->product->nome }}</td>
+                                <td>{{ $item->qta }}</td>
+                                <td>€ {{ number_format($item->importo_scontato, 2) }} + IVA {{ $item->perc_iva }}%</td>
+                            </tr>
+                        @endforeach
+
+                        <tr class="total">
+                            <td colspan="2" class="total-label text-right">Totale</td>
+                            <td>€ {{ number_format($sum, 2) }}  + IVA {{ $item->perc_iva }}%</td>
+                        </tr>
+
+                    @endif
+
+
                 </tbody>
             </table>
         </div>

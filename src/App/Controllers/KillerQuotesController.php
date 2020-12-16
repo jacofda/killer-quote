@@ -35,6 +35,18 @@ class KillerQuotesController extends Controller
         if(!$quote)
             return abort(404);
 
+
+        // $media = [];
+        // foreach($quote->items as $item)
+        // {
+        //     $pdf_attachment = $item->product->media()->pdf()->first();
+        //     if($pdf_attachment)
+        //     {
+        //         $media[] = storage_path('app/public/products/docs/'.$pdf_attachment->filename);
+        //     }
+        // }
+
+
         $base_settings = Setting::base();
         $fe_settings = Setting::fe();
         $settings = KillerQuoteSetting::assoc();

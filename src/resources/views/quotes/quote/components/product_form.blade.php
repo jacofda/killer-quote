@@ -312,7 +312,7 @@
                 $('#products').select2().val(i.id).trigger('change');
                 $('textarea.desc').val(i.descrizione);
                 $('input#perc_iva').val(i.perc_iva);
-                $('input#qta').val(i.qta);
+                $('input[name="qta"]').val(parseFloat(i.qta).toFixed(2));
                 $('input#prezzo').val(i.prezzo);
 
                 if(i.perc_sconto)

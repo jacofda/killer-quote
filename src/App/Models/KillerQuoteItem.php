@@ -33,6 +33,17 @@ class KillerQuoteItem extends Primitive
         return $this->decimal($this->importo);
     }
 
+    public function getImportoScontatoAttribute()
+    {
+        return $this->importo * (1-($this->sconto)/100);
+    }
+
+    public function getImportoScontatoConIvaAttribute()
+    {
+        $scontato = $this->importo * (1-($this->sconto)/100);
+        return $scontato * (1+($this->perc_iva/100));
+    }
+
     public function getTotaleRigaAttribute()
     {
         return $this->importo*$this->qta * (1-($this->sconto)/100);
