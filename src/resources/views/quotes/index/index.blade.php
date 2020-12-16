@@ -75,9 +75,11 @@
                                                     <a href="{{ route('killerquotes.edit', $quote->id) }}" title="Modifica" class="btn btn-warning btn-icon btn-sm"><i class="fa fa-edit"></i></a>
                                                     <a href="#" title="Duplica" class="btn btn-secondary btn-icon btn-sm btn-duplicate" data-id="{{$quote->id}}"><i class="fa fa-clone"></i></a>
                                                 @endcan
-                                                @can('killerquotes.delete')
-                                                    <button type="submit" id="{{$quote->id}}" title="Elimina" class="btn btn-danger btn-icon btn-sm delete"><i class="fa fa-trash"></i></button>
-                                                @endcan
+                                                @if($quote->accepted !== 1)
+                                                    @can('killerquotes.delete')
+                                                        <button type="submit" id="{{$quote->id}}" title="Elimina" class="btn btn-danger btn-icon btn-sm delete"><i class="fa fa-trash"></i></button>
+                                                    @endcan
+                                                @endif
                                             {!! Form::close() !!}
 
                                             {!! Form::open(['url' => route('killerquotes.duplicate', $quote->id), 'id' => "duplica-".$quote->id, 'class' => 'd-none']) !!}
