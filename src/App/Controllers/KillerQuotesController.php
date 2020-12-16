@@ -49,6 +49,8 @@ class KillerQuotesController extends Controller
         $fe_settings = Setting::fe();
         $settings = KillerQuoteSetting::assoc();
 
+
+//return view('killerquote::pdf.pages.payment', compact('quote', 'settings', 'base_settings', 'fe_settings'));
         $path = "public/killerquotes/pdf/{$id}";
 
         if(Storage::exists($path))
