@@ -16,6 +16,7 @@ class KillerQuoteSetting extends Primitive
     const KEY_RECENSIONI = "recensioni";
     const KEY_GLOSSARIO = "glossario";
     const KEY_SCADENZA = "scadenza";
+    const KEY_BONUS = "bonus";
 
     const CREATED_AT = null;
     protected $table = "killer_quote_settings";

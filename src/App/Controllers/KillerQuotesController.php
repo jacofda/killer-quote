@@ -35,17 +35,15 @@ class KillerQuotesController extends Controller
         if(!$quote)
             return abort(404);
 
-
-        // $media = [];
-        // foreach($quote->items as $item)
-        // {
-        //     $pdf_attachment = $item->product->media()->pdf()->first();
-        //     if($pdf_attachment)
-        //     {
-        //         $media[] = storage_path('app/public/products/docs/'.$pdf_attachment->filename);
-        //     }
-        // }
-
+        $media = [];
+        foreach($quote->items as $item)
+        {
+            $pdf_attachment = $item->product->media()->pdf()->first();
+            if($pdf_attachment)
+            {
+                $media[] = storage_path('app/public/products/docs/'.$pdf_attachment->filename);
+            }
+        }
 
         $base_settings = Setting::base();
         $fe_settings = Setting::fe();
@@ -67,7 +65,6 @@ class KillerQuotesController extends Controller
         Storage::put("{$path}/header.html", $header);
         Storage::put("{$path}/footer.html", $footer);
 
-        // $headerUrl = asset("storage/killerquotes/{$id}/header.html");
         $headerUrl = asset("storage/killerquotes/pdf/{$id}/header.html");
         $footerUrl = asset("storage/killerquotes/pdf/{$id}/footer.html");
 
@@ -77,7 +74,6 @@ class KillerQuotesController extends Controller
             ->setPaper('a4')
             ->setOption('enable-local-file-access', true)
             ->setOption('encoding', 'UTF-8');
-
         $logo->save($logoPdfPath);
 
         $document = PDF::loadView('killerquote::pdf.quote', compact('quote', 'settings', 'base_settings', 'fe_settings'))
@@ -90,8 +86,14 @@ class KillerQuotesController extends Controller
 
         $document->save($documentPdfPath);
 
-        $merger->addPathToPDF($logoPdfPath, [1], 'P');
+        $merger->addPathToPDF($logoPdfPath, 'all', 'P');
         $merger->addPathToPDF($documentPdfPath, 'all', 'P');
+
+        foreach($media as $attachment)
+        {
+            $merger->addPathToPDF($attachment, 'all', 'P');
+        }
+
         $merger->merge();
         return $merger->inline();
     }
@@ -100,7 +102,7 @@ class KillerQuotesController extends Controller
     {
         $deals = [];
         if(class_exists("Deals\App\Models\Deal"))
-            $deals = ['' => '']+Deal::where('status', Deal::STATUSES['open'])->orderBy('id', 'DESC')->pluck('id', 'id')->toArray();
+            $deals = ['' => '']+Deal::where('accepted', Deal::STATUSES['open'])->orderBy('id', 'DESC')->pluck('id', 'id')->toArray();
 
         $companies = ['' => '']+Company::orderBy('rag_soc', 'ASC')->pluck('rag_soc', 'id')->toArray();
         $products = ['' => '']+Product::groupedOpt();
@@ -169,7 +171,7 @@ class KillerQuotesController extends Controller
     {
         $deals = [];
         if(class_exists("Deals\App\Models\Deal"))
-            $deals = ['' => '']+Deal::where('status', Deal::STATUSES['open'])->orderBy('id', 'DESC')->pluck('id', 'id')->toArray();
+            $deals = ['' => '']+Deal::where('accepted', Deal::STATUSES['open'])->orderBy('id', 'DESC')->pluck('id', 'id')->toArray();
 
         $quote = KillerQuote::findOrFail($id);
         $companies = ['' => '']+Company::orderBy('rag_soc', 'ASC')->pluck('rag_soc', 'id')->toArray();
@@ -254,9 +256,27 @@ class KillerQuotesController extends Controller
      *
      * @param  int  $id
      */
-    public function destroy(KillerQuote $quote)
+    public function destroy($quote_id)
     {
-        $quote->delete();
+        $quote = KillerQuote::find($quote_id);
+        foreach(Event::where('eventable_type', get_class($quote))->where('eventable_id', $quote->id)->get() as $event )
+        {
+            return $event->delete();
+        }
+
+        foreach($quote->items as $item)
+        {
+            $item->delete();
+        }
+
+        if( Illuminate\Support\Facades\Schema::hasTable('deal_events'))
+        {
+            if(\DB::table('deal_events')->where('dealable_type', get_class($quote))->where('dealable_id', $quote->id)->exists())
+            {
+                \DB::table('deal_events')->where('dealable_type', get_class($quote))->where('dealable_id', $quote->id)->delete();
+            }
+        }
+
         return 'done';
     }
 
@@ -274,8 +294,8 @@ class KillerQuotesController extends Controller
             'eventable_type' => get_class($quote)
         ]);
 
-        $event->title = 'new prova';
-        $event->summary = 'new message';
+        $event->title = 'Prev. a '.$quote->company->rag_soc;
+        $event->summary = 'Preventivo ' . $quote->numero . '/' . $quote->expirancy_date->format('Y') . ' a '. $quote->company->rag_soc;
         $event->starts_at = $quote->expirancy_date->format('Y-m-d').' 10:00:00';
         $event->ends_at = $quote->expirancy_date->format('Y-m-d').' 11:00:00';
         $event->backgroundColor = '#3788d8';
