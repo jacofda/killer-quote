@@ -32,12 +32,13 @@
                         <table id="table" class="table table-sm table-font-xs table-bordered table-striped table-php">
                             <thead>
                             <tr>
-                                <th data-field="id" data-order="desc" style="width:75px;">ID <i class="fas fa-sort"></i></th>
+                                <th style="width:75px;">ID </th>
                                 <th data-field="company_id" data-order="asc">Azienda <i class="fas fa-sort"></i></th>
+                                <th>Importo</th>
                                 <th data-field="data" data-order="asc" style="width: 150px;">Data <i class="fas fa-sort"></i></th>
                                 <th data-field="data_scadenza" data-order="asc" style="width: 150px;">Scadenza <i class="fas fa-sort"></i></th>
-                                <th data-field="expired"  style="width: 90px;">Attivo <i class="fas fa-sort"></i></th>
-                                <th data-field="expired"  style="width: 90px;">Accettato <i class="fas fa-sort"></i></th>
+                                <th style="width: 90px;">Attivo </th>
+                                <th style="width: 90px;">Accettato </th>
                                 <th style="width: 160px;"></th>
                             </tr>
                             </thead>
@@ -46,6 +47,7 @@
                                     <tr id="row-{{$quote->id}}">
                                         <td>{{$quote->id}}</td>
                                         <td>{{$quote->company->rag_soc}}</td>
+                                        <td>{{$quote->importo}}</td>
                                         <td>{{$quote->created_at->format('d/m/Y')}}</td>
                                         <td>{{$quote->expirancy_date->format('d/m/Y')}}</td>
                                         <td class="text-center">

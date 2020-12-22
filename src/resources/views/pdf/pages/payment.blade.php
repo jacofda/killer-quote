@@ -108,7 +108,7 @@
                             <div class="bordered-box">
                                 <div class="bordered-box-text">
                                     {!!  $sconto['text'] !!}
-                                    @if($sconto['number'])
+                                    @if($sconto['number'] != "0.00")
                                         <h4 style="margin: 3mm 0 0 0; font-weight: bold;">{{ $sconto['number']+0 }}% sconto</h4>
                                     @endif
                                 </div>

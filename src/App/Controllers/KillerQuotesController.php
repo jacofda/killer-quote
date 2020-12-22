@@ -21,6 +21,7 @@ use KillerQuote\App\Models\KillerQuoteItem;
 use KillerQuote\App\Models\KillerQuoteSetting;
 use GrofGraf\LaravelPDFMerger\Facades\PDFMergerFacade as PDFMerger;
 use \PDF;
+use Illuminate\Support\Facades\Schema;
 
 class KillerQuotesController extends Controller
 {
@@ -49,8 +50,6 @@ class KillerQuotesController extends Controller
         $fe_settings = Setting::fe();
         $settings = KillerQuoteSetting::assoc();
 
-
-//return view('killerquote::pdf.pages.payment', compact('quote', 'settings', 'base_settings', 'fe_settings'));
         $path = "public/killerquotes/pdf/{$id}";
 
         if(Storage::exists($path))
@@ -125,17 +124,41 @@ class KillerQuotesController extends Controller
             'accepted' => 'nullable'
         ]);
 
-
         if($v->fails())
             return redirect(route('killerquotes.create'))->with('errors', $v->errors());
 
         $data = $v->validated();
         $items = [];
 
+        $general_sconto = $data['sconto_value'] ? $data['sconto_value'] : 0;
+
         foreach(json_decode($data['itemsToForm']) as $item) {
             $sconto = 0;
-            if(!is_null($item->sconto))
-                $sconto = round( (1-$item->sconto/$item->prezzo)*100, 4);
+            $percSconto = 0;
+
+            if(!is_null($item->perc_sconto))
+            {
+                $percSconto = $item->perc_sconto/100;
+                $sconto = $item->perc_sconto;
+            }
+            if($general_sconto)
+            {
+                $percSconto = $general_sconto/100;
+                $sconto = $general_sconto;
+            }
+
+            if(config('sale_on_vat'))
+            {
+                $pYesIva = $item->prezzo * (1+($item->perc_iva/100)) * (1-$percSconto);
+                $pNoiva = (100/(100+$item->perc_iva))*$pYesIva;
+                $importo = $pNoiva;
+                $iva = ($pYesIva-$pNoiva)* $item->qta;
+            }
+            else
+            {
+                $importo = $item->prezzo * (1-$percSconto);
+                $iva = ($importo * (1-($item->perc_iva/100))) * $item->qta;
+            }
 
             $i = new KillerQuoteItem();
             $i->product_id = $item->id;
@@ -143,8 +166,8 @@ class KillerQuotesController extends Controller
             $i->qta = $item->qta;
             $i->sconto = $sconto;
             $i->perc_iva = $item->perc_iva;
-            $i->iva = $item->ivato;
-            $i->importo = $item->prezzo;
+            $i->iva = $iva;
+            $i->importo = $importo;
 
             $items[] = $i;
         }
@@ -212,10 +235,33 @@ class KillerQuotesController extends Controller
         $data = $v->validated();
         $items = [];
 
+        $general_sconto = $data['sconto_value'] ? $data['sconto_value'] : 0;
+
         foreach(json_decode($data['itemsToForm']) as $item) {
             $sconto = 0;
-            if(!is_null($item->sconto))
-                $sconto = round( (1-$item->sconto/$item->prezzo)*100, 4);
+            $percSconto = 0;
+            if(!is_null($item->perc_sconto))
+            {
+                $percSconto = $item->perc_sconto/100;
+                $sconto = $item->perc_sconto;
+            }
+            if($general_sconto)
+            {
+                $percSconto = $general_sconto/100;
+                $sconto = $general_sconto;
+            }
+
+            if(config('sale_on_vat'))
+            {
+                $importo = $item->prezzo * (1+($item->perc_iva/100)) * (1-$percSconto);
+                $pNoiva = (100/(100+$item->perc_iva))*$importo;
+                $iva = ($importo-$pNoiva)* $item->qta;
+            }
+            else
+            {
+                $importo = $item->prezzo * (1-$percSconto);
+                $iva = ($importo * (1-($item->perc_iva/100))) * $item->qta;
+            }
 
             $i = new KillerQuoteItem();
             $i->product_id = $item->id;
@@ -223,8 +269,8 @@ class KillerQuotesController extends Controller
             $i->qta = $item->qta;
             $i->sconto = $sconto;
             $i->perc_iva = $item->perc_iva;
-            $i->iva = $item->ivato;
-            $i->importo = $item->prezzo;
+            $i->iva = $iva;
+            $i->importo = $importo;
 
             $items[] = $i;
         }
@@ -271,13 +317,15 @@ class KillerQuotesController extends Controller
             $item->delete();
         }
 
-        if( Illuminate\Support\Facades\Schema::hasTable('deal_events'))
+        if( Schema::hasTable('deal_events'))
         {
             if(\DB::table('deal_events')->where('dealable_type', get_class($quote))->where('dealable_id', $quote->id)->exists())
             {
                 \DB::table('deal_events')->where('dealable_type', get_class($quote))->where('dealable_id', $quote->id)->delete();
             }
         }
+
+        $quote->delete();
 
         return 'done';
     }
@@ -296,7 +344,7 @@ class KillerQuotesController extends Controller
             'eventable_type' => get_class($quote)
         ]);
 
-        $event->title = 'Prev. a '.$quote->company->rag_soc;
+        $event->title = 'Prev. n. '.$quote->numero;
         $event->summary = 'Preventivo ' . $quote->numero . '/' . $quote->expirancy_date->format('Y') . ' a '. $quote->company->rag_soc;
         $event->starts_at = $quote->expirancy_date->format('Y-m-d').' 10:00:00';
         $event->ends_at = $quote->expirancy_date->format('Y-m-d').' 11:00:00';

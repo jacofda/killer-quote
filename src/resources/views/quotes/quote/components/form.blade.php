@@ -92,14 +92,6 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">Accettato</label>
-                    <div class="col-sm-8">
-                        {!! Form::select('accepted', [null=>'',0=>'No', 1=>'Sì'], $quote->accepted,['class' => 'form-control']) !!}
-                    </div>
-                </div>
-
             @endisset
         </div>
     </div>

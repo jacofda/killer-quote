@@ -35,6 +35,10 @@ class KillerQuoteItem extends Primitive
 
     public function getImportoScontatoAttribute()
     {
+        // if(config('sale_on_vat'))
+        // {
+        //
+        // }
         return $this->importo * (1-($this->sconto)/100);
     }
 

@@ -54,6 +54,32 @@ class KillerQuote extends Primitive
     }
 
 
+    public function getImportoAttribute()
+    {
+        $sum = 0;
+        if($this->items()->exists())
+        {
+            if($this->company->privato)
+            {
+                foreach($this->items as $item)
+                {
+                    $sum += $item->importo_scontato_con_iva*$item->qta;
+                }
+                return '€ ' . number_format($sum, '2', ',', '');
+            }
+            else
+            {
+                foreach($this->items as $item)
+                {
+                    $sum += $item->importo_scontato*$item->qta;
+                }
+                return '€ ' . number_format($sum, '2', ',', '') . ' + IVA ' . config('app.iva').'%';
+            }
+        }
+        return $sum;
+    }
+
+
     public static function filter($data)
     {
         $query = self::with('company');

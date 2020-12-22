@@ -91,7 +91,7 @@
 @push('scripts')
     <script>
 
-        const BASEURL = "http://localhost/giuliano/public/";
+        const BASEURL = "{{config('app.url')}}";
 
         (function() {
             var items = [];
@@ -329,6 +329,10 @@
 
             $('button#save').on('click', function(e){
                 e.preventDefault();
+
+                // console.log($('select[name="company_id"]').val());
+                // return false;
+
                 if(validate())
                 {
                     $('textarea#itemsToForm').html(JSON.stringify(items));
