@@ -128,6 +128,16 @@ class KillerQuotesController extends Controller
             return redirect(route('killerquotes.create'))->with('errors', $v->errors());
 
         $data = $v->validated();
+
+        if(!isset($data['notes']))
+        {
+            $note = null;
+        }
+        else
+        {
+            $note = $data['notes'];
+        }
+
         $items = [];
 
         $general_sconto = $data['sconto_value'] ? $data['sconto_value'] : 0;
@@ -233,6 +243,17 @@ class KillerQuotesController extends Controller
             return redirect()->back()->with('errors', $v->errors());
 
         $data = $v->validated();
+
+        if(!isset($data['notes']))
+        {
+            $note = null;
+        }
+        else
+        {
+            $note = $data['notes'];
+        }
+
+
         $items = [];
 
         $general_sconto = $data['sconto_value'] ? $data['sconto_value'] : 0;
@@ -278,7 +299,7 @@ class KillerQuotesController extends Controller
         $oldItems = $quote->items()->get();
         $quote->company_id = $data['company_id'];
         $quote->summary = $data['summary'];
-        $quote->notes = $data['notes'];
+        $quote->notes = $note;
         $quote->accepted = $data['accepted'];
         $quote->sconto_text = $data['sconto_text'] ? $data['sconto_text'] : null;
         $quote->sconto_value = $data['sconto_value'] ? $data['sconto_value'] : null;
