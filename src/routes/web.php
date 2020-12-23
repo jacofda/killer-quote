@@ -20,6 +20,7 @@ Route::group(['middleware' => ['web', 'auth']], function() {
         Route::get('settings', [SettingsController::class, 'index']);
         Route::post('settings', [SettingsController::class, 'update']);
         Route::post('settings/upload_logo', [SettingsController::class, 'uploadLogo']);
+        Route::post('settings/upload_pdf', [SettingsController::class, 'uploadPdf']);
         Route::post('settings/upload_review_image', [SettingsController::class, 'uploadReviewImg']);
         Route::post('settings/delete_review_image/{id}', [SettingsController::class, 'deleteReviewImg']);
     });

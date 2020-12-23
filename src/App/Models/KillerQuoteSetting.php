@@ -17,6 +17,7 @@ class KillerQuoteSetting extends Primitive
     const KEY_GLOSSARIO = "glossario";
     const KEY_SCADENZA = "scadenza";
     const KEY_BONUS = "bonus";
+    const KEY_PDF = "pdf";
 
     const CREATED_AT = null;
     protected $table = "killer_quote_settings";
@@ -43,7 +44,14 @@ class KillerQuoteSetting extends Primitive
 
     public function media() {
         if($this->key === self::KEY_LOGO)
+        {
             return Media::where('id', intval($this->value));
+        }
+        elseif($this->key === self::KEY_PDF)
+        {
+            return Media::where('id', intval($this->value));
+        }
+
         return null;
     }
 
@@ -55,6 +63,22 @@ class KillerQuoteSetting extends Primitive
             return $ex->value;
         }
         return 30;
+    }
+
+    public static function HasDefaultPdfAttachment()
+    {
+        $pdf = self::where('key', 'pdf')->first();
+        if(!is_null($pdf))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public static function DefaultPdfAttachment()
+    {
+        $pdf = self::where('key', 'pdf')->first();
+        return storage_path('app/public/killerquotesettings/original/'.$pdf->value);
     }
 
 }

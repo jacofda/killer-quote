@@ -198,6 +198,17 @@
                             </div>
                         </div>
 
+
+
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Allegato PDF default</label>
+                            <div class="col-sm-9">
+                                @include('killerquote::settings.components.upload-pdf', ['pdfFile' => $settings['pdf']])
+                            </div>
+                        </div>
+
+
+
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-12 text-center">

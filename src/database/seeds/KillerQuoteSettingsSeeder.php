@@ -44,6 +44,10 @@ class KillerQuoteSettingsSeeder extends Seeder
         [
             'key' => 'bonus',
             'default' => ""
+        ],
+        [
+            'key' => 'pdf',
+            'default' => ""
         ]
     ];
 

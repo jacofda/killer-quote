@@ -16,6 +16,7 @@ class SettingsController extends Controller
      */
     public function index()
     {
+        //dd(KillerQuoteSetting::assoc()['pdf']->value);
         return view('killerquote::settings.index', [
             'settings' => KillerQuoteSetting::assoc()
         ]);
@@ -39,7 +40,7 @@ class SettingsController extends Controller
             'review.review_txt.*' => 'string',
             'glossario' => 'nullable|string',
             'scadenza' => 'nullable|numeric',
-            'bonus' => 'nullable|string'
+            'bonus' => 'nullable|string',
         ]);
 
         if($v->fails())
@@ -110,6 +111,42 @@ class SettingsController extends Controller
         $logo = KillerQuoteSetting::where('key', KillerQuoteSetting::KEY_LOGO)->first();
         if($logo && $logo->value && intval($logo->value) > 0 && Media::where('id', $logo->value)->exists())
             Media::deleteMediaFromId(intval($logo->value));
+    }
+
+    public function uploadPdf() {
+
+        $this->deleteCurrentPdf();
+        if ( request()->hasFile('file') )
+        {
+            $pdf = request()->file;
+            $filename = $pdf->getClientOriginalName();
+
+            $update = KillerQuoteSetting::where('key', KillerQuoteSetting::KEY_PDF)
+                ->update([
+                    'value' => @serialize($filename)
+                ]);
+
+            $pdf->storeAs('public/killerquotesettings/original', $filename );
+        }
+
+        return 'done';
+    }
+
+    private function deleteCurrentPdf() {
+        $files = \Storage::files('public/killerquotesettings/original');
+        foreach($files as $file)
+        {
+            if(strpos($file, '.pdf') !== false)
+            {
+                \Storage::delete($file);
+
+                $update = KillerQuoteSetting::where('key', KillerQuoteSetting::KEY_PDF)
+                    ->update([
+                        'value' => @serialize("")
+                    ]);
+
+            }
+        }
     }
 
 }

@@ -45,6 +45,10 @@ class KillerQuotesController extends Controller
                 $media[] = storage_path('app/public/products/docs/'.$pdf_attachment->filename);
             }
         }
+        if(KillerQuoteSetting::HasDefaultPdfAttachment())
+        {
+            $media[] = KillerQuoteSetting::DefaultPdfAttachment();
+        }
 
         $base_settings = Setting::base();
         $fe_settings = Setting::fe();
@@ -86,7 +90,7 @@ class KillerQuotesController extends Controller
             ->setOption('encoding', 'UTF-8');
 
         $document->save($documentPdfPath);
-
+        
         $merger->addPathToPDF($logoPdfPath, 'all', 'P');
         $merger->addPathToPDF($documentPdfPath, 'all', 'P');
 
