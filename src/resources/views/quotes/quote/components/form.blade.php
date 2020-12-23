@@ -156,6 +156,17 @@
                     }
                 };
             @endisset
+
+            $('select[name="company_id"]').on('change', function(){
+                $.get( baseURL +"api/companies/"+$(this).val()+"/payment", function(response){
+                    console.log(response);
+                    if(response != '')
+                    {
+                        $('#sconto-text').summernote('pasteHTML', "<strong>"+response+"</strong>");
+                    }
+                });
+            });
+
         })(jQuery)
     </script>
 @endpush

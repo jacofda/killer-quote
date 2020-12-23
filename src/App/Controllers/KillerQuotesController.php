@@ -90,7 +90,7 @@ class KillerQuotesController extends Controller
             ->setOption('encoding', 'UTF-8');
 
         $document->save($documentPdfPath);
-        
+
         $merger->addPathToPDF($logoPdfPath, 'all', 'P');
         $merger->addPathToPDF($documentPdfPath, 'all', 'P');
 
@@ -256,7 +256,6 @@ class KillerQuotesController extends Controller
         {
             $note = $data['notes'];
         }
-
 
         $items = [];
 

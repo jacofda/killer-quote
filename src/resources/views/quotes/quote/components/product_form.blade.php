@@ -23,7 +23,7 @@
                 <label class="col-sm-4 col-form-label">Quantità</label>
                 <div class="col-sm-8">
                     <div class="input-group">
-                        {!! Form::text('qta', 1, ['class' => 'form-control input-decimal']) !!}
+                        {!! Form::text('qta', 1, ['class' => 'form-control input-decimal', 'id' => 'qp']) !!}
                         <div class="input-group-append">
                             <span class="input-group-text input-group-text-sm" id="basic-addon2">00.00</span>
                         </div>
@@ -94,6 +94,7 @@
         const BASEURL = "{{config('app.url')}}";
 
         (function() {
+            var itemsChildren = [];
             var items = [];
             var itemsFromDB = ($('textarea#itemsToForm').val() != '') ? JSON.parse($('textarea#itemsToForm').val()) : [];
 
@@ -130,7 +131,7 @@
                 $('input#prezzo').val('');
                 $('input#perc_iva').val('');
                 $('input.codice').val('');
-                $('input[name="qta"]').val('1.00');
+                $('input#qp').val('1.00');
                 $('input[name="sconto"]').val('');
                 $('select[name="exemption_id"]').select2().val(null).trigger('change');
                 let btn = $('button#addItem');
@@ -209,6 +210,7 @@
 
 
             $("#products").on('select2:select', function(){
+                let prod_id = $(this).find(':selected').val();
 
                 if($('button#addItem').hasClass('edit'))
                 {
@@ -224,6 +226,31 @@
                         $('input.codice').val(data.codice);
                         $('textarea.desc').val(data.descrizione);
                         $('button#addItem').prop('disabled', false);
+                        console.log(data);
+                        if(data.children !== null)
+                        {
+                            let cid = $('select[name="company_id"]').val();
+
+                            $.get( BASEURL+"api/products/"+prod_id+"/children/"+cid, function( response ) {
+                                console.log(response);
+
+                                response.forEach(function(element){
+                                    console.log(element);
+                                    item = new Item(
+                                            element.product_id,
+                                            element.product.nome,
+                                            element.product.codice,
+                                            element.descrizione,
+                                            element.product.prezzo,
+                                            element.perc_iva,
+                                            parseInt(element.qta),
+                                            1 - (element.sconto/100),
+                                            element.sconto);
+                                    itemsChildren.push(item);
+                                });
+
+                            });
+                        }
                     });
                 }
 
@@ -241,16 +268,16 @@
                         }
                         if(c_s1)
                         {
-                            $('input[name="sconto1"]').val(c_s1);
+                            $('input[name="sconto"]').val(c_s1);
                         }
-                        if(c_s2)
-                        {
-                            $('input[name="sconto2"]').val(c_s2);
-                        }
-                        if(c_s3)
-                        {
-                            $('input[name="sconto3"]').val(c_s3);
-                        }
+                        // if(c_s2)
+                        // {
+                        //     $('input[name="sconto2"]').val(c_s2);
+                        // }
+                        // if(c_s3)
+                        // {
+                        //     $('input[name="sconto3"]').val(c_s3);
+                        // }
                     });
                 }
             });
@@ -293,6 +320,13 @@
                     item = new Item(select[0].id, select[0].text, codice, desc, prezzo, perc_iva, qta, sconto, perc_sconto);
                     items.push(item);
                     addItemToTable(item);
+                    //console.log(itemsChildren);
+                    Object.entries(itemsChildren).forEach(([key, elem]) => {
+                        items.push(elem);
+                        addItemToTable(elem);
+                    });
+                    itemsChildren = [];
+
                 }
             });
 

@@ -32,7 +32,7 @@
                         <table id="table" class="table table-sm table-font-xs table-bordered table-striped table-php">
                             <thead>
                             <tr>
-                                <th style="width:75px;">ID </th>
+                                <th style="width:85px;">Numero</th>
                                 <th data-field="company_id" data-order="asc">Azienda <i class="fas fa-sort"></i></th>
                                 <th>Importo</th>
                                 <th data-field="data" data-order="asc" style="width: 150px;">Data <i class="fas fa-sort"></i></th>
@@ -45,7 +45,7 @@
                             <tbody>
                                 @foreach($quotes as $quote)
                                     <tr id="row-{{$quote->id}}">
-                                        <td>{{$quote->id}}</td>
+                                        <td>{{$quote->numero}}</td>
                                         <td>{{$quote->company->rag_soc}}</td>
                                         <td>{{$quote->importo}}</td>
                                         <td>{{$quote->created_at->format('d/m/Y')}}</td>
