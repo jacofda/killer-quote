@@ -190,7 +190,7 @@ class KillerQuotesController extends Controller
         $quote->company_id = $data['company_id'];
         $quote->user_id = Auth::user()->id;
         $quote->summary = $data['summary'];
-        $quote->notes = $data['notes'] ? $data['notes'] : null;
+        $quote->notes = $note;
         $quote->accepted = isset($data['accepted']) ? $data['accepted'] : null;
         $quote->sconto_text = $data['sconto_text'] ? $data['sconto_text'] : null;
         $quote->sconto_value = $data['sconto_value'] ? $data['sconto_value'] : null;
