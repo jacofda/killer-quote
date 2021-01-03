@@ -212,6 +212,11 @@
             $("#products").on('select2:select', function(){
                 let prod_id = $(this).find(':selected').val();
 
+                if($('select[name="company_id"]').val() == ""){
+                    alertMe("Devi prima selezionare un'azienda")
+                    return false;
+                }
+
                 if($('button#addItem').hasClass('edit'))
                 {
                     $.get( BASEURL+"api/products/"+$(this).find(':selected').val(), function( data ) {
