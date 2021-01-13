@@ -71,7 +71,7 @@
                                         <td class="text-center">
                                             {!! Form::open(['method' => 'delete', 'url' => route('killerquotes.destroy', $quote->id), 'id' => "form-".$quote->id]) !!}
                                                 @can('killerquotes.read')
-                                                    <a href="{{ url("killerquotes/{$quote->id}/pdf") }}" title="Esporta PDF" class="btn btn-primary btn-icon btn-sm"><i class="fa fa-file-pdf"></i></a>
+                                                    <a target="_BLANK" href="{{ url("killerquotes/{$quote->id}/pdf") }}" title="Esporta PDF" class="btn btn-primary btn-icon btn-sm"><i class="fa fa-file-pdf"></i></a>
                                                 @endcan
                                                 @can('killerquotes.write')
                                                     <a href="{{ route('killerquotes.edit', $quote->id) }}" title="Modifica" class="btn btn-warning btn-icon btn-sm"><i class="fa fa-edit"></i></a>
