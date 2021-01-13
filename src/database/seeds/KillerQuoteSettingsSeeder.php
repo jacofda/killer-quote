@@ -48,6 +48,26 @@ class KillerQuoteSettingsSeeder extends Seeder
         [
             'key' => 'pdf',
             'default' => ""
+        ],
+        [
+            'key' => 'privacy',
+            'default' => ""
+        ],
+        [
+            'key' => 'firma_img',
+            'default' => ""
+        ],
+        [
+            'key' => 'firma_txt',
+            'default' => ""
+        ],
+        [
+            'key' => 'cond_vendita',
+            'default' => ""
+        ],
+        [
+            'key' => 'mostra_bonus',
+            'default' => 1
         ]
     ];
 

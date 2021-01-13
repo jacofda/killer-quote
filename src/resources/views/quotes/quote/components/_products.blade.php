@@ -1,4 +1,4 @@
-<div class="col-md-12">
+<div class="col-md-6">
     <div class="card card-outline card-success">
         <div class="card-header">
             <h3 class="card-title">Voci inserite</h3>
@@ -8,10 +8,11 @@
                 <thead>
                     <tr>
                         <th class="pl-2">Codice</th>
-                        <th>Descrizione</th>
                         <th>Qt</th>
                         <th>Prezzo<small>(€)</small></th>
                         <th>Sconto<small>(%)</small></th>
+                        <th>Iva<small>(€)</small></th>
+                        <th class="pr-2">Subtotale<small>(€)</small></th>
                         <th></th>
                     </tr>
                 </thead>

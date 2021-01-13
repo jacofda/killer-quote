@@ -88,7 +88,6 @@ class KillerQuotesController extends Controller
             ->setOption('header-html', $headerUrl)
             ->setOption('footer-html', $footerUrl)
             ->setOption('encoding', 'UTF-8');
-
         $document->save($documentPdfPath);
 
         $merger->addPathToPDF($logoPdfPath, 'all', 'P');
@@ -333,7 +332,7 @@ class KillerQuotesController extends Controller
         $quote = KillerQuote::find($quote_id);
         foreach(Event::where('eventable_type', get_class($quote))->where('eventable_id', $quote->id)->get() as $event )
         {
-            return $event->delete();
+            $event->delete();
         }
 
         foreach($quote->items as $item)

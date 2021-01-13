@@ -18,6 +18,12 @@ class KillerQuoteSetting extends Primitive
     const KEY_SCADENZA = "scadenza";
     const KEY_BONUS = "bonus";
     const KEY_PDF = "pdf";
+    const KEY_FIRMA = "firma_img";
+    const KEY_FIRMATXT = "firma_txt";
+    const KEY_PRIVACY = "privacy";
+    const KEY_COND = "cond_vendita";
+    const KEY_MOSTRA_BONUS = "mostra_bonus";
+
 
     const CREATED_AT = null;
     protected $table = "killer_quote_settings";
@@ -51,6 +57,10 @@ class KillerQuoteSetting extends Primitive
         {
             return Media::where('id', intval($this->value));
         }
+        elseif($this->key === self::KEY_FIRMA)
+        {
+            return Media::where('id', intval($this->value));
+        }
 
         return null;
     }
@@ -70,7 +80,10 @@ class KillerQuoteSetting extends Primitive
         $pdf = self::where('key', 'pdf')->first();
         if(!is_null($pdf))
         {
-            return true;
+            if($pdf->value != "")
+            {
+                return true;
+            }
         }
         return false;
     }
@@ -80,5 +93,25 @@ class KillerQuoteSetting extends Primitive
         $pdf = self::where('key', 'pdf')->first();
         return storage_path('app/public/killerquotesettings/original/'.$pdf->value);
     }
+
+    public static function HasFirma()
+    {
+        $firma = self::where('key', 'firma_img')->first();
+        if(!is_null($firma))
+        {
+            if($firma->value != "")
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static function FirmaPath()
+    {
+        $img = self::where('key', 'firma_img')->first();
+        return storage_path('app/public/killerquotesettings/original/'.$img->value);
+    }
+
 
 }

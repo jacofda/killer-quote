@@ -52,7 +52,16 @@
                         @foreach($quote->items as $item)
                             @php($sum += ($item->importo_scontato_con_iva*$item->qta))
                             <tr>
-                                <td>{{ $item->product->nome }}</td>
+                                <td class="text-left px-2">
+                                    @if($item->product->nome)
+                                        <b>{{ $item->product->nome }}</b>
+                                    @else
+                                        <b>{{ $item->product->codice }}</b>
+                                    @endif
+                                    @if( ($item->descrizione != "") || !is_null($item->descrizione))
+                                        <br><small>{{ucfirst($item->descrizione)}}</small>
+                                    @endif
+                                </td>
                                 <td>{{ $item->qta }}</td>
                                 <td>€ {{ number_format($item->importo_scontato_con_iva, 2, ',', '.') }}</td>
                             </tr>
@@ -68,15 +77,24 @@
                         @foreach($quote->items as $item)
                             @php($sum += ($item->importo_scontato*$item->qta))
                             <tr>
-                                <td>{{ $item->product->nome }}</td>
+                                <td class="text-left px-2">
+                                    @if($item->product->nome)
+                                        <b>{{ $item->product->nome }}</b>
+                                    @else
+                                        <b>{{ $item->product->codice }}</b>
+                                    @endif
+                                    @if( ($item->descrizione != "") || !is_null($item->descrizione))
+                                        <br><small>{{ucfirst($item->descrizione)}}</small>
+                                    @endif
+                                </td>
                                 <td>{{ $item->qta }}</td>
-                                <td>€ {{ number_format($item->importo_scontato, 2) }} + IVA {{ $item->perc_iva }}%</td>
+                                <td>€ {{ number_format($item->importo_scontato, 2) }} <small>+ IVA {{ $item->perc_iva }}%</small></td>
                             </tr>
                         @endforeach
 
                         <tr class="total">
                             <td colspan="2" class="total-label text-right">Totale</td>
-                            <td>€ {{ number_format($sum, 2) }}  + IVA {{ $item->perc_iva }}%</td>
+                            <td>€ {{ number_format($sum, 2) }} <small>+ IVA {{ $item->perc_iva }}%</small></td>
                         </tr>
 
                     @endif

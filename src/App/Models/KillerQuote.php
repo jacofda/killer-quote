@@ -65,7 +65,7 @@ class KillerQuote extends Primitive
                 {
                     $sum += $item->importo_scontato_con_iva*$item->qta;
                 }
-                return '€ ' . number_format($sum, '2', ',', '');
+                return '€ ' . number_format($sum, '2', ',', '.');
             }
             else
             {
@@ -73,7 +73,7 @@ class KillerQuote extends Primitive
                 {
                     $sum += $item->importo_scontato*$item->qta;
                 }
-                return '€ ' . number_format($sum, '2', ',', '') . ' + IVA ' . config('app.iva').'%';
+                return '€ ' . number_format($sum, '2', ',', '.') . ' + IVA ' . config('app.iva').'%';
             }
         }
         return $sum;

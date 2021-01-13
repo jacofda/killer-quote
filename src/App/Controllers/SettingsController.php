@@ -41,6 +41,10 @@ class SettingsController extends Controller
             'glossario' => 'nullable|string',
             'scadenza' => 'nullable|numeric',
             'bonus' => 'nullable|string',
+            'privacy' => 'nullable|string',
+            'firma_txt' => 'nullable|string',
+            'cond_vendita' => 'nullable|string',
+            'mostra_bonus' => 'nullable'
         ]);
 
         if($v->fails())
@@ -79,7 +83,11 @@ class SettingsController extends Controller
             'recensioni' => $reviews,
             'glossario' => $data['glossario'],
             'scadenza' => $data['scadenza'],
-            'bonus' => $data['bonus']
+            'bonus' => $data['bonus'],
+            'mostra_bonus' => $data['mostra_bonus'],
+            'privacy' => $data['privacy'],
+            'firma_txt' => $data['firma_txt'],
+            'cond_vendita' => $data['cond_vendita']
         ];
 
         $this->store($storeData);
@@ -114,7 +122,6 @@ class SettingsController extends Controller
     }
 
     public function uploadPdf() {
-
         $this->deleteCurrentPdf();
         if ( request()->hasFile('file') )
         {
@@ -128,7 +135,6 @@ class SettingsController extends Controller
 
             $pdf->storeAs('public/killerquotesettings/original', $filename );
         }
-
         return 'done';
     }
 
@@ -144,9 +150,38 @@ class SettingsController extends Controller
                     ->update([
                         'value' => @serialize("")
                     ]);
-
             }
         }
+    }
+
+    public function uploadFirma() {
+
+        if(KillerQuoteSetting::HasFirma())
+        {
+            $this->deleteCurrentFirma();
+        }
+
+        if ( request()->hasFile('file') )
+        {
+            $img = request()->file;
+            $filename = $img->getClientOriginalName();
+
+            $update = KillerQuoteSetting::where('key', KillerQuoteSetting::KEY_FIRMA)
+                ->update([
+                    'value' => @serialize($filename)
+                ]);
+
+            $img->storeAs('public/killerquotesettings/original', $filename );
+        }
+        return 'done';
+    }
+
+    private function deleteCurrentFirma() {
+        \Storage::delete(KillerQuoteSetting::FirmaPath());
+        $update = KillerQuoteSetting::where('key', KillerQuoteSetting::KEY_PDF)
+            ->update([
+                'value' => @serialize("")
+            ]);
     }
 
 }

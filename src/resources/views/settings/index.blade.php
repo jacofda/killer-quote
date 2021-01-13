@@ -142,6 +142,14 @@
                             </div>
                         </div>
 
+                        <!-- Mostra Bonus -->
+                        <div class="form-group row my-5">
+                            <label class="col-sm-3 col-form-label">Mostra Bonus</label>
+                            <div class="col-sm-9">
+                                {!! Form::select('mostra_bonus', [1 => 'Sì', 0 => "No"], $settings['mostra_bonus']->value, ['class' => 'custom-select', 'id' => 'mostra_bonus']) !!}
+                            </div>
+                        </div>
+
 
                         <!-- Metodi di pagamento -->
                         <div class="form-group row my-5">
@@ -179,6 +187,51 @@
                             </div>
                         </div>
 
+
+
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Privacy Policy</label>
+                            <div class="col-sm-9">
+                                <textarea name="privacy" id="privacy">
+                                    {!! $settings['privacy']->value !!}
+                                </textarea>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Eventuale Allegato PDF</label>
+                            <div class="col-sm-9">
+                                @include('killerquote::settings.components.upload-pdf', ['pdfFile' => $settings['pdf']])
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Immagine Firma</label>
+                            <div class="col-sm-9">
+                                @include('killerquote::settings.components.upload-firma', ['firmaFile' => $settings['firma_img']])
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Testo Firma</label>
+                            <div class="col-sm-9">
+                                <textarea name="firma_txt" id="firma_txt">
+                                    {!! $settings['firma_txt']->value !!}
+                                </textarea>
+                            </div>
+                        </div>
+
+                        {{-- COndizioni di Vendita --}}
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Condizioni di Vendita</label>
+                            <div class="col-sm-9">
+                                <textarea name="cond_vendita" id="cond_vendita">
+                                    {!! $settings['cond_vendita']->value !!}
+                                </textarea>
+                            </div>
+                        </div>
+
                         <!-- Scadenza Preventivo -->
                         <div class="form-group row">
                             <label for="scadenza" class="col-sm-3 col-form-label">Scadenza Preventivo (giorni)</label>
@@ -195,15 +248,6 @@
                                         <option selected value="{{ $scadenza }}">{{$scadenza}}</option>
                                     @endif
                                 </select>
-                            </div>
-                        </div>
-
-
-
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Allegato PDF default</label>
-                            <div class="col-sm-9">
-                                @include('killerquote::settings.components.upload-pdf', ['pdfFile' => $settings['pdf']])
                             </div>
                         </div>
 
@@ -245,6 +289,9 @@
             $('textarea#glossario').summernote(smOptions);
             $('textarea#bonus').summernote(smOptions);
             $('textarea#chi-siamo').summernote(smOptions);
+            $('textarea#privacy').summernote(smOptions);
+            $('textarea#firma_txt').summernote(smOptions);
+            $('textarea#cond_vendita').summernote(smOptions);
             $('#scadenza').select2({
                 placeholder: "Seleziona un'opzione",
                 tags: true,

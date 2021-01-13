@@ -1,105 +1,85 @@
-<div class="col-md-12">
+<div class="col-md-6">
     <div class="card card-outline card-warning">
         <div class="card-header">
             <h3 class="card-title">Corpo</h3>
         </div>
-        <div class="card-body pb-0">
+        <div class="card-body">
+
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Prodotto*</label>
+                <div class="col-sm-8">
+                    {!! Form::select('product_id', $products, null, ['class' => 'form-control select2bs4', 'data-placeholder' => 'Seleziona Prodotto', 'id' => 'products', 'data-fouc', 'style' => 'width:100%']) !!}
+                </div>
+            </div>
+            <input type="hidden" name="codice" class="codice" value="">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Descrizione</label>
+                <div class="col-sm-8">
+                    {!! Form::textarea('descrizione', null, ['class' => 'form-control desc', 'rows' => 2, 'maxlength' => 999]) !!}
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Quantità</label>
+                <div class="col-sm-8">
+                    <div class="input-group">
+                        {!! Form::text('qta', 1, ['class' => 'form-control input-decimal', 'id' => 'qp']) !!}
+                        <div class="input-group-append">
+                            <span class="input-group-text input-group-text-sm" id="basic-addon2">00.00</span>
+                        </div>
+                    </div>
+                    @include('areaseb::components.add-invalid', ['element' => 'qta'])
+                </div>
+            </div>
 
             <div class="row">
-                <div class="col-sm-6">
+                <div class="col-sm-12 col-xl-7">
+
                     <div class="form-group row">
-                        <label class="col-sm-4 col-form-label">Prodotto*</label>
-                        <div class="col-sm-8">
-                            {!! Form::select('product_id', $products, null, ['class' => 'form-control select2bs4', 'data-placeholder' => 'Seleziona Prodotto', 'id' => 'products', 'data-fouc', 'style' => 'width:100%']) !!}
-                        </div>
-                    </div>
-                    <input type="hidden" name="codice" class="codice" value="">
-                    <div class="form-group row">
-                        <label class="col-sm-4 col-form-label">Descrizione</label>
-                        <div class="col-sm-8">
-                            {!! Form::textarea('descrizione', null, ['class' => 'form-control desc', 'rows' => 1, 'maxlength' => 999]) !!}
+                        <label class="col-sm-4 col-xl-7 col-form-label">Prezzo*</label>
+                        <div class="col-sm-8 col-xl-5">
+                            <div class="input-group xl-ml-5">
+                                {!! Form::text('prezzo', null, ['class' => 'form-control input-decimal', 'id' => 'prezzo']) !!}
+                                <div class="input-group-append">
+                                    <span class="input-group-text input-group-text-sm" id="basic-addon2">00.00€</span>
+                                </div>
+                            </div>
+                            @include('areaseb::components.add-invalid', ['element' => 'prezzo'])
                         </div>
                     </div>
                 </div>
+                <div class="col-sm-12 col-xl-5">
 
-                <div class="col-sm-6">
-
-                    <div class="row">
-
-                        <div class="col-sm-12 col-xl-7">
-                            <div class="form-group row">
-                                <label class="col-sm-4 col-form-label">Quantità</label>
-                                <div class="col-sm-8">
-                                    <div class="input-group">
-                                        {!! Form::text('qta', 1, ['class' => 'form-control input-decimal', 'id' => 'qp']) !!}
-                                        <div class="input-group-append">
-                                            <span class="input-group-text input-group-text-sm" id="basic-addon2">00.00</span>
-                                        </div>
-                                    </div>
-                                    @include('areaseb::components.add-invalid', ['element' => 'qta'])
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-xl-5 col-form-label">IVA*</label>
+                        <div class="col-sm-8 col-xl-7">
+                            <div class="input-group">
+                                {!! Form::text('perc_iva', null, ['class' => 'form-control input-decimal', 'id' => 'perc_iva']) !!}
+                                <div class="input-group-append">
+                                    <span class="input-group-text input-group-text-sm" id="basic-addon2">00.00%</span>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="col-sm-12 col-xl-5">
-
-                            <div class="form-group row">
-                                <label class="col-sm-4 col-form-label">Sconto</label>
-                                <div class="col-sm-8">
-                                    <div class="row">
-                                        <div class="col">
-                                            <div class="input-group">
-                                                {!! Form::text('sconto', null, ['class' => 'form-control input-decimal']) !!}
-                                                <div class="input-group-append">
-                                                    <span class="input-group-text input-group-text-sm" id="basic-addon2">%</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
+                            @include('areaseb::components.add-invalid', ['element' => 'perc_iva'])
                         </div>
                     </div>
-
-
-                    <div class="row">
-                        <div class="col-sm-12 col-xl-7">
-
-                            <div class="form-group row">
-                                <label class="col-sm-4 col-form-label">Prezzo*</label>
-                                <div class="col-sm-8">
-                                    <div class="input-group xl-ml-5">
-                                        {!! Form::text('prezzo', null, ['class' => 'form-control input-decimal', 'id' => 'prezzo']) !!}
-                                        <div class="input-group-append">
-                                            <span class="input-group-text input-group-text-sm" id="basic-addon2">00.00€</span>
-                                        </div>
-                                    </div>
-                                    @include('areaseb::components.add-invalid', ['element' => 'prezzo'])
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-12 col-xl-5">
-
-                            <div class="form-group row">
-                                <label class="col-sm-4 col-form-label">IVA*</label>
-                                <div class="col-sm-8">
-                                    <div class="input-group">
-                                        {!! Form::text('perc_iva', null, ['class' => 'form-control input-decimal', 'id' => 'perc_iva']) !!}
-                                        <div class="input-group-append">
-                                            <span class="input-group-text input-group-text-sm" id="basic-addon2">00.00%</span>
-                                        </div>
-                                    </div>
-                                    @include('areaseb::components.add-invalid', ['element' => 'perc_iva'])
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-
 
                 </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Sconto</label>
+                <div class="col-sm-8">
+                    <div class="row">
+                        <div class="col">
+                            <div class="input-group">
+                                {!! Form::text('sconto', null, ['class' => 'form-control input-decimal']) !!}
+                                <div class="input-group-append">
+                                    <span class="input-group-text input-group-text-sm" id="basic-addon2">%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
+                </div>
             </div>
         </div>
         <div class="card-footer text-center">
@@ -167,7 +147,6 @@
             const addItemToTable = (item) => {
                 html = '<tr class="prodRowId-'+item.uid+'">';
                 html += '<td class="pl-2">'+item.codice+'</td>';
-                html += '<td>'+item.descrizione+'</td>';
                 html += '<td>'+item.qta+'</td>';
                 if(item.sconto != null)
                 {
@@ -185,6 +164,8 @@
                 {
                     html +='<td></td>';
                 }
+                html += '<td>'+item.ivato.toFixed(2)+'</td>';
+                html += '<td>'+item.subtotal().toFixed(2)+'</td>';
                 html += '<td class="pr-2">';
                 html += '<a href="#" class="btn btn-sm removeProdRow" id="prodId-'+item.uid+'"><span class="text-danger"><i class="fa fa-trash"></i></span></a>';
                 html += '<a href="#" class="btn btn-sm editProdRow" id="prodId-'+item.uid+'"><span class="text-warning"><i class="fa fa-edit"></i></span></a>';
@@ -218,6 +199,7 @@
                     });
                 }
             }
+            console.log(itemsFromDB);
             addItemsToTable(itemsFromDB);
 
             let company = null;
@@ -250,7 +232,7 @@
                         $('input.codice').val(data.codice);
                         $('textarea.desc').val(data.descrizione);
                         $('button#addItem').prop('disabled', false);
-                        //console.log(data);
+                        console.log(data);
                         if(data.children !== null)
                         {
                             let cid = $('select[name="company_id"]').val();
@@ -294,7 +276,14 @@
                         {
                             $('input[name="sconto"]').val(c_s1);
                         }
-
+                        // if(c_s2)
+                        // {
+                        //     $('input[name="sconto2"]').val(c_s2);
+                        // }
+                        // if(c_s3)
+                        // {
+                        //     $('input[name="sconto3"]').val(c_s3);
+                        // }
                     });
                 }
             });
@@ -337,6 +326,7 @@
                     item = new Item(select[0].id, select[0].text, codice, desc, prezzo, perc_iva, qta, sconto, perc_sconto);
                     items.push(item);
                     addItemToTable(item);
+                    //console.log(itemsChildren);
                     Object.entries(itemsChildren).forEach(([key, elem]) => {
                         items.push(elem);
                         addItemToTable(elem);
@@ -379,6 +369,9 @@
 
             $('button#save').on('click', function(e){
                 e.preventDefault();
+
+                // console.log($('select[name="company_id"]').val());
+                // return false;
 
                 if(validate())
                 {
