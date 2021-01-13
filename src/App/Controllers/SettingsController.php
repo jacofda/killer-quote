@@ -178,7 +178,7 @@ class SettingsController extends Controller
 
     private function deleteCurrentFirma() {
         \Storage::delete(KillerQuoteSetting::FirmaPath());
-        $update = KillerQuoteSetting::where('key', KillerQuoteSetting::KEY_PDF)
+        $update = KillerQuoteSetting::where('key', KillerQuoteSetting::KEY_FIRMA)
             ->update([
                 'value' => @serialize("")
             ]);

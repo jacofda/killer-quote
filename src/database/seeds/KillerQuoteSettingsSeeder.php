@@ -2,6 +2,8 @@
 
 use Illuminate\Database\Seeder;
 use KillerQuote\App\Models\KillerQuoteSetting;
+use Illuminate\Support\Facades\Schema;
+
 class KillerQuoteSettingsSeeder extends Seeder
 {
     const SETTING_KEYS = [
@@ -83,5 +85,14 @@ class KillerQuoteSettingsSeeder extends Seeder
                 ['key' => $key['key']], ['value' => @serialize($key['default'])]
             );
         }
+
+        if(Schema::hasTable('order_confirmations'))
+        {
+            if(Schema::hasColumn('order_confirmations', 'killer_quote_id'))
+            {
+                
+            }
+        }
+
     }
 }
