@@ -21,7 +21,7 @@
                     <div class="input-group">
                         <input class="form-control input-decimal" placeholder="Sconto" value="{{ !empty($string['number']) ? number_format($string['number'], 2) : '' }}" name="metodi_pagamento_num[]" type="text">
                         <div class="input-group-append">
-                            <span class="input-group-text">00.00 €</span>
+                            <span class="input-group-text">00.00 %</span>
                             <button class="btn btn-danger float-right" data-action="delete"><i class="fas fa-trash"></i></button>
                         </div>
                     </div>
