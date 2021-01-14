@@ -63,7 +63,7 @@
                                     @endif
                                 </td>
                                 <td>{{ $item->qta }}</td>
-                                <td>€ {{ number_format($item->importo_scontato_con_iva, 2, ',', '.') }}</td>
+                                <td>€ {{ number_format($item->importo_scontato_con_iva, 2, ',', '.') }} <small> IVA inc.</small></td>
                             </tr>
                         @endforeach
 

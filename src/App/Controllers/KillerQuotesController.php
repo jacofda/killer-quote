@@ -106,7 +106,14 @@ class KillerQuotesController extends Controller
     {
         $deals = [];
         if(class_exists("Deals\App\Models\Deal"))
-            $deals = ['' => '']+Deal::where('accepted', Deal::STATUSES['open'])->orderBy('id', 'DESC')->pluck('id', 'id')->toArray();
+        {
+            $deals = ['' => ''];
+            $dealsC = Deal::whereNull('accepted')->orWhere('accepted', true)->orderBy('created_at', 'DESC')->where('created_at', '>',Carbon::today()->subMonth(4))->get();
+            foreach($dealsC as $deal)
+            {
+                $deals[$deal->id] = $deal->company->rag_soc . " N." . sprintf('%03d', $deal->numero) . ' del ' . $deal->created_at->format('d/m/Y');
+            }
+        }
 
         $companies = ['' => '']+Company::orderBy('rag_soc', 'ASC')->pluck('rag_soc', 'id')->toArray();
         $products = ['' => '']+Product::groupedOpt();
@@ -207,11 +214,18 @@ class KillerQuotesController extends Controller
 
     public function edit($id)
     {
+        $quote = KillerQuote::findOrFail($id);
         $deals = [];
         if(class_exists("Deals\App\Models\Deal"))
-            $deals = ['' => '']+Deal::where('accepted', Deal::STATUSES['open'])->orderBy('id', 'DESC')->pluck('id', 'id')->toArray();
+        {
+            $deals = ['' => ''];
+            $dealsC = Deal::where('company_id', $quote->company_id)->orderBy('created_at', 'DESC')->where('created_at', '>',Carbon::today()->subMonth(4))->get();
+            foreach($dealsC as $deal)
+            {
+                $deals[$deal->id] = $deal->company->rag_soc . " N." . sprintf('%03d', $deal->numero)  . ' del ' . $deal->created_at->format('d/m/Y');
+            }
+        }
 
-        $quote = KillerQuote::findOrFail($id);
         $companies = ['' => '']+Company::orderBy('rag_soc', 'ASC')->pluck('rag_soc', 'id')->toArray();
         $products = ['' => '']+Product::groupedOpt();
         $items = $quote->items()->with('product')->get();
