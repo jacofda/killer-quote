@@ -5,7 +5,7 @@
         }
 
         .reviews .bordered-box {
-            height: 7cm;
+            min-height: 7cm;
             padding-top: 5mm;
             padding-bottom: 5mm;
         }
@@ -29,12 +29,12 @@
         }
 
         .reviews .review-text {
-            max-height: 105px;
+            /*max-height: 200px;*/
             display: -webkit-box;
             overflow: hidden !important;
-            text-overflow: ellipsis;
-            -webkit-line-clamp: 5;
-            -webkit-box-orient: vertical;
+            /*text-overflow: ellipsis;
+            -webkit-line-clamp: 10;
+            -webkit-box-orient: vertical;*/
         }
     </style>
 @endpush

@@ -13,7 +13,7 @@
         </div>
     </div>
     <div style="position:relative; top:80%; -webkit-transform: translateY(-50%); text-align: right;">
-        <p><strong>Preventivo N. {{$quote->numero}} del {{$quote->created_at->format('d/m/Y')}}</strong></p>
+        <p><strong>Preventivo N. {{$quote->numero}} del {{$quote->created_at->format('d/m/Y')}}</strong><br>(Scade il {{$quote->expirancy_date->format('d/m/Y')}})</p>
     </div>
 </div>
 @endsection
