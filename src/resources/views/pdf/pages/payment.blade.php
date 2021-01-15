@@ -88,13 +88,13 @@
                                     @endif
                                 </td>
                                 <td>{{ $item->qta }}</td>
-                                <td>€ {{ number_format($item->importo_scontato, 2) }} <small>+ IVA {{ $item->perc_iva }}%</small></td>
+                                <td>€ {{ number_format($item->importo_scontato, 2) }} <small>+ IVA</small></td>
                             </tr>
                         @endforeach
 
                         <tr class="total">
                             <td colspan="2" class="total-label text-right">Totale</td>
-                            <td>€ {{ number_format($sum, 2) }} <small>+ IVA {{ $item->perc_iva }}%</small></td>
+                            <td>€ {{ number_format($sum, 2) }} <small>+ IVA</small></td>
                         </tr>
 
                     @endif
