@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
 use Areaseb\Core\Models\Event;
-use Areaseb\Core\Models\Company;
+use Areaseb\Core\Models\{Contact, Company};
 use Areaseb\Core\Models\Product;
 use Areaseb\Core\Models\Setting;
 use KillerQuote\App\Models\KillerQuote;
@@ -426,6 +426,29 @@ class KillerQuotesController extends Controller
             $numero = max($numero, DealGenericQuote::getLastNumber());
         }
         return $numero+1;
+    }
+
+    public function makeCompanyAndQuote(Request $request)
+    {
+        $contact = Contact::find($request->id);
+        $company = new Company;
+            $company->rag_soc = $contact->fullname;
+            $company->indirizzo = $contact->indirizzo;
+            $company->cap = $contact->cap;
+            $company->citta = $contact->citta;
+            $company->provincia = $contact->provincia;
+            $company->city_id = $contact->city_id;
+            $company->nazione = $contact->nazione;
+            $company->lingua = $contact->lingua;
+            $company->email = $contact->email;
+        $company->save();
+
+        $contact->company_id = $company->id;
+        $contact->save();
+
+        $company->clients()->save($contact->clients()->first());
+
+        return redirect('killerquotes/create?company_id='.$company->id)->with('message', 'Azienda da contatto creata!');
     }
 
 }

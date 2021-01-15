@@ -32,4 +32,7 @@ Route::group(['middleware' => ['web', 'auth']], function() {
     // Resource
     Route::post('killerquotes/{quote}/duplicate', [KillerQuotesController::class, 'duplicate'])->name('killerquotes.duplicate');
     Route::resource('killerquotes', KillerQuotesController::class);
+
+    Route::post('contacts/make-company-and-quote', [KillerQuotesController::class, 'makeCompanyAndQuote'])->name('killerquotes.makeCompanyAndQuote');
+
 });

@@ -13,8 +13,21 @@
                    <div class="col-sm-8">
                        @php
                             $company = null;
-                            if($deal) $company = $deal->company_id;
-                            else $company = isset($quote) ? $quote->company_id : null;
+                            if($deal)
+                            {
+                                $company = $deal->company_id;
+                            }
+                            else
+                            {
+                                $company = isset($quote) ? $quote->company_id : null;
+                            }
+                            if(is_null($company))
+                            {
+                                if(request('company_id'))
+                                {
+                                    $company = request('company_id');
+                                }
+                            }
                        @endphp
                        {!! Form::select('company_id',$companies, $company, ['class' => 'form-control select2bs4', 'data-placeholder' => 'Seleziona Azienda', 'required', 'data-fouc']) !!}
                    </div>
