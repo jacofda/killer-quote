@@ -61,9 +61,9 @@
                     </div>
                     <div class="col-xs-12 col-md-4 col-vertical-center">
                         <div class="input-group">
-                            <input class="form-control input-decimal" placeholder="Sconto" name="metodi_pagamento_num[]" type="text">
+                            <input class="form-control input-decimal" placeholder="Sconto" name="metodi_pagamento_num[]" type="text" value="0">
                             <div class="input-group-append">
-                                <span class="input-group-text">00.00 €</span>
+                                <span class="input-group-text">00.00 %</span>
                                 <button class="btn btn-danger float-right" data-action="delete"><i class="fas fa-trash"></i></button>
                             </div>
                         </div>
