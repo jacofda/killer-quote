@@ -402,7 +402,6 @@ class KillerQuotesController extends Controller
             $newQuote->user_id = auth()->user()->id;
             $newQuote->summary = $quote->summary;
             $newQuote->notes = $quote->notes;
-            $newQuote->accepted = $quote->accepted;
             $newQuote->sconto_text = $quote->sconto_text;
             $newQuote->sconto_value = $quote->sconto_value;
             $newQuote->expirancy_date = $quote->expirancy_date;
