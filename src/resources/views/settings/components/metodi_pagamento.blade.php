@@ -4,7 +4,7 @@
         $strings = [
             [
                 'text' => '',
-                'number' => ''
+                'number' => '0.00'
             ]
         ];
 @endphp
