@@ -11,14 +11,14 @@
             <div class="review_txt_div mb-4">
                 <div class="row mb-2">
                     <div class="col-12 col-sm-6">
-                        <input type="text" class="form-control" name="review[review_name][]" placeholder="Nome" value="{{ !empty($review['review_name']) ? $review['review_name'] : '' }}" />
+                        <input type="text" class="form-control" name="review[review_name][]" placeholder="Nome" value="{{ !empty($review['review_name']) ? $review['review_name'] : 'Carlo' }}" />
                     </div>
                     <div class="col-12 col-sm-6">
-                        <input type="text" class="form-control" name="review[review_surname][]" placeholder="Surname" value="{{ !empty($review['review_surname']) ? $review['review_surname'] : '' }}" />
+                        <input type="text" class="form-control" name="review[review_surname][]" placeholder="Surname" value="{{ !empty($review['review_surname']) ? $review['review_surname'] : 'Rossi' }}" />
                     </div>
                 </div>
                 <div class="input-group">
-                    <input type="text" class="form-control" name="review[review_txt][]" placeholder="Recensione (max. 120 caratteri)" value="{{ $review['review_txt'] }}" />
+                    <input type="text" class="form-control" name="review[review_txt][]" placeholder="Recensione (max. 120 caratteri)" value="{{ !empty($review['review_txt']) ? $review['review_txt'] : 'Congraturazioni' }}" />
                     <div class="input-group-append">
                         <button class="btn btn-danger" data-action="delete"><i class="fas fa-trash"></i></button>
                     </div>
@@ -71,4 +71,3 @@
         })(jQuery);
     </script>
 @endpush
-
