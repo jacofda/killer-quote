@@ -1,0 +1,30 @@
+<?php
+
+return [
+    'preventivo' => 'Preisangabe',
+    'scade_il' => 'Läuft aus am ',
+    'del' => 'erstellt am',
+    'chi_siamo' => 'Über uns',
+    'perche_sceglierci' => 'Was Kunden an uns mögen',
+    'spet' => 'Sehr geehrter',
+    'trattativa' => 'ZUSAMMENFASSUNG',
+    'bonus' => 'Extras',
+    'preventivo_economico' => 'WIRTSCHAFTLICHES ANGEBOT',
+    'prodotto' => 'Produckt',
+    'quantita' => 'Quantität',
+    'prezzo' => 'Preis',
+    'IVA' => 'MwSt',
+    'totale' => 'Gesamtsumme',
+    'pagamento' => 'BEZAHLUNG',
+    'sconto' => 'Rabatt',
+    'testo_firma' => 'Kundenunterschrift',
+    'recensioni' => 'BEWERTUNGEN',
+    'glossario' => 'GLOSSAR',
+    'piva' => 'USt-IdNr',
+    'cf' => 'SVN',
+    'banca' => 'Bank',
+    'sede' => 'Hauptquartier',
+    'iva_inc' => '',
+    'cond_vendita' => 'Geschäftsbedingungen',
+    'privacy' => 'DATENSCHUTZ-BESTIMMUNGEN'
+];
