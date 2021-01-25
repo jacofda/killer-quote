@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use KillerQuote\App\Controllers\KillerQuotesController;
 use KillerQuote\App\Controllers\SettingsController;
+use KillerQuote\App\Controllers\SettingsLocaleController;
 use KillerQuote\App\Controllers\SummernoteController;
 use KillerQuote\App\Controllers\PdfController;
 
@@ -24,10 +25,21 @@ Route::group(['middleware' => ['web', 'auth']], function() {
         Route::post('settings/upload_firma', [SettingsController::class, 'uploadFirma']);
         Route::post('settings/upload_review_image', [SettingsController::class, 'uploadReviewImg']);
         Route::post('settings/delete_review_image/{id}', [SettingsController::class, 'deleteReviewImg']);
+
+        //Settings locale
+        Route::get('settings/{locale}', [SettingsLocaleController::class, 'index']);
+        Route::post('settings/{locale}', [SettingsLocaleController::class, 'update']);
+        Route::post('settings/upload_logo/{locale}', [SettingsLocaleController::class, 'uploadLogo']);
+        Route::post('settings/upload_pdf/{locale}', [SettingsLocaleController::class, 'uploadPdf']);
+        Route::post('settings/upload_firma/{locale}', [SettingsLocaleController::class, 'uploadFirma']);
+
     });
 
     // Export PDF
     Route::get('killerquotes/{id}/pdf', [KillerQuotesController::class, 'pdf']);
+    // Export PDF locale
+    Route::get('killerquotes/{id}/pdf/{locale}', [KillerQuotesController::class, 'pdfLocale']);
+
 
     // Resource
     Route::post('killerquotes/{quote}/duplicate', [KillerQuotesController::class, 'duplicate'])->name('killerquotes.duplicate');
