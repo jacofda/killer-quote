@@ -11,6 +11,7 @@
         footer p {
             margin:0;
             padding:0;
+            font-size:10pt;
         }
     </style>
 </head>
@@ -21,11 +22,11 @@
             <div class="col-xs-6 text-left">
                 <p>{{ $base_settings->rag_soc }}</p>
                 <p>
-                    Sede {{ $base_settings->indirizzo }},
+                    @lang('pk.sede') {{ $base_settings->indirizzo }},
                     {{ $base_settings->cap }} {{$base_settings->citta}} ({{$base_settings->provincia}})
                 </p>
                 <p>
-                    C.F. {{ $base_settings->cod_fiscale }} |  P.IVA {{ $base_settings->piva}}
+                    @lang('pk.cf') {{ $base_settings->cod_fiscale }} |  @lang('pk.piva') {{ $base_settings->piva}}
                 </p>
                 <p>
                     Tel. {{ $base_settings->telefono }}
@@ -33,7 +34,7 @@
             </div>
             <div class="col-xs-6 text-right">
                 @if($base_settings->banca)
-                    <p>Banca {{ $base_settings->banca }}</p>
+                    <p>@lang('pk.banca') {{ $base_settings->banca }}</p>
                 @endif
                 @if($base_settings->IBAN)
                     <p>IBAN: {{ $base_settings->IBAN }}</p>
