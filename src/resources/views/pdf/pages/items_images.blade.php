@@ -13,7 +13,7 @@
             <div class="row">
                 @foreach($images as $i => $image)
                     <div class="{{ $i === 0 ? 'col-xs-12' : 'col-xs-6' }} avoid-page-break" style="margin-bottom: 2mm; padding-left: 2mm; padding-right: 2mm;">
-                        <img src="{{ $image->getDisplayAttribute() }}" style="width: 100%; height: auto;" />
+                        <img src="{{ $image->getFullAttribute() }}" style="width: 100%; height: auto;" />
                     </div>
                 @endforeach
             </div>
