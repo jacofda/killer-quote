@@ -3,7 +3,7 @@
     <div class="row page-break-avoid">
         <div class="col-xs-12">
             <div class="text-center" style="margin-bottom: 1cm;">
-                <h3 class="section-title">RIEPILOGO TRATTATIVA</h3>
+                <h3 class="section-title">@lang('killerquote::kq.trattativa')</h3>
             </div>
             {!! $quote->summary !!}
         </div>

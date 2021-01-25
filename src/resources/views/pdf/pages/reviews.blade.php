@@ -5,7 +5,7 @@
         }
 
         .reviews .bordered-box {
-            min-height: 7cm;
+            height: 7cm;
             padding-top: 5mm;
             padding-bottom: 5mm;
         }
@@ -29,19 +29,15 @@
         }
 
         .reviews .review-text {
-            /*max-height: 200px;*/
             display: -webkit-box;
             overflow: hidden !important;
-            /*text-overflow: ellipsis;
-            -webkit-line-clamp: 10;
-            -webkit-box-orient: vertical;*/
         }
     </style>
 @endpush
-@if(count($settings['recensioni']->value))
+@if(count($settings['recensioni']->value) > 1)
 <div class="row reviews mt-5 avoid-page-break">
     <div class="col-xs-12">
-        <h3 class="section-title text-center">DICONO DI NOI</h3>
+        <h3 class="section-title text-center">@lang('killerquote::kq.recensioni')</h3>
         <div class="row">
             @foreach($settings['recensioni']->value as $review)
                 <div class="col-xs-4">

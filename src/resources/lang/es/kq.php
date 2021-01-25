@@ -14,6 +14,7 @@ return [
     'quantita' => 'Cantidad',
     'prezzo' => 'Precio',
     'IVA' => 'VAT',
+    '+_IVA' => '',
     'totale' => 'Total',
     'pagamento' => 'PAGO',
     'sconto' => 'Descuento',

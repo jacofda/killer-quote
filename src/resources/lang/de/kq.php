@@ -14,6 +14,7 @@ return [
     'quantita' => 'Quantität',
     'prezzo' => 'Preis',
     'IVA' => 'MwSt',
+    '+_IVA' => '',
     'totale' => 'Gesamtsumme',
     'pagamento' => 'BEZAHLUNG',
     'sconto' => 'Rabatt',

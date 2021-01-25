@@ -7,7 +7,7 @@
         <div class="container-fluid avoid-page-break">
             <div class="row">
                 <div class="col-xs-12">
-                    <h3 class="section-title">{{ $item->product->nome }}</h3>
+                    <h3 class="section-title">{{ $item->product->name }}</h3>
                 </div>
             </div>
             <div class="row">
