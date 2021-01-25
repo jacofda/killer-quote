@@ -1,11 +1,5 @@
 @extends('areaseb::layouts.app')
 
-@section('breadcrumbs')
-    <li class="breadcrumb-item"><a href="{{route('killerquotes.index')}}">Preventivi Killer</a></li>
-@stop
-
-@include('areaseb::layouts.elements.title', ['title' => 'Settings'])
-
 @section('css')
     <link rel="stylesheet" href="{{asset('css/dropzone5-7-0.min.css')}}">
     <link rel="stylesheet" href="{{asset('plugins/popup/min.css')}}">
@@ -85,13 +79,20 @@
     </style>
 @stop
 
+@section('breadcrumbs')
+    <li class="breadcrumb-item"><a href="{{route('killerquotes.index')}}">Preventivi Killer</a></li>
+@stop
+
+@include('areaseb::layouts.elements.title', ['title' => 'Settings '. Areaseb\Core\Models\Setting::lang($locale)])
+
+
 @section('content')
     <div class="row">
         @include('areaseb::components.errors')
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
-                    <form id="killerquotes-settings-form" method="POST" action="{{ url('killerquotes/settings') }}">
+                    <form id="killerquotes-settings-form" method="POST" action="{{ url('killerquotes/settings/'.$locale) }}">
 
                         {!! csrf_field() !!}
 
@@ -99,7 +100,7 @@
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Logo</label>
                             <div class="col-sm-9">
-                                @include('killerquote::settings.components.media', ['model' => $settings['logo']])
+                                @include('killerquote::settings.components-locale.media', ['model' => $settings['logo'], 'locale' => $locale])
                             </div>
                         </div>
 
@@ -199,14 +200,14 @@
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Eventuale Allegato PDF</label>
                             <div class="col-sm-9">
-                                @include('killerquote::settings.components.upload-pdf', ['pdfFile' => $settings['pdf']])
+                                @include('killerquote::settings.components-locale.upload-pdf', ['pdfFile' => $settings['pdf'], 'locale' => $locale])
                             </div>
                         </div>
 
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Immagine Firma</label>
                             <div class="col-sm-9">
-                                @include('killerquote::settings.components.upload-firma', ['firmaFile' => $settings['firma_img']])
+                                @include('killerquote::settings.components-locale.upload-firma', ['firmaFile' => $settings['firma_img'], 'locale' => $locale])
                             </div>
                         </div>
 

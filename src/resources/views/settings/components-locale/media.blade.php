@@ -25,7 +25,7 @@
             let text = "<strong>Clicca per caricare il logo.</strong><br> Max upload size 8MB";
 
             Dropzone.options.dropzoneForm = {
-                url: "{{ url('killerquotes/settings/upload_logo') }}",
+                url: "{{ url('killerquotes/settings/upload_logo/'.$locale) }}",
                 headers: {
                     'X-CSRF-TOKEN': "{{ csrf_token() }}"
                 },
@@ -44,12 +44,22 @@
                 },
                 init: function() {
                     // Already existing file
-                    @if($media = \KillerQuote\App\Models\KillerQuoteSetting::getMediaById($model->value))
+                    @php
+                        if(intval($settings['logo']->value) > 0)
+                        {
+                            $logo_id = $settings['logo']->value;
+                        }
+                        else
+                        {
+                            $logo_id = $settings['logo']->value->id;
+                        }
+                    @endphp
+                    @if($media = \KillerQuote\App\Models\KillerQuoteSettingLocale::getMediaById($logo_id))
                         let mockFile = {
                             name: "{{$media->filename}}",
                             size: {{$media->size*1024}}
                         };
-                        this.displayExistingFile(mockFile, "{{$media->getDisplayAttribute()}}");
+                        this.displayExistingFile(mockFile, "{{asset('storage/killerquotesettings/'.$locale.'/original/'.$media->filename)}}");
                         this.files.push(mockFile);
                     @endif
 
