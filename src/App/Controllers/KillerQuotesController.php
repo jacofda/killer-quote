@@ -13,12 +13,13 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
 use Areaseb\Core\Models\Event;
-use Areaseb\Core\Models\{Contact, Company};
+use Areaseb\Core\Models\Company;
 use Areaseb\Core\Models\Product;
 use Areaseb\Core\Models\Setting;
 use KillerQuote\App\Models\KillerQuote;
 use KillerQuote\App\Models\KillerQuoteItem;
 use KillerQuote\App\Models\KillerQuoteSetting;
+use KillerQuote\App\Models\KillerQuoteSettingLocale;
 use GrofGraf\LaravelPDFMerger\Facades\PDFMergerFacade as PDFMerger;
 use \PDF;
 use Illuminate\Support\Facades\Schema;
@@ -102,18 +103,89 @@ class KillerQuotesController extends Controller
         return $merger->inline();
     }
 
+    public function pdfLocale($id, $locale)
+    {
+        app()->setLocale($locale);
+        $quote = KillerQuote::find($id);
+
+        $media = [];
+        foreach($quote->items as $item)
+        {
+            $pdf_attachment = $item->product->media()->pdf()->first();
+            if($pdf_attachment)
+            {
+                $media[] = storage_path('app/public/products/docs/'.$pdf_attachment->filename);
+            }
+        }
+
+        if(KillerQuoteSettingLocale::HasDefaultPdfAttachment($locale))
+        {
+            $media[] = KillerQuoteSettingLocale::DefaultPdfAttachment($locale);
+        }
+
+        $base_settings = Setting::base();
+        $fe_settings = Setting::fe();
+        $settings = KillerQuoteSettingLocale::assocLocale($locale);
+
+        $path = "public/killerquotes/pdf/{$locale}/{$id}";
+
+        if(Storage::exists($path))
+            Storage::deleteDirectory($path);
+
+        Storage::makeDirectory($path);
+
+        $logoPdfPath = storage_path("app/{$path}/logo.pdf");
+        $documentPdfPath = storage_path("app/{$path}/document.pdf");
+
+        $header = View::make('killerquote::pdf.components.header', compact('settings', 'base_settings', 'fe_settings'))->render();
+        $footer = View::make('killerquote::pdf.components.footer', compact('settings', 'base_settings', 'fe_settings'))->render();
+
+        $merger = PDFMerger::init();
+
+        Storage::put("{$path}/header.html", $header);
+        Storage::put("{$path}/footer.html", $footer);
+
+        $headerUrl = asset("storage/killerquotes/pdf/{$locale}/{$id}/header.html");
+        $footerUrl = asset("storage/killerquotes/pdf/{$locale}/{$id}/footer.html");
+
+        $logo = PDF::loadView('killerquote::pdf.logo', compact('quote', 'settings', 'base_settings', 'fe_settings'))
+            ->setPaper('a4')
+            ->setOption('enable-local-file-access', true)
+            ->setOption('encoding', 'UTF-8');
+//return $logo->inline();
+        $logo->save($logoPdfPath);
+
+//return view('killerquote::pdf.quote', compact('quote', 'settings', 'base_settings', 'fe_settings'));
+        $document = PDF::loadView('killerquote::pdf.quote', compact('quote', 'settings', 'base_settings', 'fe_settings'))
+            ->setPaper('a4')
+            ->setOption('enable-local-file-access', true)
+            ->setOption('header-spacing', 10)
+            ->setOption('header-html', $headerUrl)
+            ->setOption('footer-html', $footerUrl)
+            ->setOption('encoding', 'UTF-8');
+//return $document->inline();
+        $document->save($documentPdfPath);
+
+        $merger->addPathToPDF($logoPdfPath, 'all', 'P');
+        $merger->addPathToPDF($documentPdfPath, 'all', 'P');
+
+        foreach($media as $attachment)
+        {
+            $merger->addPathToPDF($attachment, 'all', 'P');
+        }
+
+
+        $filename = str_slug(trans('killerquote::kq.preventivo')).'-N'.$quote->numero.'--'.$quote->created_at->format('d-m-Y').'.pdf';
+        $merger->setFileName($filename);
+        $merger->merge();
+        return $merger->inline();
+    }
+
     public function create()
     {
         $deals = [];
         if(class_exists("Deals\App\Models\Deal"))
-        {
-            $deals = ['' => ''];
-            $dealsC = Deal::whereNull('accepted')->orWhere('accepted', true)->orderBy('created_at', 'DESC')->where('created_at', '>',Carbon::today()->subMonth(4))->get();
-            foreach($dealsC as $deal)
-            {
-                $deals[$deal->id] = $deal->company->rag_soc . " N." . sprintf('%03d', $deal->numero) . ' del ' . $deal->created_at->format('d/m/Y');
-            }
-        }
+            $deals = ['' => '']+Deal::where('accepted', Deal::STATUSES['open'])->orderBy('id', 'DESC')->pluck('id', 'id')->toArray();
 
         $companies = ['' => '']+Company::orderBy('rag_soc', 'ASC')->pluck('rag_soc', 'id')->toArray();
         $products = ['' => '']+Product::groupedOpt();
@@ -214,18 +286,11 @@ class KillerQuotesController extends Controller
 
     public function edit($id)
     {
-        $quote = KillerQuote::findOrFail($id);
         $deals = [];
         if(class_exists("Deals\App\Models\Deal"))
-        {
-            $deals = ['' => ''];
-            $dealsC = Deal::where('company_id', $quote->company_id)->orderBy('created_at', 'DESC')->where('created_at', '>',Carbon::today()->subMonth(4))->get();
-            foreach($dealsC as $deal)
-            {
-                $deals[$deal->id] = $deal->company->rag_soc . " N." . sprintf('%03d', $deal->numero)  . ' del ' . $deal->created_at->format('d/m/Y');
-            }
-        }
+            $deals = ['' => '']+Deal::where('accepted', Deal::STATUSES['open'])->orderBy('id', 'DESC')->pluck('id', 'id')->toArray();
 
+        $quote = KillerQuote::findOrFail($id);
         $companies = ['' => '']+Company::orderBy('rag_soc', 'ASC')->pluck('rag_soc', 'id')->toArray();
         $products = ['' => '']+Product::groupedOpt();
         $items = $quote->items()->with('product')->get();
@@ -425,29 +490,6 @@ class KillerQuotesController extends Controller
             $numero = max($numero, DealGenericQuote::getLastNumber());
         }
         return $numero+1;
-    }
-
-    public function makeCompanyAndQuote(Request $request)
-    {
-        $contact = Contact::find($request->id);
-        $company = new Company;
-            $company->rag_soc = $contact->fullname;
-            $company->indirizzo = $contact->indirizzo;
-            $company->cap = $contact->cap;
-            $company->citta = $contact->citta;
-            $company->provincia = $contact->provincia;
-            $company->city_id = $contact->city_id;
-            $company->nazione = $contact->nazione;
-            $company->lingua = $contact->lingua;
-            $company->email = $contact->email;
-        $company->save();
-
-        $contact->company_id = $company->id;
-        $contact->save();
-
-        $company->clients()->save($contact->clients()->first());
-
-        return redirect('killerquotes/create?company_id='.$company->id)->with('message', 'Azienda da contatto creata!');
     }
 
 }

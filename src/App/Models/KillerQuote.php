@@ -73,7 +73,17 @@ class KillerQuote extends Primitive
                 {
                     $sum += $item->importo_scontato*$item->qta;
                 }
-                return '€ ' . number_format($sum, '2', ',', '.') . ' + IVA ' . config('app.iva').'%';
+
+                if($this->company->nazione == 'IT')
+                {
+                    return '€ ' . number_format($sum, '2', ',', '.') . ' + IVA ' . config('app.iva').'%';
+                }
+                else
+                {
+                    return '€ ' . number_format($sum, '2', ',', '.');
+                }
+
+
             }
         }
         return $sum;

@@ -5,8 +5,8 @@ namespace KillerQuote;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
-use KillerQuote\App\Models\KillerQuoteSetting;
-use KillerQuote\App\Observers\KillerQuoteSettingObserver;
+use KillerQuote\App\Models\{KillerQuoteSetting, KillerQuoteSettingLocale};
+use KillerQuote\App\Observers\{KillerQuoteSettingObserver, KillerQuoteSettingLocaleObserver};
 use GrofGraf\LaravelPDFMerger\Providers\PDFMergerServiceProvider;
 
 class KillerQuoteServiceProvider extends ServiceProvider
@@ -45,6 +45,7 @@ class KillerQuoteServiceProvider extends ServiceProvider
         ], 'killerquote.public');
 
         KillerQuoteSetting::observe(KillerQuoteSettingObserver::class);
+        KillerQuoteSettingLocale::observe(KillerQuoteSettingLocaleObserver::class);
         $this->createFolders();
     }
 
