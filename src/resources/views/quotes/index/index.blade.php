@@ -21,6 +21,7 @@
                         @endcan
                         @can('killerquotes.configure')
                             <a class="btn btn-default" href="{{url('killerquotes/settings')}}"><i class="fas fa-cog"></i></a>
+                            @include('killerquote::quotes.index.components.locale')
                         @endcan
                     </div>
 
@@ -71,7 +72,11 @@
                                         <td class="text-center">
                                             {!! Form::open(['method' => 'delete', 'url' => route('killerquotes.destroy', $quote->id), 'id' => "form-".$quote->id]) !!}
                                                 @can('killerquotes.read')
-                                                    <a target="_BLANK" href="{{ url("killerquotes/{$quote->id}/pdf") }}" title="Esporta PDF" class="btn btn-primary btn-icon btn-sm"><i class="fa fa-file-pdf"></i></a>
+                                                    @if($quote->company->lingua != 'it')
+                                                        @include('killerquote::quotes.index.components.pdf-locale')
+                                                    @else
+                                                        <a target="_BLANK" href="{{ url("killerquotes/{$quote->id}/pdf") }}" title="Esporta PDF" class="btn btn-primary btn-icon btn-sm"><i class="fa fa-file-pdf"></i></a>
+                                                    @endif
                                                 @endcan
                                                 @can('killerquotes.write')
                                                     <a href="{{ route('killerquotes.edit', $quote->id) }}" title="Modifica" class="btn btn-warning btn-icon btn-sm"><i class="fa fa-edit"></i></a>
