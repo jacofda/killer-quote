@@ -3,7 +3,6 @@
         <div class="row" style="margin-top:2cm;">
             <div class="col-xs-12">
                 {!! $settings['firma_txt']->value !!}
-                <br><br>
             </div>
             <div class="col-xs-6">
                 <p class="text-center">{{$base_settings->rag_soc}}</p>

@@ -39,7 +39,8 @@ class SettingsLocaleController extends Controller
         {
             $logo = Media::find($settings['logo']->value);
             File::copy($pathIta.'original/'.$logo->filename,$path.'original/'.$logo->filename);
-            $logo_id = $this->createMedia($logo->filename, $locale);
+            $logo = $this->createMedia($logo->filename, $locale);
+            $logo_id = $logo->id;
         }
 
         if($settings['firma_img']->value == '')
@@ -70,12 +71,12 @@ class SettingsLocaleController extends Controller
             ],
             [
                 'key' => 'perche_sceglierci',
-                'default' => [],
+                'default' => $settings['perche_sceglierci']->value,
                 'lang' => $locale
             ],
             [
                 'key' => 'metodi_pagamento',
-                'default' => [],
+                'default' => $settings['metodi_pagamento']->value,
                 'lang' => $locale
             ],
             [
@@ -85,7 +86,7 @@ class SettingsLocaleController extends Controller
             ],
             [
                 'key' => 'recensioni',
-                'default' => [],
+                'default' => $settings['recensioni']->value,
                 'lang' => $locale
             ],
             [
@@ -125,7 +126,7 @@ class SettingsLocaleController extends Controller
             ],
             [
                 'key' => 'cond_vendita',
-                'default' => "",
+                'default' => $settings['cond_vendita']->value,
                 'lang' => $locale
             ],
             [
@@ -146,7 +147,6 @@ class SettingsLocaleController extends Controller
         return true;
 
     }
-
     public function index($locale)
     {
         $response = true;

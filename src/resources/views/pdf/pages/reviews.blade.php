@@ -5,7 +5,7 @@
         }
 
         .reviews .bordered-box {
-            height: 7cm;
+            /* height: 7cm; */
             padding-top: 5mm;
             padding-bottom: 5mm;
         }

@@ -2,6 +2,10 @@
 
 @include('areaseb::layouts.elements.title', ['title' => 'Preventivi Killer'])
 
+@php
+    $activeLangs = \Areaseb\Core\Models\Setting::ActiveLangs();
+@endphp
+
 @section('content')
     <div class="row">
         <div class="col-12">
