@@ -45,7 +45,7 @@
                             <tr>
                                 <td class="text-left px-2">
                                     @if($item->product->nome)
-                                        <b>{{ $item->product->nome }}</b>
+                                        <b>{{ $item->product->name }}</b>
                                     @else
                                         <b>{{ $item->product->codice }}</b>
                                     @endif
