@@ -38,7 +38,6 @@ class SettingsLocaleController extends Controller
         else
         {
             $logo = Media::find($settings['logo']->value);
-            //return ['from' => $pathIta.'original/'.$logo->filename, 'to' => $path.'original/'.$logo->filename];
             File::copy($pathIta.'original/'.$logo->filename,$path.'original/'.$logo->filename);
             $logo_id = $this->createMedia($logo->filename, $locale);
         }

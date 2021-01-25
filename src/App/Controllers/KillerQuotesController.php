@@ -99,6 +99,8 @@ class KillerQuotesController extends Controller
             $merger->addPathToPDF($attachment, 'all', 'P');
         }
 
+        $filename = 'N'.$quote->numero.'--'.$quote->created_at->format('d-m-Y').'.pdf';
+        $merger->setFileName($filename);
         $merger->merge();
         return $merger->inline();
     }
