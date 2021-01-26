@@ -22,11 +22,11 @@
             <div class="col-xs-6 text-left">
                 <p>{{ $base_settings->rag_soc }}</p>
                 <p>
-                    @lang('pk.sede') {{ $base_settings->indirizzo }},
+                    @lang('killerquote::kq.sede') {{ $base_settings->indirizzo }},
                     {{ $base_settings->cap }} {{$base_settings->citta}} ({{$base_settings->provincia}})
                 </p>
                 <p>
-                    @lang('pk.cf') {{ $base_settings->cod_fiscale }} |  @lang('pk.piva') {{ $base_settings->piva}}
+                    @lang('killerquote::kq.cf') {{ $base_settings->cod_fiscale }} |  @lang('killerquote::kq.piva') {{ $base_settings->piva}}
                 </p>
                 <p>
                     Tel. {{ $base_settings->telefono }}
@@ -34,7 +34,7 @@
             </div>
             <div class="col-xs-6 text-right">
                 @if($base_settings->banca)
-                    <p>@lang('pk.banca') {{ $base_settings->banca }}</p>
+                    <p>@lang('killerquote::kq.banca') {{ $base_settings->banca }}</p>
                 @endif
                 @if($base_settings->IBAN)
                     <p>IBAN: {{ $base_settings->IBAN }}</p>
