@@ -107,6 +107,7 @@
         </div>
     </div>
 </div>
+
 @push('scripts')
     <script>
 
@@ -132,7 +133,7 @@
                 $('textarea.desc').val(response.descrizione);
                 $('button#addItem').prop('disabled', false);
 
-                if(extra.c_exception === null)
+                if(extra.c_exception !== null)
                 {
                     $('input#perc_iva').val(0);
                 }
@@ -398,7 +399,7 @@
                 if(validate())
                 {
                     $('textarea#itemsToForm').html(JSON.stringify(items));
-                    $('#killerQuoteForm').submit();
+                    $('#orderConfirmationForm').submit();
                 }
                 else {
                     console.log('Validation did not pass');
