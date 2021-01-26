@@ -132,9 +132,8 @@
                 $('textarea.desc').val(response.descrizione);
                 $('button#addItem').prop('disabled', false);
 
-                if(extra.c_exception)
+                if(extra.c_exception === null)
                 {
-                    $('select#esenzione').val(extra.c_exception).trigger('change.select2');
                     $('input#perc_iva').val(0);
                 }
                 else
@@ -143,15 +142,7 @@
                 }
                 if(extra.c_s1)
                 {
-                    $('input[name="sconto1"]').val(extra.c_s1);
-                }
-                if(extra.c_s2)
-                {
-                    $('input[name="sconto2"]').val(extra.c_s2);
-                }
-                if(extra.c_s3)
-                {
-                    $('input[name="sconto3"]').val(extra.c_s3);
+                    $('input[name="sconto"]').val(extra.c_s1);
                 }
             }
 
