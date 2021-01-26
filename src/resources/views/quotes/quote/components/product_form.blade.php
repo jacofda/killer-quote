@@ -107,16 +107,67 @@
         </div>
     </div>
 </div>
-
 @push('scripts')
     <script>
-
-        const BASEURL = "{{config('app.url')}}";
 
         (function() {
             var itemsChildren = [];
             var items = [];
             var itemsFromDB = ($('textarea#itemsToForm').val() != '') ? JSON.parse($('textarea#itemsToForm').val()) : [];
+
+            const getExtra = (response) => {
+                extra = {};
+                extra.c_exception = response.exemption_id+"";
+                extra.c_s1 = response.s1;
+                extra.c_s2 = response.s2;
+                extra.c_s3 = response.s3;
+                extra.locale = response.lingua;
+                return extra;
+            };
+
+
+            const processResult = (response, extra) => {
+                $('input#prezzo').val(response.prezzo);
+                $('input.codice').val(response.codice);
+                $('textarea.desc').val(response.descrizione);
+                $('button#addItem').prop('disabled', false);
+
+                if(extra.c_exception)
+                {
+                    $('select#esenzione').val(extra.c_exception).trigger('change.select2');
+                    $('input#perc_iva').val(0);
+                }
+                else
+                {
+                    $('input#perc_iva').val("22");
+                }
+                if(extra.c_s1)
+                {
+                    $('input[name="sconto1"]').val(extra.c_s1);
+                }
+                if(extra.c_s2)
+                {
+                    $('input[name="sconto2"]').val(extra.c_s2);
+                }
+                if(extra.c_s3)
+                {
+                    $('input[name="sconto3"]').val(extra.c_s3);
+                }
+            }
+
+            const addChildrenItems = (element) => {
+                item = new Item(
+                        element.product_id,
+                        element.product.nome,
+                        element.product.codice,
+                        element.descrizione,
+                        element.product.prezzo,
+                        element.perc_iva,
+                        parseInt(element.qta),
+                        1 - (element.sconto/100),
+                        element.sconto);
+                itemsChildren.push(item);
+            }
 
             class Item
             {
@@ -220,86 +271,59 @@
             }
             addItemsToTable(itemsFromDB);
 
-            let company = null;
+            let company = null;let extra = {};
             company = $('select[name="company_id"]').val();
+
             $('select[name="company_id"]').on('change', function(){
                 company = $('select[name="company_id"]').val();
-            })
+            });
+
 
 
             $("#products").on('select2:select', function(){
                 let prod_id = $(this).find(':selected').val();
 
-                if($('select[name="company_id"]').val() == ""){
-                    alertMe("Devi prima selezionare un'azienda")
+                if($('select[name="company_id"]').val() == "")
+                {
+                    err("Devi prima selezionare un'azienda")
+                    resetItemForm();
                     return false;
                 }
 
-
                 if($('button#addItem').hasClass('edit'))
                 {
-                    $.get( BASEURL+"api/products/"+$(this).find(':selected').val(), function( data ) {
+                    $.get( baseURL+"api/products/"+$(this).find(':selected').val(), function( data ) {
                         $('input.codice').val(data.codice);
                     });
                 }
                 else
                 {
-                    $.get( BASEURL+"api/products/"+$(this).find(':selected').val(), function( data ) {
-                        $('input#prezzo').val(data.prezzo);
-                        $('input#perc_iva').val("22");
-                        $('input.codice').val(data.codice);
-                        $('textarea.desc').val(data.descrizione);
-                        $('button#addItem').prop('disabled', false);
-                        //console.log(data);
-                        if(data.children !== null)
-                        {
-                            let cid = $('select[name="company_id"]').val();
+                    axios.get( baseURL+'api/companies/'+company+'/discount-exemption').then(function(resp1){
 
-                            $.get( BASEURL+"api/products/"+prod_id+"/children/"+cid, function( response ) {
-                                console.log(response);
+                        //get extra info from company
+                        extra = getExtra(resp1.data);
 
-                                response.forEach(function(element){
-                                    console.log(element);
-                                    item = new Item(
-                                            element.product_id,
-                                            element.product.nome,
-                                            element.product.codice,
-                                            element.descrizione,
-                                            element.product.prezzo,
-                                            element.perc_iva,
-                                            parseInt(element.qta),
-                                            1 - (element.sconto/100),
-                                            element.sconto);
-                                    itemsChildren.push(item);
+                        axios.get( baseURL+'api/products/'+prod_id+'/'+extra.locale ).then(function(resp2){
+
+                            //show process inf in table
+                            processResult(resp2.data, extra)
+
+                            if(resp2.data.children !== null)
+                            {
+                                axios.get( baseURL+"api/products/"+prod_id+"/children/"+company ).then(function(resp3){
+
+                                    //load children
+                                    resp3.data.forEach(function(element){
+                                        addChildrenItems(element)
+                                    });
+
                                 });
+                            }
 
-                            });
-                        }
-                    });
-                }
-
-                if(company)
-                {
-                    $.get( BASEURL+"api/companies/"+company+'/discount-exemption', function( data ) {
-                        let c_exemption = data.exemption_id;
-                        let c_s1 = data.s1;
-                        let c_s2 = data.s2;
-                        let c_s3 = data.s3;
-                        if(c_exemption)
-                        {
-                            $('select[name="exemption_id"]').val(c_exemption).trigger('change');
-                            $('input[name="perc_iva"]').val(0);
-                        }
-                        if(c_s1)
-                        {
-                            $('input[name="sconto"]').val(c_s1);
-                        }
-
+                        });
                     });
                 }
             });
-
-
 
             $('button#addItem').on('click', function(e){
                 e.preventDefault();
@@ -309,7 +333,7 @@
                 if(prezzo == '')
                 {
                     $('input#prezzo').addClass('is-invalid');
-                    alertMe('Il campo prezzo è obbligatorio');
+                    err('Il campo prezzo è obbligatorio');
                     $('input#prezzo').on('focusin', function(){
                         $(this).removeClass('is-invalid');
                     });
@@ -393,20 +417,12 @@
 
             const validate = () => {
                 if(items.length <= 0) {
-                    alertMe('Impossibile salvare il preventivo: non hai caricato nessuna voce.');
+                    err('Impossibile salvare il preventivo: non hai caricato nessuna voce.');
                     return false;
                 }
                 return true;
             }
 
-            const alertMe = (str) => {
-                new Noty({
-                    text: str,
-                    type: 'error',
-                    theme: 'bootstrap-v4',
-                    timeout: 4000,
-                }).show();
-            }
 
         })(jQuery);
     </script>
