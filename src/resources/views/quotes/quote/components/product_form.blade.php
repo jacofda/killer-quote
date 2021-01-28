@@ -399,7 +399,7 @@
                 if(validate())
                 {
                     $('textarea#itemsToForm').html(JSON.stringify(items));
-                    $('#orderConfirmationForm').submit();
+                    $('#killerQuoteForm').submit();
                 }
                 else {
                     console.log('Validation did not pass');
