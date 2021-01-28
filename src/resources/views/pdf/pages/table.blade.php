@@ -31,7 +31,7 @@
                     <tr>
                         <th>@lang('killerquote::kq.prodotto')</th>
                         <th>@lang('killerquote::kq.quantita')</th>
-                        <th>@lang('killerquote::kq.prezzo')</th>
+                        <th style="width:150px">@lang('killerquote::kq.prezzo')</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -54,13 +54,13 @@
                                     @endif
                                 </td>
                                 <td>{{ $item->qta }}</td>
-                                <td>€ {{ number_format($item->importo_scontato_con_iva, 2, ',', '.') }} <small> @lang('killerquote::kq.iva_inc')</small></td>
+                                <td>€ {{ number_format($item->importo_scontato_con_iva, 2, ',', '.') }} <small style="font-size:60%;"> @lang('killerquote::kq.iva_inc')</small></td>
                             </tr>
                         @endforeach
 
                         <tr class="total">
                             <td  class="total-label text-right">@lang('killerquote::kq.totale')</td>
-                            <td colspan="2">€ {{ number_format($sum, 2, ',', '.') }} <small> @lang('killerquote::kq.iva_inc')</small></td>
+                            <td colspan="2">€ {{ number_format($sum, 2, ',', '.') }} <small style="font-size:60%;"> @lang('killerquote::kq.iva_inc')</small></td>
                         </tr>
 
                     @else
