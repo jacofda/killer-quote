@@ -3,16 +3,27 @@
 namespace KillerQuote\App\Controllers;
 
 use Carbon\Carbon;
-use Deals\App\Models\{Deal, DealEvent, DealGenericQuote};
+use Deals\App\Models\Deal;
+use Deals\App\Models\DealEvent;
+use Deals\App\Models\DealGenericQuote;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\{Auth, Storage, Validator, View};
-use Areaseb\Core\Models\{Company, Event, Product, Setting};
-use KillerQuote\App\Models\{KillerQuote, KillerQuoteItem, KillerQuoteSetting, KillerQuoteSettingLocale};
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\View;
+use Areaseb\Core\Models\Event;
+use Areaseb\Core\Models\Company;
+use Areaseb\Core\Models\Product;
+use Areaseb\Core\Models\Setting;
+use KillerQuote\App\Models\KillerQuote;
+use KillerQuote\App\Models\KillerQuoteItem;
+use KillerQuote\App\Models\KillerQuoteSetting;
+use KillerQuote\App\Models\KillerQuoteSettingLocale;
 use GrofGraf\LaravelPDFMerger\Facades\PDFMergerFacade as PDFMerger;
+use \PDF;
 use Illuminate\Support\Facades\Schema;
 use KillerQuote\Mail\SendQuote;
-use \PDF;
 
 class KillerQuotesController extends Controller
 {

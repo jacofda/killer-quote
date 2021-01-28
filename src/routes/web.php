@@ -40,6 +40,7 @@ Route::group(['middleware' => ['web', 'auth']], function() {
     // Export PDF locale
     Route::get('killerquotes/{id}/pdf/{locale}', [KillerQuotesController::class, 'pdfLocale']);
 
+    Route::post('killerquotes/{id}/send-pdf', [KillerQuotesController::class, 'sendPdf'])->name('killequotes.sendPdf');
 
     // Resource
     Route::post('killerquotes/{quote}/duplicate', [KillerQuotesController::class, 'duplicate'])->name('killerquotes.duplicate');

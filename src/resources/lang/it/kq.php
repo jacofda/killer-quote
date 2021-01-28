@@ -9,7 +9,7 @@ return [
     'spet' => 'Spett.',
     'trattativa' => 'RIEPILOGO TRATTATIVA',
     'bonus' => 'Bonus',
-    'preventivo_economico' => 'PREVENTIVO ECONOMICO',
+    'preventivo_economico' => 'PROPOSTA DEFINITIVA DI VALORE',
     'prodotto' => 'Prodotto',
     'quantita' => 'Quantità',
     'prezzo' => 'Prezzo',
@@ -28,4 +28,5 @@ return [
     'iva_inc' => 'IVA inc.',
     'cond_vendita' => 'Condizioni di Vendita',
     'privacy' => 'PRIVACY POLICY',
+    'grazie' => 'Grazie'
 ];

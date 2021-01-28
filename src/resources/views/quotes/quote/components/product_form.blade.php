@@ -17,7 +17,7 @@
                     <div class="form-group row">
                         <label class="col-sm-4 col-form-label">Descrizione</label>
                         <div class="col-sm-8">
-                            {!! Form::textarea('descrizione', null, ['class' => 'form-control desc', 'rows' => 1, 'maxlength' => 999]) !!}
+                            {!! Form::textarea('descrizione', null, ['class' => 'form-control desc', 'rows' => 6, 'maxlength' => 999]) !!}
                         </div>
                     </div>
                 </div>
@@ -26,7 +26,7 @@
 
                     <div class="row">
 
-                        <div class="col-sm-12 col-xl-7">
+                        <div class="col-sm-12">
                             <div class="form-group row">
                                 <label class="col-sm-4 col-form-label">Quantità</label>
                                 <div class="col-sm-8">
@@ -41,7 +41,7 @@
                             </div>
                         </div>
 
-                        <div class="col-sm-12 col-xl-5">
+                        <div class="col-sm-12">
 
                             <div class="form-group row">
                                 <label class="col-sm-4 col-form-label">Sconto</label>
@@ -51,7 +51,7 @@
                                             <div class="input-group">
                                                 {!! Form::text('sconto', null, ['class' => 'form-control input-decimal']) !!}
                                                 <div class="input-group-append">
-                                                    <span class="input-group-text input-group-text-sm" id="basic-addon2">%</span>
+                                                    <span class="input-group-text input-group-text-sm" id="basic-addon2">00.00%</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -64,12 +64,12 @@
 
 
                     <div class="row">
-                        <div class="col-sm-12 col-xl-7">
+                        <div class="col-sm-12">
 
                             <div class="form-group row">
                                 <label class="col-sm-4 col-form-label">Prezzo*</label>
                                 <div class="col-sm-8">
-                                    <div class="input-group xl-ml-5">
+                                    <div class="input-group">
                                         {!! Form::text('prezzo', null, ['class' => 'form-control input-decimal', 'id' => 'prezzo']) !!}
                                         <div class="input-group-append">
                                             <span class="input-group-text input-group-text-sm" id="basic-addon2">00.00€</span>
@@ -79,7 +79,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-12 col-xl-5">
+                        <div class="col-sm-12">
 
                             <div class="form-group row">
                                 <label class="col-sm-4 col-form-label">IVA*</label>
