@@ -539,6 +539,7 @@ class KillerQuotesController extends Controller
             $company->nazione = $contact->nazione;
             $company->lingua = $contact->lingua;
             $company->email = $contact->email;
+            $company->privato = 1;
         $company->save();
 
         $contact->company_id = $company->id;
