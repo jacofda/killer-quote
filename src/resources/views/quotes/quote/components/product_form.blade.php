@@ -132,8 +132,7 @@
                 $('input.codice').val(response.codice);
                 $('textarea.desc').val(response.descrizione);
                 $('button#addItem').prop('disabled', false);
-
-                if(extra.c_exception !== null)
+                if(extra.c_exception != 'null')
                 {
                     $('input#perc_iva').val(0);
                 }
