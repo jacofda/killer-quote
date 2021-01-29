@@ -30,24 +30,13 @@ class SettingsLocaleController extends Controller
 
         $settings = KillerQuoteSetting::assoc();
 
+        $logo = Media::find($settings['logo']->value);
+        File::copy($pathIta.'original/'.$logo->filename,$path.'original/'.$logo->filename);
+        $logo = $this->createMedia($logo->filename, $locale);
+        $logo_id = $logo->id;
 
-        if($settings['logo']->value == '')
-        {
-            return back()->with('error', 'Carica prima il logo nella versione Italiana');
-        }
-        else
-        {
-            $logo = Media::find($settings['logo']->value);
-            File::copy($pathIta.'original/'.$logo->filename,$path.'original/'.$logo->filename);
-            $logo = $this->createMedia($logo->filename, $locale);
-            $logo_id = $logo->id;
-        }
 
-        if($settings['firma_img']->value == '')
-        {
-            return back()->with('error', 'Carica prima la firma nella versione Italiana');
-        }
-        else
+        if($settings['firma_img']->value != '')
         {
             File::copy($pathIta.'original/'.$settings['firma_img']->value,$path.'original/'.$settings['firma_img']->value);
         }
@@ -149,6 +138,11 @@ class SettingsLocaleController extends Controller
     }
     public function index($locale)
     {
+        if(KillerQuoteSetting::assoc()['logo']->value == '')
+        {
+            return redirect('killerquotes')->with('error', 'Carica prima il logo nella versione Italiana');
+        }
+
         $response = true;
         if(!DB::table('killer_quote_settings_locale')->where('lang', $locale)->exists())
         {
@@ -160,8 +154,6 @@ class SettingsLocaleController extends Controller
             $settings = KillerQuoteSettingLocale::assocLocale($locale);
             return view('killerquote::settings.index-locale', compact('settings', 'locale'));
         }
-
-
     }
 
     public function update(Request $request, $locale)
