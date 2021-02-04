@@ -12,6 +12,7 @@ return [
     'preventivo_economico' => 'OFERTA ECONOMICA',
     'prodotto' => 'Producto',
     'quantita' => 'Cantidad',
+    'garanzie' => 'nuestras garantías',
     'prezzo' => 'Precio',
     'IVA' => 'VAT',
     '+_IVA' => '',

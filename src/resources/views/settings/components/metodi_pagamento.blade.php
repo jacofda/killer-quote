@@ -19,7 +19,7 @@
                 </div>
                 <div class="col-xs-12 col-md-4 col-vertical-center">
                     <div class="input-group">
-                        <input class="form-control input-decimal" placeholder="Sconto" value="{{ !empty($string['number']) ? number_format($string['number'], 2) : '' }}" name="metodi_pagamento_num[]" type="text">
+                        <input class="form-control input-decimal" placeholder="Sconto" value="{{ !empty($string['number']) ? number_format($string['number'], 2) : '0.00' }}" name="metodi_pagamento_num[]" type="text">
                         <div class="input-group-append">
                             <span class="input-group-text">00.00 %</span>
                             <button class="btn btn-danger float-right" data-action="delete"><i class="fas fa-trash"></i></button>
@@ -61,7 +61,7 @@
                     </div>
                     <div class="col-xs-12 col-md-4 col-vertical-center">
                         <div class="input-group">
-                            <input class="form-control input-decimal" placeholder="Sconto" name="metodi_pagamento_num[]" type="text" value="0">
+                            <input class="form-control input-decimal" placeholder="Sconto" name="metodi_pagamento_num[]" type="text" value="0.00">
                             <div class="input-group-append">
                                 <span class="input-group-text">00.00 %</span>
                                 <button class="btn btn-danger float-right" data-action="delete"><i class="fas fa-trash"></i></button>

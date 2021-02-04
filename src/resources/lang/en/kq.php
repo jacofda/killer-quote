@@ -11,6 +11,7 @@ return [
     'bonus' => 'Extras',
     'preventivo_economico' => 'ECONOMIC OFFER',
     'prodotto' => 'Product',
+    'garanzie' => 'Our guarantees',
     'quantita' => 'Quantity',
     'prezzo' => 'Price',
     'IVA' => 'VAT',

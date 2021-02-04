@@ -12,6 +12,7 @@ return [
     'preventivo_economico' => 'PROPOSTA DEFINITIVA DI VALORE',
     'prodotto' => 'Prodotto',
     'quantita' => 'Quantità',
+    'garanzie' => 'Le nostre garanzie',
     'prezzo' => 'Prezzo',
     'IVA' => 'IVA',
     '+_IVA' => '+ IVA',

@@ -12,6 +12,7 @@ return [
     'preventivo_economico' => 'WIRTSCHAFTLICHES ANGEBOT',
     'prodotto' => 'Produckt',
     'quantita' => 'Quantität',
+    'garanzie' => 'unsere Garantien',
     'prezzo' => 'Preis',
     'IVA' => 'MwSt',
     '+_IVA' => '',
