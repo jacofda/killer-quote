@@ -43,6 +43,10 @@
                             <tr>
                                 <th style="width:85px;">Numero</th>
                                 <th data-field="company_id" data-order="asc">Azienda <i class="fas fa-sort"></i></th>
+                                @if(\Illuminate\Support\Facades\Schema::hasTable('testimonials') || \Illuminate\Support\Facades\Schema::hasTable('agents'))
+                                    <th>Referente</th>
+                                    <th>Premio</th>
+                                @endif
                                 <th>Importo</th>
                                 <th data-field="data" data-order="asc" style="width: 150px;">Data <i class="fas fa-sort"></i></th>
                                 <th data-field="data_scadenza" data-order="asc" style="width: 150px;">Scadenza <i class="fas fa-sort"></i></th>
@@ -56,6 +60,33 @@
                                     <tr id="row-{{$quote->id}}">
                                         <td>{{$quote->numero}}</td>
                                         <td>{{$quote->company->rag_soc}}</td>
+
+                                        @if(\Illuminate\Support\Facades\Schema::hasTable('testimonials'))
+                                            @if($quote->company->testimonial()->exists())
+                                                <td>
+                                                    {{$quote->company->testimonial()->first()->contact->fullname}}
+                                                </td>
+                                                <td>
+                                                    € {{ number_format($quote->commissione, 2, ',', '.' )}}
+                                                </td>
+                                            @else
+                                                <td></td>
+                                                <td></td>
+                                            @endif
+                                        @elseif(\Illuminate\Support\Facades\Schema::hasTable('agents'))
+                                            @if($quote->company->agent()->exists())
+                                                <td>
+                                                    {{$quote->company->agent()->first()->contact->fullname}}
+                                                </td>
+                                                <td>
+                                                    € {{ number_format($quote->commissione, 2, ',', '.' )}}
+                                                </td>
+                                            @else
+                                                <td></td>
+                                                <td></td>
+                                            @endif
+                                        @endif
+
                                         <td>{{$quote->importo}}</td>
                                         <td>{{$quote->created_at->format('d/m/Y')}}</td>
                                         <td>{{$quote->expirancy_date->format('d/m/Y')}}</td>

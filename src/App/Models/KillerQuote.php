@@ -53,8 +53,47 @@ class KillerQuote extends Primitive
         return Calendar::firstOrCreate(['nome' => 'preventivi', 'user_id' => User::first()->id])->id;
     }
 
+    public function getCommissioneAttribute()
+    {
+        $sum = 0;
+        $company = $this->company;;
+        if($company->testimonial()->exists() || $company->agent()->exists())
+        {
+            if($company->testimonial()->exists())
+            {
+                $testimonial = $company->testimonial()->first();
+            }
+            else
+            {
+                $testimonial = $company->agent()->first();
+            }
 
-    public function getImportoAttribute()
+            foreach($this->items as $item)
+            {
+                if($item->product->perc_agente > 0)
+                {
+                    $perc = ($item->product->perc_agente + ($item->product->perc_agente*($testimonial->commission/100)))/100;
+                }
+                else
+                {
+                    $perc = $testimonial->commission/100;
+                }
+
+                if($company->privato)
+                {
+                    $sum += ($item->importo_scontato_con_iva*$item->qta)*$perc;
+                }
+                else
+                {
+                    $sum += ($item->importo_scontato*$item->qta)*$perc;
+                }
+            }
+        }
+        return $sum;
+
+    }
+
+    public function getCleanImportoAttribute()
     {
         $sum = 0;
         if($this->items()->exists())
@@ -65,7 +104,7 @@ class KillerQuote extends Primitive
                 {
                     $sum += $item->importo_scontato_con_iva*$item->qta;
                 }
-                return '€ ' . number_format($sum, '2', ',', '.');
+                return $sum;
             }
             else
             {
@@ -73,17 +112,28 @@ class KillerQuote extends Primitive
                 {
                     $sum += $item->importo_scontato*$item->qta;
                 }
+                return $sum;
+            }
+        }
+        return $sum;
+    }
 
-                if($this->company->nazione == 'IT')
-                {
-                    return '€ ' . number_format($sum, '2', ',', '.') . ' + IVA ' . config('app.iva').'%';
-                }
-                else
-                {
-                    return '€ ' . number_format($sum, '2', ',', '.');
-                }
-
-
+    public function getImportoAttribute()
+    {
+        $sum = $this->clean_importo;
+        if($this->company->privato)
+        {
+            return '€ ' . number_format($sum, '2', ',', '.');
+        }
+        else
+        {
+            if($this->company->nazione == 'IT')
+            {
+                return '€ ' . number_format($sum, '2', ',', '.') . ' + IVA ' . config('app.iva').'%';
+            }
+            else
+            {
+                return '€ ' . number_format($sum, '2', ',', '.');
             }
         }
         return $sum;
@@ -93,6 +143,20 @@ class KillerQuote extends Primitive
     public static function filter($data)
     {
         $query = self::with('company');
+
+
+        if(auth()->user()->hasRole('testimonial'))
+        {
+            $ids = \DB::table('testimonial_company')->where('testimonial_id', auth()->user()->testimonial->id)->pluck('company_id')->toArray();
+            $query = $query->whereIn('company_id', $ids);
+        }
+
+        if(auth()->user()->hasRole('agent'))
+        {
+            $ids = \DB::table('agent_company')->where('agent_id', auth()->user()->agent->id)->pluck('company_id')->toArray();
+            $query = $query->whereIn('company_id', $ids);
+        }
+
 
         if($data->has('anno'))
         {
