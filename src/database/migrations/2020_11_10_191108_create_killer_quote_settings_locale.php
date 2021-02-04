@@ -15,7 +15,7 @@ class CreateKillerQuoteSettingsLocale extends Migration
     {
         Schema::create('killer_quote_settings_locale', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('key')->index()->unique();
+            $table->string('key');
             $table->longText('value');
             $table->char('lang', 2);
             $table->dateTime('updated_at')->nullable()->default(null);
