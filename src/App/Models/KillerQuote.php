@@ -62,32 +62,49 @@ class KillerQuote extends Primitive
             if($company->testimonial()->exists())
             {
                 $testimonial = $company->testimonial()->first();
+
+
+                foreach($this->items as $item)
+                {
+                    if($item->product->perc_agente > 0)
+                    {
+                        $perc = ($item->product->perc_agente + ($item->product->perc_agente*($testimonial->commission/100)))/100;
+                    }
+                    else
+                    {
+                        $perc = $testimonial->commission/100;
+                    }
+                    if($company->privato)
+                    {
+                        $sum += ($item->importo_scontato_con_iva*$item->qta)*$perc;
+                    }
+                    else
+                    {
+                        $sum += ($item->importo_scontato*$item->qta)*$perc;
+                    }
+                }
+
             }
             else
             {
                 $testimonial = $company->agent()->first();
-            }
 
-            foreach($this->items as $item)
-            {
-                if($item->product->perc_agente > 0)
-                {
-                    $perc = ($item->product->perc_agente + ($item->product->perc_agente*($testimonial->commission/100)))/100;
-                }
-                else
+                foreach($this->items as $item)
                 {
                     $perc = $testimonial->commission/100;
+                    if($company->privato)
+                    {
+                        $sum += ($item->importo_scontato_con_iva*$item->qta)*$perc;
+                    }
+                    else
+                    {
+                        $sum += ($item->importo_scontato*$item->qta)*$perc;
+                    }
                 }
 
-                if($company->privato)
-                {
-                    $sum += ($item->importo_scontato_con_iva*$item->qta)*$perc;
-                }
-                else
-                {
-                    $sum += ($item->importo_scontato*$item->qta)*$perc;
-                }
             }
+
+
         }
         return $sum;
 
