@@ -103,7 +103,7 @@ class QuotesRun extends Command
 
         if(Schema::hasTable('deals'))
         {
-            $dg = Deal::all();
+            $dg = \Deals\App\Models\Deal::all();
             $generic = collect();
             foreach($dg as $d)
             {
