@@ -40,12 +40,15 @@ class KillerQuote extends Primitive
         return $this->hasMany(KillerQuoteItem::class, "invoice_id");
     }
 
-    public static function getLastNumber() {
-        $now = Carbon::now();
-        $last = self::whereYear('created_at', $now->format('Y'))->orderBy('numero', 'DESC')->first();
-        if(!$last)
-            return 0;
-        return $last->numero;
+    public static function getLastNumber()
+    {
+        $max_killer = self::whereYear('created_at', date('Y'))->max('numero');
+        $max_generic = 0;
+        if(class_exists('Deals\App\Models\DealGenericQuote'))
+        {
+            $max_generic = \Deals\App\Models\DealGenericQuote::whereYear('created_at', date('Y'))->max('numero');
+        }
+        return max($max_killer, $max_generic) + 1;
     }
 
     public static function Calendar()
@@ -103,8 +106,6 @@ class KillerQuote extends Primitive
                 }
 
             }
-
-
         }
         return $sum;
 
@@ -132,12 +133,16 @@ class KillerQuote extends Primitive
                 return $sum;
             }
         }
+        if($this->importo)
+        {
+            return $this->attributes['importo'];
+        }
         return $sum;
     }
 
     public function getImportoAttribute()
     {
-        $sum = $this->clean_importo;
+        $sum = $this->attributes['importo'];
         if($this->company->privato)
         {
             return '€ ' . number_format($sum, '2', ',', '.');
@@ -212,10 +217,15 @@ class KillerQuote extends Primitive
         if($data->has('expired'))
         {
             $expired = $data->get('expired');
-            if($expired)
+            if($expired == 1)
+            {
                 $query = $query->where('expirancy_date', '<', Carbon::now()->format('Y-m-d'));
-            elseif($expired !== '')
+            }
+            elseif($expired == 0)
+            {
                 $query = $query->where('expirancy_date', '>=', Carbon::now()->format('Y-m-d'));
+            }
+
         }
 
         if($data->get('sort'))

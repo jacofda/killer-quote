@@ -8,6 +8,8 @@ use Illuminate\Support\ServiceProvider;
 use KillerQuote\App\Models\{KillerQuoteSetting, KillerQuoteSettingLocale};
 use KillerQuote\App\Observers\{KillerQuoteSettingObserver, KillerQuoteSettingLocaleObserver};
 use GrofGraf\LaravelPDFMerger\Providers\PDFMergerServiceProvider;
+use Illuminate\Console\Scheduling\Schedule;
+use KillerQuote\Commands\QuotesRun;
 
 class KillerQuoteServiceProvider extends ServiceProvider
 {
@@ -19,6 +21,7 @@ class KillerQuoteServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->commands([QuotesRun::class]);
     }
 
     /**
@@ -47,6 +50,12 @@ class KillerQuoteServiceProvider extends ServiceProvider
         KillerQuoteSetting::observe(KillerQuoteSettingObserver::class);
         KillerQuoteSettingLocale::observe(KillerQuoteSettingLocaleObserver::class);
         $this->createFolders();
+
+
+        $this->callAfterResolving(Schedule::class, function (Schedule $schedule) {
+            $schedule->command('quotes:run')->dailyAt('00.02');
+        });
+
     }
 
     private function createFolders() {

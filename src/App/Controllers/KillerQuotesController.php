@@ -8,7 +8,7 @@ use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, Storage, Validator, View};
 use Areaseb\Core\Models\{Company, Event, Product, Setting};
-use KillerQuote\App\Models\{KillerQuote, KillerQuoteItem, KillerQuoteSetting, KillerQuoteSettingLocale};
+use KillerQuote\App\Models\{Quote, KillerQuote, KillerQuoteItem, KillerQuoteSetting, KillerQuoteSettingLocale};
 use GrofGraf\LaravelPDFMerger\Facades\PDFMergerFacade as PDFMerger;
 use Illuminate\Support\Facades\Schema;
 use KillerQuote\Mail\SendQuote;
@@ -16,9 +16,72 @@ use \PDF;
 
 class KillerQuotesController extends Controller
 {
+
     public function index()
     {
-        $quotes = KillerQuote::filter(request())->orderBy('id', 'DESC')->paginate(50);
+        $collection = collect();
+
+        $killer = KillerQuote::filter(request())->get();
+        $collection = $collection->concat($killer);
+        if(Schema::hasTable('deals'))
+        {
+            $generic = collect();
+            if(request()->has('company'))
+            {
+                $dg = Deal::where('company_id', request('company'))->get();
+            }
+            else
+            {
+                $dg = Deal::all();
+            }
+
+            foreach($dg as $d)
+            {
+                $gq = $d->events()->where('type',1)->pluck('dealable_id')->toArray();
+
+                if(count($gq))
+                {
+                    $queryDGQ = DealGenericQuote::whereIn('id',$gq);
+                    if(request()->has('expired'))
+                    {
+                        if(is_null(request('expired')))
+                        {
+                        }
+                        elseif(intval(request('expired')) === 1)
+                        {
+                            $queryDGQ = $queryDGQ->where('expirancy_date', '<', Carbon::now()->format('Y-m-d'));
+                        }
+                        elseif(intval(request('expired')) === 0)
+                        {
+                            $queryDGQ = $queryDGQ->where('expirancy_date', '>=', Carbon::now()->format('Y-m-d'));
+                        }
+                    }
+
+                    foreach($queryDGQ->get() as $q)
+                    {
+                        $col = collect();
+                        $col->media_id = $q->media_id;
+                        $col->filename = $q->media()->first()->filename;
+                        $col->accepted = $q->accepted;
+                        $col->numero = $q->numero;
+                        $col->expirancy_date = $q->expirancy_date;
+                        $col->created_at = $q->created_at;
+                        $col->company_id = $d->company_id;
+                        $col->company = $d->company->rag_soc;
+                        $col->id = $q->id;
+                        $col->importo = $q->importo;
+                        $col->deal = $d->id;
+                        $generic->push($col);
+                    }
+                }
+
+            }
+            $collection = $collection->concat($generic);
+        }
+
+        $quotes = $collection->all();
+
+// dd($quotes);
         return view('killerquote::quotes.index.index', compact('quotes'));
     }
 
@@ -137,6 +200,14 @@ class KillerQuotesController extends Controller
         if(!empty($data['deal_id']))
             $this->attachToDeal($quote, $data['deal_id']);
 
+        $quote->update(['importo' => $quote->clean_importo]);
+
+        $company = Company::find($request->company_id);
+        if($company->clients()->first()->id == 1)
+        {
+            $company->clients()->sync(2);
+        }
+
         return redirect(route('killerquotes.index'))->with('message', 'Preventivo Creato');
     }
 
@@ -254,6 +325,8 @@ class KillerQuotesController extends Controller
             $this->attachToDeal($quote, $data['deal_id']);
         }
 
+        $quote->update(['importo' => $quote->clean_importo]);
+
         return redirect(route('killerquotes.edit', $quote->id))->with('message', 'Preventivo Salvato');
     }
 
@@ -269,11 +342,14 @@ class KillerQuotesController extends Controller
         {
             $event->delete();
         }
-
-        foreach($quote->items as $item)
+        if($quote->items()->exists())
         {
-            $item->delete();
+            foreach($quote->items as $item)
+            {
+                $item->delete();
+            }
         }
+
 
         if( Schema::hasTable('deal_events'))
         {
@@ -352,21 +428,28 @@ class KillerQuotesController extends Controller
     public function sendPdf(Request $request, $id)
     {
         $quote = KillerQuote::find($id);
-        if($quote->company->lingua == 'it')
+        if(is_null($quote->filename))
         {
-            $pdf = $this->generatePdfIta($quote);
-            $fileWithPath = storage_path('app/public/killerquotes/pdf/'.$order->id.'/preventivo.pdf');
+            if($quote->company->lingua == 'it')
+            {
+                $pdf = $this->generatePdfIta($quote);
+                $fileWithPath = storage_path('app/public/killerquotes/pdf/'.$quote->id.'/preventivo.pdf');
+            }
+            else
+            {
+                $pdf = $this->generatePdf($quote, $quote->company->lingua);
+                $fileWithPath = storage_path('app/public/killerquotes/pdf/'.$quote->company->lingua.'/'.$quote->id.'/preventivo.pdf');
+            }
+            if (file_exists($fileWithPath))
+            {
+                unlink($fileWithPath);
+            }
+            $pdf->save($fileWithPath);
         }
         else
         {
-            $pdf = $this->generatePdf($quote, $quote->company->lingua);
-            $fileWithPath = storage_path('app/public/killerquotes/pdf/'.$quote->company->lingua.'/'.$quote->id.'/preventivo.pdf');
+            $fileWithPath = storage_path('app/public/killerquotes/original/'.$quote->filename);
         }
-        if (file_exists($fileWithPath))
-        {
-            unlink($fileWithPath);
-        }
-        $pdf->save($fileWithPath);
 
         $mailer = app()->makeWith('custom.mailer', Setting::smtp(0));
         try
@@ -378,6 +461,7 @@ class KillerQuotesController extends Controller
         {
             return back()->with('error', $e->getMessage());
         }
+
     }
 
     private function generatePdfIta($quote)

@@ -25,7 +25,7 @@
                         </div>
 
                         @can('killerquotes.write')
-                            <a class="btn btn-primary" href="{{route('quotes.create')}}"><i class="fas fa-plus"></i> PDF</a>
+                            <a class="btn btn-primary" href="{{route('quotes.create')}}"><i class="fas fa-plus"></i> Semplice</a>
                             <a class="btn btn-primary" href="{{route('killerquotes.create')}}"><i class="fas fa-plus"></i> Killer</a>
                         @endcan
                         @can('killerquotes.configure')
@@ -39,26 +39,21 @@
 
                     @include('killerquote::quotes.index.components.search')
                     <div class="table-responsive">
-                        <div style="position:relative">
-                            <div style="position:absolute;">
-                                <span class="btn btn-warning btn-sm text-warning">CIA</span> = scaduti
-                            </div>
-                        </div>
-                        <table id="table" class="table table-sm table-font-xs table-bordered table-striped">
+                        <table id="table" class="table table-sm table-font-xs table-bordered table-striped table-php">
                             <thead>
                             <tr>
                                 <th style="width:85px;">Numero</th>
-                                <th>Azienda</th>
+                                <th data-field="company_id" data-order="asc">Azienda <i class="fas fa-sort"></i></th>
                                 @if(\Illuminate\Support\Facades\Schema::hasTable('testimonials') || \Illuminate\Support\Facades\Schema::hasTable('agents'))
                                     <th>Referente</th>
                                     <th>Premio</th>
                                 @endif
-                                <th>Importo</th>
-                                <th>Data</th>
-                                <th>Scadenza</th>
+                                <th data-field="importo" data-order="asc">Importo <i class="fas fa-sort"></i></th>
+                                <th data-field="data" data-order="asc" style="width: 150px;">Data <i class="fas fa-sort"></i></th>
+                                <th data-field="data_scadenza" data-order="asc" style="width: 150px;">Scadenza <i class="fas fa-sort"></i></th>
                                 {{-- <th style="width: 90px;">Attivo </th> --}}
-                                <th>Accettato </th>
-                                <th data-sortable="false"></th>
+                                <th style="width: 90px;">Accettato </th>
+                                <th style="width: 181px;"></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -66,44 +61,18 @@
 
                                     @php
                                         $bg = '';
-                                        if( ( $quote->expirancy_date->lt(\Carbon\Carbon::now()) ) && (is_null($quote->accepted)) )
+                                        if( ( $quote->expirancy_date->lt(\Carbon\Carbon::now()) ) && ($quote->accepted !== 1) )
                                         {
                                             $bg = 'bg-warning';
                                         }
-
-                                        if($quote->accepted === null)
-                                        {
-                                            $sort = 1;
-                                            $badge = '<span class="badge badge-default">In attesa</span>';
-                                        }
-                                        else
-                                        {
-                                            if($quote->accepted)
-                                            {
-                                                $sort = 2;
-                                                $badge = '<span class="badge badge-success">Accettato</span>';
-                                            }
-                                            else
-                                            {
-                                                $sort = 3;
-                                                $badge = '<span class="badge badge-danger">Rifiutato</span>';
-                                            }
-                                        }
-
                                     @endphp
 
                                     <tr id="row-{{$quote->id}}">
                                         <td class="{{$bg}}">{{$quote->numero}}</td>
-                                        <td class="{{$bg}}">
-                                            @if(isset($quote->deal))
-                                                {{$quote->company}}
-                                            @else
-                                                {{$quote->company->rag_soc}}
-                                            @endif
-                                        </td>
+                                        <td class="{{$bg}}">{{$quote->company->rag_soc}}</td>
 
                                         @if(\Illuminate\Support\Facades\Schema::hasTable('testimonials'))
-                                            @if($quote->company->testimonial()->exists() && (isset($quote->deal)))
+                                            @if($quote->company->testimonial()->exists())
                                                 <td class="{{$bg}}">
                                                     {{$quote->company->testimonial()->first()->contact->fullname}}
                                                 </td>
@@ -115,7 +84,7 @@
                                                 <td class="{{$bg}}"></td>
                                             @endif
                                         @elseif(\Illuminate\Support\Facades\Schema::hasTable('agents'))
-                                            @if($quote->company->agent()->exists() && (isset($quote->deal)))
+                                            @if($quote->company->agent()->exists())
                                                 <td class="{{$bg}}">
                                                     {{$quote->company->agent()->first()->contact->fullname}}
                                                 </td>
@@ -127,63 +96,70 @@
                                                 <td class="{{$bg}}"></td>
                                             @endif
                                         @endif
-                                        @if(isset($quote->deal))
-                                            <td data-order="{{$quote->importo}}" class="{{$bg}}">€{{number_format($quote->importo, 2, ',', '.')}}</td>
-                                        @else
-                                            <td data-order="{{$quote->clean_importo}}" class="{{$bg}}">{{$quote->importo}}</td>
-                                        @endif
-                                        <td data-order="{{$quote->created_at->timestamp}}" class="{{$bg}}" >{{$quote->created_at->format('d/m/Y')}}</td>
-                                        <td data-order="{{$quote->expirancy_date->timestamp}}">{{$quote->expirancy_date->format('d/m/Y')}}</td>
-                                        <td data-order="{{$sort}}" class="text-center">
-                                            {!!$badge!!}
+
+                                        <td class="{{$bg}}">{{$quote->importo}}</td>
+                                        <td class="{{$bg}}">{{$quote->created_at->format('d/m/Y')}}</td>
+                                        <td>{{$quote->expirancy_date->format('d/m/Y')}}</td>
+                                        {{-- <td class="text-center">
+                                            @if($quote->expirancy_date < \Carbon\Carbon::now())
+                                                <span class="badge badge-warning">Scaduto</span>
+                                            @else
+                                                <span class="badge badge-success">Attivo</span>
+                                            @endif
+                                        </td> --}}
+                                        <td class="text-center">
+                                            @if($quote->accepted === null)
+                                                <span class="badge badge-default">In attesa</span>
+                                            @else
+                                                @if($quote->accepted)
+                                                    <span class="badge badge-success">Accettato</span>
+                                                @else
+                                                    <span class="badge badge-danger">Rifiutato</span>
+                                                @endif
+                                            @endif
                                         </td>
                                         <td class="text-center">
-                                            @if(!isset($quote->deal))
-                                                {!! Form::open(['method' => 'delete', 'url' => route('killerquotes.destroy', $quote->id), 'id' => "form-".$quote->id]) !!}
-                                                    @can('killerquotes.read')
-                                                        @if(is_null($quote->filename))
-                                                            @if($quote->company->lingua != 'it')
-                                                                @include('killerquote::quotes.index.components.pdf-locale')
-                                                            @else
-                                                                <a target="_BLANK" href="{{ url("killerquotes/{$quote->id}/pdf") }}" title="Esporta PDF" class="btn btn-primary btn-icon btn-sm"><i class="fa fa-file-pdf"></i></a>
-                                                            @endif
+                                            {!! Form::open(['method' => 'delete', 'url' => route('killerquotes.destroy', $quote->id), 'id' => "form-".$quote->id]) !!}
+                                                @can('killerquotes.read')
+                                                    @if(is_null($quote->filename))
+                                                        @if($quote->company->lingua != 'it')
+                                                            @include('killerquote::quotes.index.components.pdf-locale')
                                                         @else
-                                                            <a target="_BLANK" href="{{ config('app.url') }}storage/killerquotes/original/{{$quote->filename}}" title="Apri PDF" class="btn btn-primary btn-icon btn-sm"><i class="fa fa-file-pdf"></i></a>
-                                                            <a href="{{route('quotes.edit', $quote->id)}}" title="modifica" class="btn btn-warning btn-icon btn-sm"><i class="fa fa-edit"></i></a>
+                                                            <a target="_BLANK" href="{{ url("killerquotes/{$quote->id}/pdf") }}" title="Esporta PDF" class="btn btn-primary btn-icon btn-sm"><i class="fa fa-file-pdf"></i></a>
                                                         @endif
-                                                    @endcan
-                                                    @can('killerquotes.write')
-                                                        <a href="#" title="Invia al cliente" data-numero="{{$quote->numero}}" data-date="{{$quote->created_at->format('d/m/Y')}}" data-id="{{$quote->id}}" data-company="{{$quote->company->rag_soc}}" class="btn btn-info btn-icon btn-sm sendQuote"><i class="far fa-paper-plane"></i></a>
-                                                        @if(is_null($quote->filename))
-
-                                                            <a href="{{ route('killerquotes.edit', $quote->id) }}" title="Modifica" class="btn btn-warning btn-icon btn-sm"><i class="fa fa-edit"></i></a>
-                                                            <a href="#" title="Duplica" class="btn btn-secondary btn-icon btn-sm btn-duplicate" data-id="{{$quote->id}}"><i class="fa fa-clone"></i></a>
-                                                        @endif
-                                                    @endcan
-                                                    @if($quote->accepted !== 1)
-                                                        @can('killerquotes.delete')
-                                                            <button type="submit" id="{{$quote->id}}" title="Elimina" class="btn btn-danger btn-icon btn-sm delete"><i class="fa fa-trash"></i></button>
-                                                        @endcan
+                                                    @else
+                                                        <a target="_BLANK" href="{{ config('app.url') }}storage/killerquotes/original/{{$quote->filename}}" title="Apri PDF" class="btn btn-primary btn-icon btn-sm"><i class="fa fa-file-pdf"></i></a>
                                                     @endif
-                                                {!! Form::close() !!}
+                                                @endcan
+                                                @can('killerquotes.write')
+                                                    @if(is_null($quote->filename))
+                                                        <a href="#" title="Invia al cliente" data-numero="{{$quote->numero}}" data-date="{{$quote->created_at->format('d/m/Y')}}" data-id="{{$quote->id}}" data-company="{{$quote->company->rag_soc}}" class="btn btn-info btn-icon btn-sm sendQuote"><i class="far fa-paper-plane"></i></a>
+                                                        <a href="{{ route('killerquotes.edit', $quote->id) }}" title="Modifica" class="btn btn-warning btn-icon btn-sm"><i class="fa fa-edit"></i></a>
+                                                        <a href="#" title="Duplica" class="btn btn-secondary btn-icon btn-sm btn-duplicate" data-id="{{$quote->id}}"><i class="fa fa-clone"></i></a>
+                                                    @endif
+                                                @endcan
+                                                @if($quote->accepted !== 1)
+                                                    @can('killerquotes.delete')
+                                                        <button type="submit" id="{{$quote->id}}" title="Elimina" class="btn btn-danger btn-icon btn-sm delete"><i class="fa fa-trash"></i></button>
+                                                    @endcan
+                                                @endif
+                                            {!! Form::close() !!}
 
-                                                {!! Form::open(['url' => route('killerquotes.duplicate', $quote->id), 'id' => "duplica-".$quote->id, 'class' => 'd-none']) !!}
-                                                    <button type="submit" class="d-none">SUBMIT</button>
-                                                {!! Form::close() !!}
-                                            @else
-                                                <a target="_BLANK" href="{{ config('app.url') }}storage/deals/docs/{{$quote->filename}}" title="Apri PDF" class="btn btn-primary btn-icon btn-sm"><i class="fa fa-file-pdf"></i></a>
-                                                <a target="_BLANK" href="{{ route('deals.edit', $quote->deal)}}" title="vedi trattativa" class="btn btn-success btn-icon btn-sm"><i class="fas fa-handshake"></i></a>
-                                            @endif
+                                            {!! Form::open(['url' => route('killerquotes.duplicate', $quote->id), 'id' => "duplica-".$quote->id, 'class' => 'd-none']) !!}
+                                                <button type="submit" class="d-none">SUBMIT</button>
+                                            {!! Form::close() !!}
                                         </td>
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
+                        <div class="table-responsive">
 
-                        {{-- <div class="card-footer text-center">
+                        </div>
+                        <div class="card-footer text-center">
                             <p class="text-left text-muted">{{$quotes->count()}} di {{ $quotes->total() }} preventivi</p>
                             {{ $quotes->appends(request()->input())->links() }}
-                        </div> --}}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -223,31 +199,6 @@
 @section('scripts')
     <script src="{{asset('plugins/summernote/summernote-bs4.min.js')}}"></script>
     <script>
-
-    const tableOptions = {
-        aaSorting: [ [5,'asc'], [2,'desc'] ],
-        responsive: true,
-        autoWidth: false,
-        pageLength: 300,
-        bLengthChange : false,
-        language: {
-            search: '_INPUT_',
-            searchPlaceholder: 'Scrivi per filtrare...',
-            lengthMenu: '_MENU_',
-            info: "_START_ di _END_ su un totale di _TOTAL_ preventivi",
-            infoFiltered:   "(filtrati da _MAX_ totali)",
-            zeroRecords: "Non ci sono dati",
-            infoEmpty: "Non ci sono dati",
-            paginate: {
-                first:      "Primo",
-                previous:   "Prec",
-                next:       "Succ",
-                last:       "Ultimo"
-            },
-        }
-    }
-    //$('#table_length').css({display:none});
-    $('table#table').dataTable(tableOptions);
 
     const smOptions = {
             height: 180,

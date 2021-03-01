@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use KillerQuote\App\Controllers\QuotesController;
 use KillerQuote\App\Controllers\KillerQuotesController;
 use KillerQuote\App\Controllers\SettingsController;
 use KillerQuote\App\Controllers\SettingsLocaleController;
@@ -45,6 +46,8 @@ Route::group(['middleware' => ['web', 'auth']], function() {
     // Resource
     Route::post('killerquotes/{quote}/duplicate', [KillerQuotesController::class, 'duplicate'])->name('killerquotes.duplicate');
     Route::resource('killerquotes', KillerQuotesController::class);
+
+    Route::resource('quotes', QuotesController::class)->except('index');
 
     Route::post('contacts/make-company-and-quote', [KillerQuotesController::class, 'makeCompanyAndQuote'])->name('killerquotes.makeCompanyAndQuote');
 
