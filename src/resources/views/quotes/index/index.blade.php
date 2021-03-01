@@ -49,15 +49,18 @@
                             <tr>
                                 <th style="width:85px;">Numero</th>
                                 <th>Azienda</th>
+
+                                <th>Importo</th>
+                                <th>Data</th>
+                                <th>Scadenza</th>
+
+                                <th>Accettato </th>
+
                                 @if(\Illuminate\Support\Facades\Schema::hasTable('testimonials') || \Illuminate\Support\Facades\Schema::hasTable('agents'))
                                     <th>Referente</th>
                                     <th>Premio</th>
                                 @endif
-                                <th>Importo</th>
-                                <th>Data</th>
-                                <th>Scadenza</th>
-                                {{-- <th style="width: 90px;">Attivo </th> --}}
-                                <th>Accettato </th>
+
                                 <th data-sortable="false"></th>
                             </tr>
                             </thead>
@@ -102,6 +105,19 @@
                                             @endif
                                         </td>
 
+
+                                        @if(isset($quote->deal))
+                                            <td data-order="{{$quote->importo}}" class="{{$bg}}">€{{number_format($quote->importo, 2, ',', '.')}}</td>
+                                        @else
+                                            <td data-order="{{$quote->clean_importo}}" class="{{$bg}}">{{$quote->importo}}</td>
+                                        @endif
+                                        <td data-order="{{$quote->created_at->timestamp}}" class="{{$bg}}" >{{$quote->created_at->format('d/m/Y')}}</td>
+                                        <td data-order="{{$quote->expirancy_date->timestamp}}">{{$quote->expirancy_date->format('d/m/Y')}}</td>
+
+                                        <td data-order="{{$sort}}" class="text-center">
+                                            {!!$badge!!}
+                                        </td>
+
                                         @if(\Illuminate\Support\Facades\Schema::hasTable('testimonials'))
                                             @if($quote->company->testimonial()->exists() && (isset($quote->deal)))
                                                 <td class="{{$bg}}">
@@ -127,16 +143,7 @@
                                                 <td class="{{$bg}}"></td>
                                             @endif
                                         @endif
-                                        @if(isset($quote->deal))
-                                            <td data-order="{{$quote->importo}}" class="{{$bg}}">€{{number_format($quote->importo, 2, ',', '.')}}</td>
-                                        @else
-                                            <td data-order="{{$quote->clean_importo}}" class="{{$bg}}">{{$quote->importo}}</td>
-                                        @endif
-                                        <td data-order="{{$quote->created_at->timestamp}}" class="{{$bg}}" >{{$quote->created_at->format('d/m/Y')}}</td>
-                                        <td data-order="{{$quote->expirancy_date->timestamp}}">{{$quote->expirancy_date->format('d/m/Y')}}</td>
-                                        <td data-order="{{$sort}}" class="text-center">
-                                            {!!$badge!!}
-                                        </td>
+
                                         <td class="text-center">
                                             @if(!isset($quote->deal))
                                                 {!! Form::open(['method' => 'delete', 'url' => route('killerquotes.destroy', $quote->id), 'id' => "form-".$quote->id]) !!}
