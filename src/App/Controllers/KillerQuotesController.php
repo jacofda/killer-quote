@@ -59,7 +59,29 @@ class KillerQuotesController extends Controller
 
                     foreach($queryDGQ->get() as $q)
                     {
+
                         $col = collect();
+
+                        if(Schema::hasTable('testimonials'))
+                        {
+                            if($d->company->testimonial()->exists())
+                            {
+                                $testimonial = $d->company->testimonial()->first();
+                                $perc = $testimonial->commission/100;
+                                $col->commissione = round($q->importo*$perc, 2);
+                            }
+                        }
+
+                        if(Schema::hasTable('agents'))
+                        {
+                            if($d->company->agent()->exists())
+                            {
+                                $testimonial = $d->company->agent()->first();
+                                $perc = $testimonial->commission/100;
+                                $col->commissione = round($q->importo*$perc, 2);
+                            }
+                        }
+
                         $col->media_id = $q->media_id;
                         $col->filename = $q->media()->first()->filename;
                         $col->accepted = $q->accepted;
@@ -200,7 +222,7 @@ class KillerQuotesController extends Controller
         if(!empty($data['deal_id']))
             $this->attachToDeal($quote, $data['deal_id']);
 
-        $quote->update(['importo' => $quote->calculate_importo]);
+        $quote->update(['importo' => $quote->clean_importo]);
 
         $company = Company::find($request->company_id);
         if($company->clients()->first()->id == 1)
@@ -325,7 +347,7 @@ class KillerQuotesController extends Controller
             $this->attachToDeal($quote, $data['deal_id']);
         }
 
-        $quote->update(['importo' => $quote->calculate_importo]);
+        $quote->update(['importo' => $quote->clean_importo]);
 
         return redirect(route('killerquotes.edit', $quote->id))->with('message', 'Preventivo Salvato');
     }

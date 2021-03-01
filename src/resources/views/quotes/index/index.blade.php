@@ -118,30 +118,76 @@
                                             {!!$badge!!}
                                         </td>
 
-                                        @if(\Illuminate\Support\Facades\Schema::hasTable('testimonials'))
-                                            @if($quote->company->testimonial()->exists() && (isset($quote->deal)))
-                                                <td class="{{$bg}}">
-                                                    {{$quote->company->testimonial()->first()->contact->fullname}}
-                                                </td>
-                                                <td class="{{$bg}}">
-                                                    € {{ number_format($quote->commissione, 2, ',', '.' )}}
-                                                </td>
+
+
+                                        @if(isset($quote->deal))
+
+                                            @if(\Illuminate\Support\Facades\Schema::hasTable('testimonials') || \Illuminate\Support\Facades\Schema::hasTable('agents'))
+
+                                                @php
+                                                    $comp = \Areaseb\Core\Models\Company::where('rag_soc', $quote->company)->first();
+                                                    $test = null;
+                                                    if(\Illuminate\Support\Facades\Schema::hasTable('agents') && $comp->agent()->exists())
+                                                    {
+                                                        $test = $comp->agent()->first()->contact->fullname;
+                                                    }
+                                                    if(\Illuminate\Support\Facades\Schema::hasTable('testimonials') && $comp->testimonial()->exists())
+                                                    {
+                                                        if(is_null($test))
+                                                        {
+                                                            $test = $comp->testimonial()->first()->contact->fullname;
+                                                        }
+                                                    }
+                                                @endphp
+
+                                                @if($test)
+                                                    <td class="{{$bg}}">
+                                                        {{$test}}
+                                                    </td>
+                                                    <td class="{{$bg}}">
+                                                        € {{ number_format($quote->commissione, 2, ',', '.' )}}
+                                                    </td>
+                                                @else
+                                                    <td class="{{$bg}}"></td>
+                                                    <td class="{{$bg}}"></td>
+                                                @endif
+
+
                                             @else
                                                 <td class="{{$bg}}"></td>
                                                 <td class="{{$bg}}"></td>
                                             @endif
-                                        @elseif(\Illuminate\Support\Facades\Schema::hasTable('agents'))
-                                            @if($quote->company->agent()->exists() && (isset($quote->deal)))
-                                                <td class="{{$bg}}">
-                                                    {{$quote->company->agent()->first()->contact->fullname}}
-                                                </td>
-                                                <td class="{{$bg}}">
-                                                    € {{ number_format($quote->commissione, 2, ',', '.' )}}
-                                                </td>
-                                            @else
-                                                <td class="{{$bg}}"></td>
-                                                <td class="{{$bg}}"></td>
+
+
+                                        @else
+
+                                            @if(\Illuminate\Support\Facades\Schema::hasTable('testimonials'))
+                                                @if($quote->company->testimonial()->exists())
+                                                    <td class="{{$bg}}">
+                                                        {{$quote->company->testimonial()->first()->contact->fullname}}
+                                                    </td>
+                                                    <td class="{{$bg}}">
+                                                        € {{ number_format($quote->commissione, 2, ',', '.' )}}
+                                                    </td>
+                                                @else
+                                                    <td class="{{$bg}}"></td>
+                                                    <td class="{{$bg}}"></td>
+                                                @endif
+
+                                            @elseif(\Illuminate\Support\Facades\Schema::hasTable('agents'))
+                                                @if($quote->company->agent()->exists() && (isset($quote->deal)))
+                                                    <td class="{{$bg}}">
+                                                        {{$quote->company->agent()->first()->contact->fullname}}
+                                                    </td>
+                                                    <td class="{{$bg}}">
+                                                        € {{ number_format($quote->commissione, 2, ',', '.' )}}
+                                                    </td>
+                                                @else
+                                                    <td class="{{$bg}}"></td>
+                                                    <td class="{{$bg}}"></td>
+                                                @endif
                                             @endif
+
                                         @endif
 
                                         <td class="text-center">
@@ -187,10 +233,6 @@
                             </tbody>
                         </table>
 
-                        {{-- <div class="card-footer text-center">
-                            <p class="text-left text-muted">{{$quotes->count()}} di {{ $quotes->total() }} preventivi</p>
-                            {{ $quotes->appends(request()->input())->links() }}
-                        </div> --}}
                     </div>
                 </div>
             </div>
