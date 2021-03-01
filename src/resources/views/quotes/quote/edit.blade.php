@@ -80,3 +80,17 @@
     {!! Form::close() !!}
 @stop
 
+
+{!! Form::open(['url' => url('killerquotes/'.$quote->id.'/duplicate'), 'id' => 'duplica-'.$quote->id, 'class' => 'd-none']) !!}
+<button type="submit" class="d-none">SUBMIT</button>
+{!! Form::close() !!}
+
+@push('scripts')
+<script>
+    $('a.btn-duplicate').on('click', function(e){
+        e.preventDefault();
+        let f = $('form#duplica-'+$(this).attr('data-id'))[0];
+        f.submit();
+    });
+</script>
+@endpush

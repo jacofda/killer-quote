@@ -20,7 +20,19 @@
             </table>
         </div>
         <div class="card-footer p-0">
-            <button class="btn btn-success btn-block" id="save"><i class="fa fa-save"></i> Salva</button>
+
+            <div class="row">
+                @if(isset($quote))
+                    <div class="col">
+                        <a class="btn btn-secondary btn-block btn-duplicate" title="Duplica" data-id="{{$quote->id}}" href="#"><i class="fa fa-clone"></i> Duplica</a>
+                    </div>
+                @endif
+                <div class="col">
+                    <button class="btn btn-success btn-block" id="save"><i class="fa fa-save"></i> Salva</button>
+                </div>
+            </div>
+
+
                 @if(isset($quote) && $quote->items()->exists())
                     <textarea class="d-none" name="itemsToForm" id="itemsToForm">{!! $items !!}</textarea>
                 @else
