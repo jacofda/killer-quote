@@ -200,7 +200,7 @@ class KillerQuotesController extends Controller
         if(!empty($data['deal_id']))
             $this->attachToDeal($quote, $data['deal_id']);
 
-        $quote->update(['importo' => $quote->clean_importo]);
+        $quote->update(['importo' => $quote->calculate_importo]);
 
         $company = Company::find($request->company_id);
         if($company->clients()->first()->id == 1)
@@ -325,7 +325,7 @@ class KillerQuotesController extends Controller
             $this->attachToDeal($quote, $data['deal_id']);
         }
 
-        $quote->update(['importo' => $quote->clean_importo]);
+        $quote->update(['importo' => $quote->calculate_importo]);
 
         return redirect(route('killerquotes.edit', $quote->id))->with('message', 'Preventivo Salvato');
     }

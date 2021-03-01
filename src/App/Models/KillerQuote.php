@@ -111,7 +111,8 @@ class KillerQuote extends Primitive
 
     }
 
-    public function getCleanImportoAttribute()
+
+    public function getCalculateImportoAttribute()
     {
         $sum = 0;
         if($this->items()->exists())
@@ -133,11 +134,12 @@ class KillerQuote extends Primitive
                 return $sum;
             }
         }
-        if($this->importo)
-        {
-            return $this->attributes['importo'];
-        }
         return $sum;
+    }
+
+    public function getCleanImportoAttribute()
+    {
+        return $this->attributes['importo'];
     }
 
     public function getImportoAttribute()
