@@ -4,6 +4,6 @@
 {!!$body!!}
 
 
-@lang('killerquote::d.grazie'),<br>
+@lang('killerquote::kq.grazie'),<br>
 {{ config('app.name') }}
 @endcomponent
