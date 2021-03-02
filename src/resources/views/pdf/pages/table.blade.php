@@ -35,12 +35,12 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @php($sum = 0)
+                    @php ($sum = 0) @endphp
 
                     @if($quote->company->privato)
 
                         @foreach($quote->items as $item)
-                            @php($sum += ($item->importo_scontato_con_iva*$item->qta))
+                            @php $sum += ($item->importo_scontato_con_iva*$item->qta) @endphp
 
                             <tr>
                                 <td class="text-left px-2">
@@ -54,19 +54,38 @@
                                     @endif
                                 </td>
                                 <td>{{ $item->qta }}</td>
-                                <td>€ {{ number_format($item->importo_scontato_con_iva, 2, ',', '.') }} <small style="font-size:60%;"> @lang('killerquote::kq.iva_inc')</small></td>
+                                <td>€ {{ number_format($item->importo_scontato_con_iva, 2, ',', '.') }}</td>
                             </tr>
                         @endforeach
 
-                        <tr class="total">
-                            <td  class="total-label text-right">@lang('killerquote::kq.totale')</td>
-                            <td colspan="2">€ {{ number_format($sum, 2, ',', '.') }} <small style="font-size:60%;"> @lang('killerquote::kq.iva_inc')</small></td>
-                        </tr>
+
+                        @if($quote->sconto_value)
+                            <tr class="">
+                                <td class=" text-right"><b>@lang('killerquote::kq.totale')</b></td>
+                                <td colspan="2"><b>€ {{ number_format($sum, 2, ',', '.') }} <small style="font-size:60%;"> @lang('killerquote::kq.iva_inc')</small></b></td>
+                            </tr>
+                            <tr class="">
+                                <td  class=" text-right"><b>Extra Sconto</b></td>
+                                <td colspan="2"><b>{{$quote->sconto_value}} %</b></td>
+                            </tr>
+                            @php
+                                $discounted = $sum * (1-($quote->sconto_value/100));
+                            @endphp
+                            <tr class="total">
+                                <td  class="total-label text-right">Totale Scontato</td>
+                                <td colspan="2">€ {{ number_format($discounted, 2, ',', '.') }} <small style="font-size:60%;"> @lang('killerquote::kq.iva_inc')</small></td>
+                            </tr>
+                        @else
+                            <tr class="total">
+                                <td class="total-label text-right">@lang('killerquote::kq.totale')</td>
+                                <td colspan="2">€ {{ number_format($sum, 2, ',', '.') }} <small style="font-size:60%;"> @lang('killerquote::kq.iva_inc')</small></td>
+                            </tr>
+                        @endif
 
                     @else
 
                         @foreach($quote->items as $item)
-                            @php($sum += ($item->importo_scontato*$item->qta))
+                            @php $sum += ($item->importo_scontato*$item->qta) @endphp
                             <tr>
                                 <td class="text-left px-2">
                                     @if($item->product->name)
@@ -83,10 +102,28 @@
                             </tr>
                         @endforeach
 
-                        <tr class="total">
-                            <td class="total-label text-right">@lang('killerquote::kq.totale')</td>
-                            <td colspan="2">€ {{ number_format($sum, 2, ',', '.') }} <small>@lang('killerquote::kq.+_IVA')</small></td>
-                        </tr>
+                        @if($quote->sconto_value)
+                            <tr class="">
+                                <td class=" text-right"><b>@lang('killerquote::kq.totale')</b></td>
+                                <td colspan="2"><b>€ {{ number_format($sum, 2, ',', '.') }} <small style="font-size:60%;"> @lang('killerquote::kq.iva_inc')</small></b></td>
+                            </tr>
+                            <tr class="">
+                                <td  class=" text-right"><b>Extra Sconto</b></td>
+                                <td colspan="2"><b>{{$quote->sconto_value}} %</b></td>
+                            </tr>
+                            @php
+                                $discounted = $sum * (1-($quote->sconto_value/100));
+                            @endphp
+                            <tr class="total">
+                                <td  class="total-label text-right">Totale Scontato</td>
+                                <td colspan="2">€ {{ number_format($discounted, 2, ',', '.') }} <small style="font-size:60%;"> @lang('killerquote::kq.iva_inc')</small></td>
+                            </tr>
+                        @else
+                            <tr class="total">
+                                <td class="total-label text-right">@lang('killerquote::kq.totale')</td>
+                                <td colspan="2">€ {{ number_format($sum, 2, ',', '.') }} <small style="font-size:60%;"> @lang('killerquote::kq.iva_inc')</small></td>
+                            </tr>
+                        @endif
 
                     @endif
 

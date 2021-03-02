@@ -111,7 +111,7 @@ class KillerQuotesController extends Controller
         $quote = KillerQuote::find($id);
         if(!$quote)
             return abort(404);
-
+// return $this->generatePdfIta($quote);
         return $this->generatePdfIta($quote)->inline();
     }
 
@@ -174,11 +174,11 @@ class KillerQuotesController extends Controller
                 $percSconto = $item->perc_sconto/100;
                 $sconto = $item->perc_sconto;
             }
-            if($general_sconto)
-            {
-                $percSconto = $general_sconto/100;
-                $sconto = $general_sconto;
-            }
+            // if($general_sconto)
+            // {
+            //     $percSconto = $general_sconto/100;
+            //     $sconto = $general_sconto;
+            // }
 
             if(config('sale_on_vat'))
             {
@@ -225,9 +225,20 @@ class KillerQuotesController extends Controller
         $quote->update(['importo' => $quote->calculate_importo]);
 
         $company = Company::find($request->company_id);
-        if($company->clients()->first()->id == 1)
+        if($company->clients()->first()->point == 1)
         {
-            $company->clients()->sync(2);
+            $company->clients()->sync(1);
+
+            if($company->contacts()->exists())
+            {
+                foreach($company->contacts as $contact)
+                {
+                    if($contact->clients()->first())
+                    {
+                        $contact->clients()->sync(1);
+                    }
+                }
+            }
         }
 
         return redirect(route('killerquotes.index'))->with('message', 'Preventivo Creato');
@@ -243,6 +254,7 @@ class KillerQuotesController extends Controller
         $companies = ['' => '']+Company::orderBy('rag_soc', 'ASC')->pluck('rag_soc', 'id')->toArray();
         $products = ['' => '']+Product::groupedOpt();
         $items = $quote->items()->with('product')->get();
+
         return view('killerquote::quotes.quote.edit', compact('quote','items', 'companies', 'products', 'deals'));
     }
 
@@ -296,11 +308,11 @@ class KillerQuotesController extends Controller
                 $percSconto = $item->perc_sconto/100;
                 $sconto = $item->perc_sconto;
             }
-            if($general_sconto)
-            {
-                $percSconto = $general_sconto/100;
-                $sconto = $general_sconto;
-            }
+            // if($general_sconto)
+            // {
+            //     $percSconto = $general_sconto/100;
+            //     $sconto = $general_sconto;
+            // }
 
             if(config('sale_on_vat'))
             {
@@ -348,6 +360,41 @@ class KillerQuotesController extends Controller
         }
 
         $quote->update(['importo' => $quote->calculate_importo]);
+
+        if($quote->accepted === 1)
+        {
+            $company = Company::find($request->company_id);
+            $company->clients()->sync(3);
+
+            if($company->contacts()->exists())
+            {
+                foreach($company->contacts as $contact)
+                {
+                    if($contact->clients()->first())
+                    {
+                        $contact->clients()->sync(3);
+                    }
+                }
+            }
+        }
+        else
+        {
+            $company = Company::find($request->company_id);
+            $company->clients()->sync(1);
+
+            if($company->contacts()->exists())
+            {
+                foreach($company->contacts as $contact)
+                {
+                    if($contact->clients()->first())
+                    {
+                        $contact->clients()->sync(1);
+                    }
+                }
+            }
+        }
+
+
 
         return redirect(route('killerquotes.edit', $quote->id))->with('message', 'Preventivo Salvato');
     }
@@ -526,12 +573,14 @@ class KillerQuotesController extends Controller
         $footerUrl = asset("storage/killerquotes/pdf/{$quote->id}/footer.html");
 
         $merger = PDFMerger::init();
-
+// return view('killerquote::pdf.logo', compact('quote', 'settings', 'base_settings', 'fe_settings'));
         $logo = PDF::loadView('killerquote::pdf.logo', compact('quote', 'settings', 'base_settings', 'fe_settings'))
             ->setPaper('a4')
             ->setOption('enable-local-file-access', true)
             ->setOption('encoding', 'UTF-8');
+// return $logo->inline();
         $logo->save($logoPdfPath);
+// return $logo->inline();
 
         $document = PDF::loadView('killerquote::pdf.quote', compact('quote', 'settings', 'base_settings', 'fe_settings'))
             ->setPaper('a4')
@@ -602,7 +651,7 @@ class KillerQuotesController extends Controller
             ->setPaper('a4')
             ->setOption('enable-local-file-access', true)
             ->setOption('encoding', 'UTF-8');
-//return $logo->inline();
+// return $logo->inline();
         $logo->save($logoPdfPath);
 
 //return view('killerquote::pdf.quote', compact('quote', 'settings', 'base_settings', 'fe_settings'));

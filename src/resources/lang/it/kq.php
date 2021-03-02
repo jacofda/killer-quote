@@ -2,10 +2,10 @@
 
 return [
     'preventivo' => 'Preventivo',
-    'scade_il' => 'Scade il ',
+    'scade_il' => 'Scadenza proposta ',
     'del' => 'del',
     'chi_siamo' => 'Chi siamo',
-    'perche_sceglierci' => 'Che cosa apprezzano di più i nostri clienti',
+    'perche_sceglierci' => 'Cosa apprezzano di più i nostri clienti',
     'spet' => 'Spett.',
     'trattativa' => 'RIEPILOGO TRATTATIVA',
     'bonus' => 'Bonus',

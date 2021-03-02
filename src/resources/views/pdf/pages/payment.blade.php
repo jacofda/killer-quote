@@ -13,12 +13,12 @@
             <h3 class="section-title text-center">@lang('killerquote::kq.pagamento')</h3>
             <div class="row">
                 @if($quote->sconto_text || $quote->sconto_value)
-                    <div class="col-xs-6 col-xs-offset-3">
+                    <div class="col-xs-12">
                         <div class="bordered-box">
                             <div class="bordered-box-text">
                                 {!! $quote->sconto_text  !!}
                                 @if($quote->sconto_value)
-                                    <h4 style="margin: 3mm 0 0 0; font-weight: bold;">{{ $quote->sconto_value }}% @lang('killerquote::kq.sconto')</h4>
+                                     {{-- <h4 style="margin: 3mm 0 0 0; font-weight: bold;">{{ $quote->sconto_value }}% @lang('killerquote::kq.sconto')</h4> --}}
                                 @endif
                             </div>
                         </div>

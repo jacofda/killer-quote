@@ -7,7 +7,7 @@
 
             <div class="form-group row" style="height:100%;">
                 <div class="col-sm-12" style="height:100%;">
-                    {!! Form::textarea('summary', isset($quote) ? $quote->summary : '', ['id' => 'summary', 'style' => 'height: 100%']) !!}
+                    @includeFirst(['killer.summary-field', 'killerquote::quotes.quote.components.summary-field'])
                 </div>
             </div>
 

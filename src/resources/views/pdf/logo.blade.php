@@ -1,7 +1,7 @@
 @extends('killerquote::pdf.layout')
 
 @section('content')
-<div style="height: 100%; width:100%;">
+<div style="height: 95%; width:100%;">
     <div style="position:relative; top:45%; -webkit-transform: translateY(-50%); text-align: center;">
         <div style="width: 40%; margin: auto; text-align: center;">
             @if($settings['logo']->media()->first()->mediable_type == 'KillerQuote\App\Models\KillerQuoteSetting')
@@ -17,7 +17,7 @@
         </div>
     </div>
     <div style="position:relative; top:60%; -webkit-transform: translateY(-60%); text-align: right;">
-    <p><strong>{{trans('killerquote::kq.preventivo')}} N. {{$quote->numero}} @lang('killerquote::kq.del') {{$quote->created_at->format('d/m/Y')}}</strong><br>(@lang('killerquote::kq.scade_il') {{$quote->expirancy_date->format('d/m/Y')}})</p>
-</div>
+        <p><strong>{{trans('killerquote::kq.preventivo')}} N. {{$quote->numero}} @lang('killerquote::kq.del') {{$quote->created_at->format('d/m/Y')}}</strong><br>(@lang('killerquote::kq.scade_il') {{$quote->expirancy_date->format('d/m/Y')}})</p>
+    </div>
 </div>
 @endsection
