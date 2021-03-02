@@ -365,10 +365,17 @@
                     if(elem.uid == uid)
                     {
                         console.log(elem);
-                        if(elem.prezzo != newItem.prezzo)
+
+                        if(elem.id != newItem.id)
                         {
-                            elem.prezzo = parseFloat(newItem.prezzo).toFixed(2);
-                            $('tr.prodRowId-'+uid+' td').eq(3).text(parseFloat(newItem.prezzo).toFixed(2));
+                            elem.id = parseInt(newItem.id);
+                            $('tr.prodRowId-'+uid+' td').eq(0).text($('input[name="codice"]').val());
+                        }
+
+                        if(elem.descrizione != newItem.descrizione)
+                        {
+                            elem.descrizione = newItem.descrizione;
+                            $('tr.prodRowId-'+uid+' td').eq(1).text(newItem.descrizione);
                         }
 
                         if(elem.qta != newItem.qta)
@@ -377,11 +384,23 @@
                             $('tr.prodRowId-'+uid+' td').eq(2).text(parseInt(newItem.qta).toFixed(2));
                         }
 
+                        if(elem.prezzo != newItem.prezzo)
+                        {
+                            elem.prezzo = parseFloat(newItem.prezzo).toFixed(2);
+                            $('tr.prodRowId-'+uid+' td').eq(3).text(parseFloat(newItem.prezzo).toFixed(2));
+                        }
+
                         if(elem.perc_sconto != newItem.perc_sconto)
                         {
                             elem.perc_sconto = parseFloat(newItem.perc_sconto).toFixed(2);
                             $('tr.prodRowId-'+uid+' td').eq(4).text(parseFloat(newItem.perc_sconto).toFixed(2));
                         }
+
+                        if(elem.perc_iva != newItem.perc_iva)
+                        {
+                            elem.perc_iva = newItem.perc_iva;
+                        }
+
                     }
                 });
             }

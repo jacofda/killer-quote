@@ -132,7 +132,7 @@ class KillerQuote extends Primitive
                 }
             }
         }
-        if($quote->sconto_value)
+        if($this->sconto_value)
         {
             $sum = $sum * (1 - ($this->sconto_value/100));
         }

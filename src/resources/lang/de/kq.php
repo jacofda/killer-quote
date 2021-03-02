@@ -2,7 +2,7 @@
 
 return [
     'preventivo' => 'Preisangabe',
-    'scade_il' => 'Läuft aus am ',
+    'scade_il' => 'Vorgeschlagene frist ',
     'del' => 'erstellt am',
     'chi_siamo' => 'Über uns',
     'perche_sceglierci' => 'Was Kunden an uns mögen',
