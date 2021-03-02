@@ -343,17 +343,8 @@
                 if($(this).hasClass('edit'))
                 {
                     let newItem = new Item(select[0].id, select[0].text, codice, desc, prezzo, perc_iva, qta, sconto, perc_sconto);
-
                     updateItemWhere(newItem, $(this).attr('data-uid'));
-console.log(items);
-                    return false;
-
-
-
-                    items = items.filter(item => item.uid != $(this).attr('data-uid'));
-                    items.push(newItem);
-                    addItemToTable(newItem);
-                    $('a#prodId-'+$(this).attr('data-uid')).trigger('click');
+                    resetItemForm();
                 }
                 else
                 {
@@ -369,28 +360,27 @@ console.log(items);
                 }
             });
 
-            function updateItemWhere(newItem, uid)
-            {
+            const updateItemWhere = (newItem, uid) => {
                 Object.entries(items).forEach(([key, elem]) => {
                     if(elem.uid == uid)
                     {
                         console.log(elem);
                         if(elem.prezzo != newItem.prezzo)
                         {
-                            elem.prezzo = newItem.prezzo;
-                            $('tr.prodRowId-'+uid+' td').eq(3).text(newItem.prezzo);
+                            elem.prezzo = parseFloat(newItem.prezzo).toFixed(2);
+                            $('tr.prodRowId-'+uid+' td').eq(3).text(parseFloat(newItem.prezzo).toFixed(2));
                         }
 
                         if(elem.qta != newItem.qta)
                         {
-                            elem.qta = newItem.qta;
-                            $('tr.prodRowId-'+uid+' td').eq(2).text(newItem.qta);
+                            elem.qta = parseInt(newItem.qta).toFixed(2);
+                            $('tr.prodRowId-'+uid+' td').eq(2).text(parseInt(newItem.qta).toFixed(2));
                         }
 
                         if(elem.perc_sconto != newItem.perc_sconto)
                         {
-                            elem.perc_sconto = newItem.perc_sconto;
-                            $('tr.prodRowId-'+uid+' td').eq(4).text(newItem.perc_sconto);
+                            elem.perc_sconto = parseFloat(newItem.perc_sconto).toFixed(2);
+                            $('tr.prodRowId-'+uid+' td').eq(4).text(parseFloat(newItem.perc_sconto).toFixed(2));
                         }
                     }
                 });
@@ -407,7 +397,6 @@ console.log(items);
                 e.preventDefault();
                 var uid = $(this).attr('id').replace('prodId-', '');
                 var i = items.filter(item => item.uid == uid)[0];
-                console.log(uid);
                 $('input[name="codice"]').val(i.codice);
                 $('#products').select2().val(i.id).trigger('change');
                 $('textarea.desc').val(i.descrizione);
