@@ -123,7 +123,6 @@ class KillerQuote extends Primitive
                 {
                     $sum += $item->importo_scontato_con_iva*$item->qta;
                 }
-                return $sum;
             }
             else
             {
@@ -131,7 +130,6 @@ class KillerQuote extends Primitive
                 {
                     $sum += $item->importo_scontato*$item->qta;
                 }
-                return $sum;
             }
         }
         if($quote->sconto_value)
