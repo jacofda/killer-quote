@@ -11,6 +11,7 @@
                         <th>Descrizione</th>
                         <th>Qt</th>
                         <th>Prezzo<small>(€)</small></th>
+                        <th>Iva<small>(%)</small></th>
                         <th>Sconto<small>(%)</small></th>
                         <th></th>
                     </tr>

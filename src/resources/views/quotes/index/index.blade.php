@@ -212,6 +212,13 @@
 
                                                             <a href="{{ route('killerquotes.edit', $quote->id) }}" title="Modifica" class="btn btn-warning btn-icon btn-sm"><i class="fa fa-edit"></i></a>
                                                             <a href="#" title="Duplica" class="btn btn-secondary btn-icon btn-sm btn-duplicate" data-id="{{$quote->id}}"><i class="fa fa-clone"></i></a>
+                                                            @if($quote->accepted == 1)
+                                                                @if(\Illuminate\Support\Facades\Schema::hasTable('deals'))
+                                                                    @if(!\Deals\App\Models\OrderConfirmation::where('killer_quote_id', $quote->id)->exists())
+                                                                        <a href="#" title="Crea Conferma d'ordine" class="btn btn-success btn-icon btn-sm btn-conferma" data-id="{{$quote->id}}"><i class="fas fa-thumbs-up"></i></a>
+                                                                    @endif
+                                                                @endif
+                                                            @endif
                                                         @endif
                                                     @endcan
                                                     @if($quote->accepted !== 1)
@@ -220,6 +227,12 @@
                                                         @endcan
                                                     @endif
                                                 {!! Form::close() !!}
+
+                                                @if(is_null($quote->filename) && ($quote->accepted == 1))
+                                                    {!! Form::open(['url' => route('killerquotes.create-co', $quote->id), 'id' => "co-".$quote->id, 'class' => 'd-none']) !!}
+                                                        <button type="submit" class="d-none">SUBMIT</button>
+                                                    {!! Form::close() !!}
+                                                @endif
 
                                                 {!! Form::open(['url' => route('killerquotes.duplicate', $quote->id), 'id' => "duplica-".$quote->id, 'class' => 'd-none']) !!}
                                                     <button type="submit" class="d-none">SUBMIT</button>
@@ -342,5 +355,12 @@
             let f = $('form#duplica-'+$(this).attr('data-id'))[0];
             f.submit();
         });
+
+         $('a.btn-conferma').on('click', function(e){
+             e.preventDefault();
+             let fco = $('form#co-'+$(this).attr('data-id'))[0];
+             fco.submit();
+         });
+
     </script>
 @stop

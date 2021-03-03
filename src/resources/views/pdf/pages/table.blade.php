@@ -98,14 +98,14 @@
                                     @endif
                                 </td>
                                 <td>{{ $item->qta }}</td>
-                                <td>€ {{ number_format($item->importo_scontato, 2, ',', '.') }} <small>@lang('killerquote::kq.+_IVA')</small></td>
+                                <td>€ {{ number_format($item->importo_scontato, 2, ',', '.') }} </td>
                             </tr>
                         @endforeach
 
                         @if($quote->sconto_value)
                             <tr class="">
                                 <td class=" text-right"><b>@lang('killerquote::kq.totale')</b></td>
-                                <td colspan="2"><b>€ {{ number_format($sum, 2, ',', '.') }} <small style="font-size:60%;"> @lang('killerquote::kq.iva_inc')</small></b></td>
+                                <td colspan="2"><b>€ {{ number_format($sum, 2, ',', '.') }} </b></td>
                             </tr>
                             <tr class="">
                                 <td  class=" text-right"><b>Extra Sconto</b></td>
@@ -116,12 +116,12 @@
                             @endphp
                             <tr class="total">
                                 <td  class="total-label text-right">Totale Scontato</td>
-                                <td colspan="2">€ {{ number_format($discounted, 2, ',', '.') }} <small style="font-size:60%;"> @lang('killerquote::kq.iva_inc')</small></td>
+                                <td colspan="2">€ {{ number_format($discounted, 2, ',', '.') }} <small style="font-size:60%;"> @lang('killerquote::kq.+_IVA')</small></td>
                             </tr>
                         @else
                             <tr class="total">
                                 <td class="total-label text-right">@lang('killerquote::kq.totale')</td>
-                                <td colspan="2">€ {{ number_format($sum, 2, ',', '.') }} <small style="font-size:60%;"> @lang('killerquote::kq.iva_inc')</small></td>
+                                <td colspan="2">€ {{ number_format($sum, 2, ',', '.') }} <small style="font-size:60%;"> @lang('killerquote::kq.+_IVA')</small></td>
                             </tr>
                         @endif
 

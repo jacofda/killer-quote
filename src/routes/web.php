@@ -45,6 +45,7 @@ Route::group(['middleware' => ['web', 'auth']], function() {
 
     // Resource
     Route::post('killerquotes/{quote}/duplicate', [KillerQuotesController::class, 'duplicate'])->name('killerquotes.duplicate');
+    Route::post('killerquotes/{quote}/create-order-confirmation', [KillerQuotesController::class, 'createOrderConf'])->name('killerquotes.create-co');
     Route::resource('killerquotes', KillerQuotesController::class);
 
     Route::resource('quotes', QuotesController::class)->except('index');

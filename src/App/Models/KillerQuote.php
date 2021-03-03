@@ -155,7 +155,7 @@ class KillerQuote extends Primitive
         {
             if($this->company->nazione == 'IT')
             {
-                return '€ ' . number_format($sum, '2', ',', '.') . ' + IVA ' . config('app.iva').'%';
+                return '€ ' . number_format($sum, '2', ',', '.') . ' + IVA ';
             }
             else
             {

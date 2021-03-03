@@ -100,10 +100,7 @@ class KillerQuotesController extends Controller
             }
             $collection = $collection->concat($generic);
         }
-
         $quotes = $collection->all();
-
-// dd($quotes);
         return view('killerquote::quotes.index.index', compact('quotes'));
     }
 
@@ -111,7 +108,6 @@ class KillerQuotesController extends Controller
         $quote = KillerQuote::find($id);
         if(!$quote)
             return abort(404);
-// return $this->generatePdfIta($quote);
         return $this->generatePdfIta($quote)->inline();
     }
 
@@ -174,11 +170,6 @@ class KillerQuotesController extends Controller
                 $percSconto = $item->perc_sconto/100;
                 $sconto = $item->perc_sconto;
             }
-            // if($general_sconto)
-            // {
-            //     $percSconto = $general_sconto/100;
-            //     $sconto = $general_sconto;
-            // }
 
             if(config('sale_on_vat'))
             {
@@ -703,6 +694,37 @@ class KillerQuotesController extends Controller
         $company->clients()->save($contact->clients()->first());
 
         return redirect('killerquotes/create?company_id='.$company->id)->with('message', 'Azienda da contatto creata!');
+    }
+
+
+    public function createOrderConf(Request $request, KillerQuote $quote)
+    {
+
+        $oc = \Deals\App\Models\OrderConfirmation::create([
+            'killer_quote_id' => $quote->id,
+            'sconto_text' => $quote->sconto_text,
+            'sconto_value' => $quote->sconto_value,
+            'company_id' => $quote->company_id,
+            'expiration_date' => Carbon::now()->addDays(7)->format('d/m/Y'),
+            'numero' => \Deals\App\Models\OrderConfirmation::getLastNumber()+1,
+            'user_id' => auth()->user()->id
+        ]);
+
+        $co_item=[];
+        foreach($quote->items as $item)
+        {
+            $co_item['product_id'] = $item->product_id;
+            $co_item['descrizione'] = $item->descrizione;
+            $co_item['qta'] = $item->qta;
+            $co_item['importo'] = $item->importo;
+            $co_item['sconto'] = $item->sconto;
+            $co_item['perc_iva'] = intval($item->perc_iva);
+            $co_item['order_id'] = $oc->id;
+            \Deals\App\Models\OrderConfirmationItem::create($co_item);
+        }
+
+
+        return redirect('order_confirmations/'.$oc->id.'/edit')->with('message', "Conferma d'ordine creata");
     }
 
 

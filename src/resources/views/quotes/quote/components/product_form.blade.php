@@ -87,7 +87,7 @@
                                     <div class="input-group">
                                         {!! Form::text('perc_iva', null, ['class' => 'form-control input-decimal', 'id' => 'perc_iva']) !!}
                                         <div class="input-group-append">
-                                            <span class="input-group-text input-group-text-sm" id="basic-addon2">00.00%</span>
+                                            <span class="input-group-text input-group-text-sm" id="basic-addon2">00%</span>
                                         </div>
                                     </div>
                                     @include('areaseb::components.add-invalid', ['element' => 'perc_iva'])
@@ -123,6 +123,7 @@
                 extra.c_s2 = response.s2;
                 extra.c_s3 = response.s3;
                 extra.locale = response.lingua;
+                extra.nazione = response.nazione;
                 return extra;
             };
 
@@ -138,7 +139,7 @@
                 }
                 else
                 {
-                    $('input#perc_iva').val("22");
+                    $('input#perc_iva').val(response.perc_iva);
                 }
                 if(extra.c_s1)
                 {
@@ -146,14 +147,25 @@
                 }
             }
 
-            const addChildrenItems = (element) => {
+            const addChildrenItems = (element, extra) => {
+
+                let perc_iva = 0;
+                if(extra.c_exception != 'null')
+                {
+                    perc_iva = 0;
+                }
+                else
+                {
+                    perc_iva = element.perc_iva;
+                }
+
                 item = new Item(
                         element.product_id,
                         element.product.nome,
                         element.product.codice,
                         element.descrizione,
                         element.product.prezzo,
-                        element.perc_iva,
+                        perc_iva,
                         parseInt(element.qta),
                         1 - (element.sconto/100),
                         element.sconto);
@@ -219,6 +231,7 @@
                 {
                     html += '<td>'+item.prezzo.toFixed(2)+'</td>';
                 }
+                html += '<td>'+item.perc_iva+'</td>';
                 if(item.perc_sconto != null)
                 {
                     html += '<td>'+(item.perc_sconto.toFixed(2))+'</td>';
@@ -295,6 +308,11 @@
                         //get extra info from company
                         extra = getExtra(resp1.data);
 
+                        if((extra.nazione != 'IT') && (extra.c_exception == 'null'))
+                        {
+                            err("Quest'azienda straniera non è stata associata a nessuna esenzione. Il cliente estero in questo caso userà la tassazione italiana");
+                        }
+
                         axios.get( baseURL+'api/products/'+prod_id+'/'+extra.locale ).then(function(resp2){
 
                             //show process inf in table
@@ -306,7 +324,7 @@
 
                                     //load children
                                     resp3.data.forEach(function(element){
-                                        addChildrenItems(element)
+                                        addChildrenItems(element, extra)
                                     });
 
                                 });
@@ -393,12 +411,13 @@
                         if(elem.perc_sconto != newItem.perc_sconto)
                         {
                             elem.perc_sconto = parseFloat(newItem.perc_sconto).toFixed(2);
-                            $('tr.prodRowId-'+uid+' td').eq(4).text(parseFloat(newItem.perc_sconto).toFixed(2));
+                            $('tr.prodRowId-'+uid+' td').eq(5).text(parseFloat(newItem.perc_sconto).toFixed(2));
                         }
 
                         if(elem.perc_iva != newItem.perc_iva)
                         {
-                            elem.perc_iva = newItem.perc_iva;
+                            elem.perc_iva = parseInt(newItem.perc_iva);
+                            $('tr.prodRowId-'+uid+' td').eq(4).text(parseInt(newItem.perc_iva));
                         }
 
                     }
