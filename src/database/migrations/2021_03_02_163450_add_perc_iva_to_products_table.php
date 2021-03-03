@@ -16,7 +16,7 @@ class AddPercIvaToProductsTable extends Migration
         Schema::table('products', function (Blueprint $table) {
             if(!Schema::hasColumn('products','perc_iva'))
             {
-                $table->decimal('perc_iva', 4,2)->default(config('app.iva'));
+                $table->tinyInteger('perc_iva')->default(config('app.iva'));
             }
         });
     }

@@ -140,7 +140,7 @@ class QuotesRun extends Command
         }
 
 
-        $mailer = app()->makeWith('custom.mailer', Setting::smtp(1));
+        $mailer = app()->makeWith('custom.mailer', Setting::smtp(0));
         $mailer->send(new SendExpirationNotification($preventivi));
 
 
