@@ -126,7 +126,8 @@ class KillerQuotesController extends Controller
 
         $companies = ['' => '']+Company::orderBy('rag_soc', 'ASC')->pluck('rag_soc', 'id')->toArray();
         $products = ['' => '']+Product::groupedOpt();
-        return view('killerquote::quotes.quote.create', compact('companies', 'products', 'deals'));
+        $nazione = null;
+        return view('killerquote::quotes.quote.create', compact('companies', 'products', 'deals', 'nazione'));
     }
 
     public function store(Request $request)
@@ -160,6 +161,7 @@ class KillerQuotesController extends Controller
         $items = [];
 
         $general_sconto = $data['sconto_value'] ? $data['sconto_value'] : 0;
+        $company = Company::find($data['company_id']);
 
         foreach(json_decode($data['itemsToForm']) as $item) {
             $sconto = 0;
@@ -171,17 +173,15 @@ class KillerQuotesController extends Controller
                 $sconto = $item->perc_sconto;
             }
 
-            if(config('sale_on_vat'))
+            if(config('app.sale_on_vat') && ($company->nazione != 'IT'))
             {
-                $pYesIva = $item->prezzo * (1+($item->perc_iva/100)) * (1-$percSconto);
-                $pNoiva = (100/(100+$item->perc_iva))*$pYesIva;
-                $importo = $pNoiva;
-                $iva = ($pYesIva-$pNoiva)* $item->qta;
+                $importo = $item->prezzo;
+                $iva = 0;
             }
             else
             {
-                $importo = $item->prezzo * (1-$percSconto);
-                $iva = ($importo * (1-($item->perc_iva/100))) * $item->qta;
+                $importo = $item->prezzo;
+                $iva = ($importo * ($item->perc_iva/100)) * $item->qta;
             }
 
             $i = new KillerQuoteItem();
@@ -189,7 +189,7 @@ class KillerQuotesController extends Controller
             $i->descrizione = $item->descrizione;
             $i->qta = $item->qta;
             $i->sconto = $sconto;
-            $i->perc_iva = $item->perc_iva;
+            $i->perc_iva = ($iva == 0) ? 0 : $item->perc_iva;
             $i->iva = $iva;
             $i->importo = $importo;
 
@@ -246,7 +246,9 @@ class KillerQuotesController extends Controller
         $products = ['' => '']+Product::groupedOpt();
         $items = $quote->items()->with('product')->get();
 
-        return view('killerquote::quotes.quote.edit', compact('quote','items', 'companies', 'products', 'deals'));
+        $nazione = $quote->company->nazione;
+
+        return view('killerquote::quotes.quote.edit', compact('quote','items', 'companies', 'products', 'deals', 'nazione'));
     }
 
     public function attachToDeal($quote, $dealId) {
@@ -290,6 +292,7 @@ class KillerQuotesController extends Controller
         $items = [];
 
         $general_sconto = $data['sconto_value'] ? $data['sconto_value'] : 0;
+        $company = Company::find($data['company_id']);
 
         foreach(json_decode($data['itemsToForm']) as $item) {
             $sconto = 0;
@@ -299,22 +302,16 @@ class KillerQuotesController extends Controller
                 $percSconto = $item->perc_sconto/100;
                 $sconto = $item->perc_sconto;
             }
-            // if($general_sconto)
-            // {
-            //     $percSconto = $general_sconto/100;
-            //     $sconto = $general_sconto;
-            // }
 
-            if(config('sale_on_vat'))
+            if(config('app.sale_on_vat') && ($company->nazione != 'IT'))
             {
-                $importo = $item->prezzo * (1+($item->perc_iva/100)) * (1-$percSconto);
-                $pNoiva = (100/(100+$item->perc_iva))*$importo;
-                $iva = ($importo-$pNoiva)* $item->qta;
+                //dd($item);
+                $importo = $item->prezzo;
+                $iva = 0;
             }
             else
             {
-                $importo = $item->prezzo * (1-$percSconto);
-                $iva = ($importo * (1-($item->perc_iva/100))) * $item->qta;
+                $iva = ($item->prezzo * ($item->perc_iva/100)) * $item->qta;
             }
 
             $i = new KillerQuoteItem();
@@ -322,9 +319,9 @@ class KillerQuotesController extends Controller
             $i->descrizione = $item->descrizione;
             $i->qta = $item->qta;
             $i->sconto = $sconto;
-            $i->perc_iva = $item->perc_iva;
+            $i->perc_iva = ($iva == 0) ? 0 : $item->perc_iva;
             $i->iva = $iva;
-            $i->importo = $importo;
+            $i->importo = $item->prezzo;
 
             $items[] = $i;
         }
@@ -387,7 +384,7 @@ class KillerQuotesController extends Controller
 
 
 
-        return redirect(route('killerquotes.edit', $quote->id))->with('message', 'Preventivo Salvato');
+        return redirect(route('killerquotes.index'))->with('message', 'Preventivo Aggiornato');
     }
 
     /**

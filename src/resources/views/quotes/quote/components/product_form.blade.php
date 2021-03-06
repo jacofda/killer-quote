@@ -168,34 +168,52 @@
                         perc_iva,
                         parseInt(element.qta),
                         1 - (element.sconto/100),
-                        element.sconto);
+                        element.sconto,
+                        extra.nazione);
                 itemsChildren.push(item);
             }
 
             class Item
             {
-                constructor(id, nome, codice, descrizione, prezzo, perc_iva, qta, sconto, perc_sconto)
+                sale_on_vat = parseInt("{{config('app.sale_on_vat')}}");
+
+                constructor(id, nome, codice, descrizione, prezzo, perc_iva, qta, sconto, perc_sconto, nazione, isEdit)
                 {
                     this.uid = Math.random().toString(36).substr(2, 5);
                     this.id = id;
                     this.nome = nome;
                     this.codice = codice;
                     this.descrizione = descrizione;
-                    this.prezzo = parseFloat(prezzo);
-                    this.perc_iva = parseInt(perc_iva);
-                    this.sconto = sconto != 1 ? parseFloat(prezzo)*sconto : null;
-                    this.perc_sconto = sconto != 1 ? parseFloat(perc_sconto) : null;
+                    if(this.sale_on_vat && (nazione !="IT") && !isEdit)
+                    {
+                        if(sconto != 0 )
+                        {
+                            this.prezzo = (parseFloat(prezzo)*(1+parseInt(perc_iva)/100))*sconto;
+                        }
+                        else
+                        {
+                            this.prezzo = parseFloat(prezzo)*(1+parseInt(perc_iva)/100);
+                        }
+                        this.perc_iva = 0;
+                        this.perc_sconto = sconto != 1 ? parseFloat(perc_sconto) : null;
+                    }
+                    else
+                    {
+                        if((nazione =="IT") && !isEdit)
+                        {
+                            this.prezzo = parseFloat(prezzo)*sconto;
+                        }
+                        else
+                        {
+                            this.prezzo = parseFloat(prezzo);
+                        }
+                        this.perc_iva = parseInt(perc_iva);
+                        this.sconto = sconto != 1 ? parseFloat(prezzo)*sconto : null;
+                        this.perc_sconto = sconto != 1 ? parseFloat(perc_sconto) : null;
+                    }
                     this.qta = parseFloat(qta).toFixed(2);
                     this.ivato = (sconto != 1) ? (parseFloat(prezzo)*sconto) * parseFloat(qta) * (parseInt(perc_iva)/100) : parseFloat(prezzo) * parseFloat(qta) * (parseInt(perc_iva)/100);
-                }
-
-                subtotal()
-                {
-                    if(this.sconto == null)
-                    {
-                        return  (parseFloat(this.prezzo) * parseFloat(this.qta)) + parseFloat(this.ivato);
-                    }
-                    return ( parseFloat(this.sconto) * parseFloat(this.qta) ) + parseFloat(this.ivato);
+                    this.nazione = nazione;
                 }
             }
 
@@ -219,18 +237,12 @@
             }
 
             const addItemToTable = (item) => {
+                console.log(item);
                 html = '<tr class="prodRowId-'+item.uid+'">';
                 html += '<td class="pl-2">'+item.codice+'</td>';
                 html += '<td>'+item.descrizione+'</td>';
                 html += '<td>'+item.qta+'</td>';
-                if(item.sconto != null)
-                {
-                    html += '<td>'+(item.sconto.toFixed(2))+'</td>';
-                }
-                else
-                {
-                    html += '<td>'+item.prezzo.toFixed(2)+'</td>';
-                }
+                html += '<td>'+item.prezzo.toFixed(2)+'</td>';
                 html += '<td>'+item.perc_iva+'</td>';
                 if(item.perc_sconto != null)
                 {
@@ -249,7 +261,7 @@
                 resetItemForm();
             }
 
-            const addItemsToTable = (r) => {
+            const addItemsToTable = (r, nazione) => {
                 if(Object.entries(r).length !== 0)
                 {
                     Object.entries(r).forEach(([key, item]) => {
@@ -266,6 +278,8 @@
                             item.qta,
                             sconto,
                             perc_sconto,
+                            nazione,
+                            true
                         );
 
                         items.push(newItem);
@@ -273,16 +287,30 @@
                     });
                 }
             }
-            addItemsToTable(itemsFromDB);
+
+
 
             let company = null;let extra = {};
+            let nazione = "{{$nazione ?? null}}";
             company = $('select[name="company_id"]').val();
+
+            if(company)
+            {
+                axios.get( baseURL+'api/companies/'+company).then(function(r){
+                    nazione = r.data;
+                });
+            }
 
             $('select[name="company_id"]').on('change', function(){
                 company = $('select[name="company_id"]').val();
+                axios.get( baseURL+'api/companies/'+company).then(function(r){
+                    nazione = r.data;
+                    console.log(nazione);
+                });
             });
 
 
+            addItemsToTable(itemsFromDB, nazione);
 
             $("#products").on('select2:select', function(){
                 let prod_id = $(this).find(':selected').val();
@@ -360,13 +388,13 @@
 
                 if($(this).hasClass('edit'))
                 {
-                    let newItem = new Item(select[0].id, select[0].text, codice, desc, prezzo, perc_iva, qta, sconto, perc_sconto);
+                    let newItem = new Item(select[0].id, select[0].text, codice, desc, prezzo, perc_iva, qta, sconto, perc_sconto, nazione);
                     updateItemWhere(newItem, $(this).attr('data-uid'));
                     resetItemForm();
                 }
                 else
                 {
-                    item = new Item(select[0].id, select[0].text, codice, desc, prezzo, perc_iva, qta, sconto, perc_sconto);
+                    item = new Item(select[0].id, select[0].text, codice, desc, prezzo, perc_iva, qta, sconto, perc_sconto, nazione);
                     items.push(item);
                     addItemToTable(item);
                     Object.entries(itemsChildren).forEach(([key, elem]) => {
@@ -410,8 +438,18 @@
 
                         if(elem.perc_sconto != newItem.perc_sconto)
                         {
-                            elem.perc_sconto = parseFloat(newItem.perc_sconto).toFixed(2);
-                            $('tr.prodRowId-'+uid+' td').eq(5).text(parseFloat(newItem.perc_sconto).toFixed(2));
+                            if( isNaN(parseFloat(newItem.perc_sconto)) )
+                            {
+                                elem.perc_sconto = 0.00;
+                                $('tr.prodRowId-'+uid+' td').eq(5).text("0.00");
+
+                            }
+                            else
+                            {
+                                elem.perc_sconto = parseFloat(newItem.perc_sconto).toFixed(2);
+                                $('tr.prodRowId-'+uid+' td').eq(5).text(parseFloat(newItem.perc_sconto).toFixed(2));
+                            }
+
                         }
 
                         if(elem.perc_iva != newItem.perc_iva)
@@ -419,6 +457,8 @@
                             elem.perc_iva = parseInt(newItem.perc_iva);
                             $('tr.prodRowId-'+uid+' td').eq(4).text(parseInt(newItem.perc_iva));
                         }
+
+
 
                     }
                 });
