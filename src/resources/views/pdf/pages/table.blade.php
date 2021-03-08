@@ -35,102 +35,36 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @php ($sum = 0) @endphp
 
                     @if($quote->company->privato)
-
-                        @foreach($quote->items as $item)
-                            @php $sum += ($item->importo*$item->qta) @endphp
-
-                            <tr>
-                                <td class="text-left px-2">
-                                    @if($item->product->nome)
-                                        <b>{{ $item->product->name }}</b>
-                                    @else
-                                        <b>{{ $item->product->codice }}</b>
-                                    @endif
-                                    @if( ($item->descrizione != "") || !is_null($item->descrizione))
-                                        <br><small>{{ucfirst($item->descrizione)}}</small>
-                                    @endif
-                                </td>
-                                <td>{{ $item->qta }}</td>
-                                <td>€ {{ number_format($item->importo, 2, ',', '.') }}</td>
-                            </tr>
-                        @endforeach
-
-
-                        @if($quote->sconto_value)
-                            <tr class="">
-                                <td class=" text-right"><b>@lang('killerquote::kq.totale')</b></td>
-                                <td colspan="2"><b>€ {{ number_format($sum, 2, ',', '.') }} <small style="font-size:60%;"> @lang('killerquote::kq.iva_inc')</small></b></td>
-                            </tr>
-                            <tr class="">
-                                <td  class=" text-right"><b>Extra Sconto</b></td>
-                                <td colspan="2"><b>{{$quote->sconto_value}} %</b></td>
-                            </tr>
-                            @php
-                                $discounted = $sum * (1-($quote->sconto_value/100));
-                            @endphp
-                            <tr class="total">
-                                <td  class="total-label text-right">Totale Scontato</td>
-                                <td colspan="2">€ {{ number_format($discounted, 2, ',', '.') }} <small style="font-size:60%;"> @lang('killerquote::kq.iva_inc')</small></td>
-                            </tr>
+                        @if($quote->company->nazione == 'IT')
+                            @include('killerquote::pdf.pages.cases.privato-IT')
                         @else
-                            <tr class="total">
-                                <td class="total-label text-right">@lang('killerquote::kq.totale')</td>
-                                <td colspan="2">€ {{ number_format($sum, 2, ',', '.') }} <small style="font-size:60%;"> @lang('killerquote::kq.iva_inc')</small></td>
-                            </tr>
+                            @include('killerquote::pdf.pages.cases.privato-NONIT')
                         @endif
-
                     @else
-
-                        @foreach($quote->items as $item)
-                            @php $sum += ($item->importo*$item->qta) @endphp
-                            <tr>
-                                <td class="text-left px-2">
-                                    @if($item->product->name)
-                                        <b>{{ $item->product->name }}</b>
-                                    @else
-                                        <b>{{ $item->product->codice }}</b>
-                                    @endif
-                                    @if( ($item->descrizione != "") || !is_null($item->descrizione))
-                                        <br><small>{{ucfirst($item->descrizione)}}</small>
-                                    @endif
-                                </td>
-                                <td>{{ $item->qta }}</td>
-                                <td>€ {{ number_format($item->importo, 2, ',', '.') }} </td>
-                            </tr>
-                        @endforeach
-
-                        @if($quote->sconto_value)
-                            <tr class="">
-                                <td class=" text-right"><b>@lang('killerquote::kq.totale')</b></td>
-                                <td colspan="2"><b>€ {{ number_format($sum, 2, ',', '.') }} </b></td>
-                            </tr>
-                            <tr class="">
-                                <td  class=" text-right"><b>Extra Sconto</b></td>
-                                <td colspan="2"><b>{{$quote->sconto_value}} %</b></td>
-                            </tr>
-                            @php
-                                $discounted = $sum * (1-($quote->sconto_value/100));
-                            @endphp
-                            <tr class="total">
-                                <td  class="total-label text-right">Totale Scontato</td>
-                                <td colspan="2">€ {{ number_format($discounted, 2, ',', '.') }} <small style="font-size:60%;"> @lang('killerquote::kq.+_IVA')</small></td>
-                            </tr>
+                        @if($quote->company->nazione == 'IT')
+                            @include('killerquote::pdf.pages.cases.azienda-IT')
                         @else
-                            <tr class="total">
-                                <td class="total-label text-right">@lang('killerquote::kq.totale')</td>
-                                <td colspan="2">€ {{ number_format($sum, 2, ',', '.') }} <small style="font-size:60%;"> @lang('killerquote::kq.+_IVA')</small></td>
-                            </tr>
+                            @include('killerquote::pdf.pages.cases.azienda-NONIT')
                         @endif
-
                     @endif
+
 
 
                 </tbody>
             </table>
         </div>
+
+        @if(!config('app.sale_on_vat'))
+            @if(\Areaseb\Core\Models\Country::where('iso2', $quote->company->nazione)->first()->is_eu)
+                <div class="col-xs-12" style="margin-top:-15px;">
+                    <small><i style="color:#888;">*If your company will pass the <q>VAT number validation</q>, your total will be tax free.</i></small>
+                </div>
+            @else
+            @endif
+        @endif
+
     </div>
 
 

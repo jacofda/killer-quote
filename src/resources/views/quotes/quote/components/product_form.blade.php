@@ -199,7 +199,7 @@
                     }
                     else
                     {
-                        if((nazione =="IT") && !isEdit)
+                        if(!isEdit)
                         {
                             this.prezzo = parseFloat(prezzo)*sconto;
                         }

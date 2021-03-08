@@ -29,5 +29,6 @@ return [
     'iva_inc' => 'IVA inc.',
     'cond_vendita' => 'Condizioni di Vendita',
     'privacy' => 'PRIVACY POLICY',
-    'grazie' => 'Grazie'
+    'grazie' => 'Grazie',
+    'vies' => 'Se la vostra azienda risulterà iscritta al portare VIES, il totale sarà esente IVA',
 ];

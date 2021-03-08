@@ -15,7 +15,7 @@ return [
     'quantita' => 'Quantity',
     'prezzo' => 'Price',
     'IVA' => 'VAT',
-    '+_IVA' => '',
+    '+_IVA' => '+ VAT',
     'totale' => 'Total',
     'pagamento' => 'PAYMENT',
     'sconto' => 'discount',
@@ -26,7 +26,8 @@ return [
     'cf' => 'NIN',
     'banca' => 'Bank',
     'sede' => 'Headquarters',
-    'iva_inc' => '',
+    'iva_inc' => 'VAT inc.',
     'cond_vendita' => 'Terms and Conditions',
     'privacy' => 'PRIVACY POLICY',
+    'vies' => '*If your company will pass the <q>VAT number validation</q>, your total will be tax free.</i>',
 ];
