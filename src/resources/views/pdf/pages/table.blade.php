@@ -40,7 +40,7 @@
                     @if($quote->company->privato)
 
                         @foreach($quote->items as $item)
-                            @php $sum += ($item->importo_scontato_con_iva*$item->qta) @endphp
+                            @php $sum += ($item->importo*$item->qta) @endphp
 
                             <tr>
                                 <td class="text-left px-2">
@@ -54,7 +54,7 @@
                                     @endif
                                 </td>
                                 <td>{{ $item->qta }}</td>
-                                <td>€ {{ number_format($item->importo_scontato_con_iva, 2, ',', '.') }}</td>
+                                <td>€ {{ number_format($item->importo, 2, ',', '.') }}</td>
                             </tr>
                         @endforeach
 
@@ -85,7 +85,7 @@
                     @else
 
                         @foreach($quote->items as $item)
-                            @php $sum += ($item->importo_scontato*$item->qta) @endphp
+                            @php $sum += ($item->importo*$item->qta) @endphp
                             <tr>
                                 <td class="text-left px-2">
                                     @if($item->product->name)
@@ -98,7 +98,7 @@
                                     @endif
                                 </td>
                                 <td>{{ $item->qta }}</td>
-                                <td>€ {{ number_format($item->importo_scontato, 2, ',', '.') }} </td>
+                                <td>€ {{ number_format($item->importo, 2, ',', '.') }} </td>
                             </tr>
                         @endforeach
 
