@@ -121,14 +121,14 @@ class KillerQuote extends Primitive
             {
                 foreach($this->items as $item)
                 {
-                    $sum += $item->importo_scontato_con_iva*$item->qta;
+                    $sum += $item->importo*$item->qta;
                 }
             }
             else
             {
                 foreach($this->items as $item)
                 {
-                    $sum += $item->importo_scontato*$item->qta;
+                    $sum += $item->importo*$item->qta;
                 }
             }
         }

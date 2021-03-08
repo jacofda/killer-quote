@@ -164,6 +164,7 @@ class KillerQuotesController extends Controller
         $company = Company::find($data['company_id']);
 
         foreach(json_decode($data['itemsToForm']) as $item) {
+
             $sconto = 0;
             $percSconto = 0;
 
@@ -474,11 +475,7 @@ class KillerQuotesController extends Controller
     }
 
     public function getLatestNumber() {
-        $numero = KillerQuote::getLastNumber();
-        if(class_exists(DealGenericQuote::class)) {
-            $numero = max($numero, DealGenericQuote::getLastNumber());
-        }
-        return $numero+1;
+        return KillerQuote::getLastNumber();
     }
 
 
