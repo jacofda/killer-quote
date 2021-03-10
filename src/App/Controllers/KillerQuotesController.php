@@ -7,7 +7,7 @@ use Deals\App\Models\{Deal, DealEvent, DealGenericQuote};
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, Storage, Validator, View};
-use Areaseb\Core\Models\{Company, Event, Product, Setting};
+use Areaseb\Core\Models\{Company, Contact, Event, Product, Setting};
 use KillerQuote\App\Models\{Quote, KillerQuote, KillerQuoteItem, KillerQuoteSetting, KillerQuoteSettingLocale};
 use GrofGraf\LaravelPDFMerger\Facades\PDFMergerFacade as PDFMerger;
 use Illuminate\Support\Facades\Schema;
@@ -408,6 +408,13 @@ class KillerQuotesController extends Controller
             }
         }
 
+        if(KillerQuoteNote::where('killer_quote_id', $quote_id)->exists())
+        {
+            foreach(KillerQuoteNote::where('killer_quote_id', $quote_id)->get() as $note)
+            {
+                $note->delete();
+            }
+        }
 
         if( Schema::hasTable('deal_events'))
         {
@@ -429,18 +436,33 @@ class KillerQuotesController extends Controller
      */
     public function syncEvent($quote)
     {
-        $event = Event::firstOrCreate([
-            'calendar_id' => KillerQuote::Calendar(),
-            'user_id' => auth()->user()->id,
-            'eventable_id' => $quote->id,
-            'eventable_type' => get_class($quote)
-        ]);
+        $event = Event::where('calendar_id', KillerQuote::Calendar())->where('eventable_id', $quote->id)->where('eventable_type', get_class($quote))->first();
+
+        if(is_null($event))
+        {
+            $event = Event::create([
+                'calendar_id' => KillerQuote::Calendar(),
+                'user_id' => auth()->user()->id,
+                'eventable_id' => $quote->id,
+                'eventable_type' => get_class($quote)
+            ]);
+        }
 
         $event->title = 'Prev. n. '.$quote->numero;
         $event->summary = 'Preventivo ' . $quote->numero . '/' . $quote->expirancy_date->format('Y') . ' a '. $quote->company->rag_soc;
         $event->starts_at = $quote->expirancy_date->format('Y-m-d').' 10:00:00';
         $event->ends_at = $quote->expirancy_date->format('Y-m-d').' 11:00:00';
-        $event->backgroundColor = '#3788d8';
+
+        if(Carbon::now()->gt($quote->expirancy_date))
+        {
+
+            $event->backgroundColor = '#ecb204';
+        }
+        else
+        {
+            $event->backgroundColor = '#3788d8';
+        }
+
 
         $event->save();
 
