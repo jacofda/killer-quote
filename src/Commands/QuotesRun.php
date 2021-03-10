@@ -139,9 +139,12 @@ class QuotesRun extends Command
             $preventivi[] = 'Preventivo n. '.$quote->numero . ' fatto a ' . Company::find($quote->company_id)->rag_soc . ' scade ' . $quote->expirancy_date->format('d/m/Y');
         }
 
+        if(count($preventivi))
+        {
+            $mailer = app()->makeWith('custom.mailer', Setting::smtp(0));
+            $mailer->send(new SendExpirationNotification($preventivi));
+        }
 
-        $mailer = app()->makeWith('custom.mailer', Setting::smtp(0));
-        $mailer->send(new SendExpirationNotification($preventivi));
 
 
         $this->info('done');

@@ -194,6 +194,9 @@
                                         <td class="text-center">
                                             @if(!isset($quote->deal))
                                                 {!! Form::open(['method' => 'delete', 'url' => route('killerquotes.destroy', $quote->id), 'id' => "form-".$quote->id]) !!}
+
+                                                    <a href="{{route('killerquotes.notes.create', $quote->id)}}"  data-title="Aggiungi nota" title="aggiungi nota" class="btn btn-sm btn-default btn-modal"><b>N</b></a>
+
                                                     @can('killerquotes.read')
                                                         @if(is_null($quote->filename))
                                                             @if($quote->company->lingua != 'it')

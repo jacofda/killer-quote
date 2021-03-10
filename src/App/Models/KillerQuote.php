@@ -4,12 +4,10 @@ namespace KillerQuote\App\Models;
 
 use Carbon\Carbon;
 use App\User;
-use Areaseb\Core\Models\Calendar;
-use Areaseb\Core\Models\Company;
-use Areaseb\Core\Models\Media;
+use Areaseb\Core\Models\{Event, Calendar, Company, Media};
 use Deals\App\Models\Deal;
 use Deals\App\Models\DealEvent;
-use KillerQuote\App\Models\KillerQuoteItem;
+use KillerQuote\App\Models\{KillerQuoteItem,KillerQuoteNote};
 
 class KillerQuote extends Primitive
 {
@@ -38,6 +36,15 @@ class KillerQuote extends Primitive
 
     public function items() {
         return $this->hasMany(KillerQuoteItem::class, "invoice_id");
+    }
+
+    public function notes() {
+        return $this->hasMany(KillerQuoteNote::class);
+    }
+
+    public function event()
+    {
+        return $this->morphOne(Event::class, 'eventable');
     }
 
     public static function getLastNumber()
@@ -79,11 +86,11 @@ class KillerQuote extends Primitive
                     }
                     if($company->privato)
                     {
-                        $sum += ($item->importo_scontato_con_iva*$item->qta)*$perc;
+                        $sum += ($item->importo*$item->qta)*$perc;
                     }
                     else
                     {
-                        $sum += ($item->importo_scontato*$item->qta)*$perc;
+                        $sum += ($item->importo*$item->qta)*$perc;
                     }
                 }
 
@@ -97,11 +104,11 @@ class KillerQuote extends Primitive
                     $perc = $testimonial->commission/100;
                     if($company->privato)
                     {
-                        $sum += ($item->importo_scontato_con_iva*$item->qta)*$perc;
+                        $sum += ($item->importo*$item->qta)*$perc;
                     }
                     else
                     {
-                        $sum += ($item->importo_scontato*$item->qta)*$perc;
+                        $sum += ($item->importo*$item->qta)*$perc;
                     }
                 }
 
@@ -119,10 +126,21 @@ class KillerQuote extends Primitive
         {
             if($this->company->privato)
             {
-                foreach($this->items as $item)
+                if($this->company->nazione == 'IT')
                 {
-                    $sum += $item->importo*$item->qta;
+                    foreach($this->items as $item)
+                    {
+                        $sum += $item->importo*$item->qta*(1+($item->perc_iva/100));
+                    }
                 }
+                else
+                {
+                    foreach($this->items as $item)
+                    {
+                        $sum += $item->importo*$item->qta;
+                    }
+                }
+
             }
             else
             {
@@ -159,7 +177,7 @@ class KillerQuote extends Primitive
             }
             else
             {
-                return '€ ' . number_format($sum, '2', ',', '.');
+                return '€ ' . number_format($sum, '2', ',', '.') . ' + IVA ';
             }
         }
         return $sum;

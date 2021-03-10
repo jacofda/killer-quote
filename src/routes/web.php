@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use KillerQuote\App\Controllers\QuotesController;
 use KillerQuote\App\Controllers\KillerQuotesController;
+use KillerQuote\App\Controllers\KillerQuoteNotesController;
 use KillerQuote\App\Controllers\SettingsController;
 use KillerQuote\App\Controllers\SettingsLocaleController;
 use KillerQuote\App\Controllers\SummernoteController;
@@ -47,6 +48,9 @@ Route::group(['middleware' => ['web', 'auth']], function() {
     Route::post('killerquotes/{quote}/duplicate', [KillerQuotesController::class, 'duplicate'])->name('killerquotes.duplicate');
     Route::post('killerquotes/{quote}/create-order-confirmation', [KillerQuotesController::class, 'createOrderConf'])->name('killerquotes.create-co');
     Route::resource('killerquotes', KillerQuotesController::class);
+
+
+    Route::resource('killerquotes.notes', KillerQuoteNotesController::class)->except('index');
 
     Route::resource('quotes', QuotesController::class)->except('index');
 
