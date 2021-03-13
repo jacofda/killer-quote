@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, Storage, Validator, View};
 use Areaseb\Core\Models\{Company, Contact, Event, Product, Setting};
 use KillerQuote\App\Models\{Quote, KillerQuote, KillerQuoteItem, KillerQuoteSetting, KillerQuoteSettingLocale};
-use GrofGraf\LaravelPDFMerger\Facades\PDFMergerFacade as PDFMerger;
+use LynX39\LaraPdfMerger\Facades\PdfMerger;
 use Illuminate\Support\Facades\Schema;
 use KillerQuote\Mail\SendQuote;
 use \PDF;
@@ -108,14 +108,24 @@ class KillerQuotesController extends Controller
         $quote = KillerQuote::find($id);
         if(!$quote)
             return abort(404);
-        return $this->generatePdfIta($quote)->inline();
+
+        $pdf = $this->generatePdfIta($quote);
+
+        $filename = storage_path('app/public/killerquotes/pdf/'.time().'.pdf');
+        $pdf->save($filename, 'file');
+        return response()->file($filename);
     }
 
     public function pdfLocale($id, $locale)
     {
         app()->setLocale($locale);
         $quote = KillerQuote::find($id);
-        return $this->generatePdf($quote, $locale)->inline();
+
+        $pdf = $this->generatePdf($quote, $locale)->inline();
+
+        $filename = storage_path('app/public/killerquotes/pdf/'.time().'.pdf');
+        $pdf->save($filename, 'file');
+        return response()->file($filename);
     }
 
     public function create()

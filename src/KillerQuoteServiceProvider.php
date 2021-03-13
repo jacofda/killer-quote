@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
 use KillerQuote\App\Models\{KillerQuoteSetting, KillerQuoteSettingLocale};
 use KillerQuote\App\Observers\{KillerQuoteSettingObserver, KillerQuoteSettingLocaleObserver};
-use GrofGraf\LaravelPDFMerger\Providers\PDFMergerServiceProvider;
 use Illuminate\Console\Scheduling\Schedule;
 use KillerQuote\Commands\QuotesRun;
 
@@ -31,7 +30,6 @@ class KillerQuoteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->app->register( PDFMergerServiceProvider::class);
         $this->loadViewsFrom(__DIR__.'/resources/views', 'killerquote');
         $this->loadTranslationsFrom(__DIR__.'/resources/lang', 'killerquote');
         $this->loadMigrationsFrom(__DIR__.'/database/migrations');

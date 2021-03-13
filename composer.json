@@ -24,6 +24,6 @@
         }
     },
     "require": {
-        "grofgraf/laravel-pdf-merger": "^1.0"
+        "daltcore/lara-pdf-merger": "^2.0"
     }
 }
